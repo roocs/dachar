@@ -82,11 +82,11 @@ setup(
     include_package_data=True,
     keywords='dachar',
     name='dachar',
-    packages=find_packages(include=['dachar']),
+    packages=find_packages(include=['dachar', 'dachar.*']),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
-    url='https://github.com/ellesmith88/dachar',
+    url='https://github.com/roocs/dachar',
     version=_package_version,
     zip_safe=False,
 )
