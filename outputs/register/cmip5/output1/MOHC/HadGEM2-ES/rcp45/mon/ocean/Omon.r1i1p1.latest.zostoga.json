@@ -1,0 +1,72 @@
+{
+    "coordinates": {
+        "time": {
+            "axis": "T",
+            "bounds": "time_bnds",
+            "calendar": "360_day",
+            "id": "time",
+            "length": 3529,
+            "long_name": "time",
+            "max": "2299-12-16T00:00:00",
+            "min": "2005-12-16T00:00:00",
+            "standard_name": "time"
+        }
+    },
+    "data": {
+        "coord_names": [
+            "time"
+        ],
+        "max": null,
+        "min": null,
+        "rank": 1,
+        "shape": [
+            3529
+        ]
+    },
+    "global_attrs": {
+        "Conventions": "CF-1.4",
+        "branch_time": 52560.0,
+        "cmor_version": "2.7.1",
+        "contact": "chris.d.jones@metoffice.gov.uk, michael.sanderson@metoffice.gov.uk",
+        "creation_date": "2011-07-01T14:55:24Z",
+        "experiment": "RCP4.5",
+        "experiment_id": "rcp45",
+        "forcing": "GHG, Oz, SA, LU, Sl, Vl, BC, OC, (GHG = CO2, N2O, CH4, CFCs)",
+        "frequency": "mon",
+        "history": "MOHC pp to CMOR/NetCDF convertor (version 1.9.2) 2011-07-01T14:53:58Z CMOR rewrote data to comply with CF standards and CMIP5 requirements.",
+        "initialization_method": 1,
+        "institute_id": "MOHC",
+        "institution": "Met Office Hadley Centre, Fitzroy Road, Exeter, Devon, EX1 3PB, UK, (http://www.metoffice.gov.uk)",
+        "mo_runid": "ajnjg",
+        "model_id": "HadGEM2-ES",
+        "modeling_realm": "ocean",
+        "parent_experiment": "historical",
+        "parent_experiment_id": "historical",
+        "parent_experiment_rip": "r1i1p1",
+        "physics_version": 1,
+        "product": "output",
+        "project_id": "CMIP5",
+        "realization": 1,
+        "references": "Bellouin N. et al, (2007) Improved representation of aerosols for HadGEM2. Meteorological Office Hadley Centre, Technical Note 73, March 2007; Collins W.J.  et al, (2008) Evaluation of the HadGEM2 model. Meteorological Office Hadley Centre, Technical Note 74,; McLaren A.J. et al, (2006) Evaluation of the sea ice simulation in a new coupled atmosphere-ocean climate model. Journal of Geophysical Research - Oceans, American Geophysical Union, Vol. 111, C12014, doi:10.1029/2005JC003033.; Stott P.A. et al, (2006) Transient climate simulations with the HadGEM1 climate model: Causes of past warming and future climate change. Journal of Climate, American Meteorological Society, Vol. 19, No. 12, pages 2763-2782.; Ringer M.A. et al, (2006) The physical properties of the atmosphere in the new Hadley Centre Global Environmental Model, HadGEM1 - Part 2: Aspects of variability and regional climate. Journal of Climate, American Meteorological Society, Vol. 19, No. 7, pages 1302-1326.",
+        "source": "HadGEM2-ES (2009) atmosphere: HadGAM2 (N96L38); ocean: HadGOM2 (lat: 1.0-0.3 lon: 1.0 L40); land-surface/vegetation: MOSES2 and TRIFFID; tropospheric chemistry: UKCA; ocean biogeochemistry: diat-HadOCC",
+        "table_id": "Table Omon (27 April 2011) 340eddd4fd838d90fa9ffe1345ecbd73",
+        "title": "HadGEM2-ES model output prepared for CMIP5 RCP4.5",
+        "tracking_id": "967e7215-98a5-4a2e-ae75-59e21b4c7511"
+    },
+    "scan_metadata": {
+        "last_scanned": "2020-04-02T15:23:35.741480",
+        "location": "ceda",
+        "mode": "quick"
+    },
+    "variable": {
+        "_FillValue": "1e+20",
+        "associated_files": "baseURL: http://cmip-pcmdi.llnl.gov/CMIP5/dataLocation gridspecFile: gridspec_ocean_fx_HadGEM2-ES_rcp45_r0i0p0.nc",
+        "cell_methods": "time: mean area: mean where sea",
+        "comment": "mo: Changes are calculated with respect to a reference state  which is the initial annual mean (starting 1/12/1859) of the  control simulation piControl/r1i1p1.",
+        "long_name": "Global Average Thermosteric Sea Level Change",
+        "original_name": "mo: Idl2csv(func = 'zostoga')",
+        "standard_name": "global_average_thermosteric_sea_level_change",
+        "units": "m",
+        "var_id": "zostoga"
+    }
+}

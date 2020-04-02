@@ -1,0 +1,72 @@
+{
+    "coordinates": {
+        "time": {
+            "axis": "T",
+            "bounds": "time_bnds",
+            "calendar": "noleap",
+            "id": "time",
+            "length": 3540,
+            "long_name": "time",
+            "max": "2300-12-16T12:00:00",
+            "min": "2006-01-16T12:00:00",
+            "standard_name": "time"
+        }
+    },
+    "data": {
+        "coord_names": [
+            "time"
+        ],
+        "max": null,
+        "min": null,
+        "rank": 1,
+        "shape": [
+            3540
+        ]
+    },
+    "global_attrs": {
+        "Conventions": "CF-1.4",
+        "branch_time": 2005.0,
+        "cmor_version": "2.7.1",
+        "comment": "This 21th century simulation has been forced by prescribed concentration following the rcp 4.5 scenario.",
+        "contact": "ipsl-cmip5 _at_ ipsl.jussieu.fr Data manager : Sebastien Denvil",
+        "creation_date": "2011-10-06T00:38:52Z",
+        "experiment": "RCP4.5",
+        "experiment_id": "rcp45",
+        "forcing": "Nat,Ant,GHG,SA,Oz,LU,SS,Ds,BC,MD,OC,AA",
+        "frequency": "mon",
+        "history": "2011-10-06T00:38:52Z CMOR rewrote data to comply with CF standards and CMIP5 requirements.",
+        "initialization_method": 1,
+        "institute_id": "IPSL",
+        "institution": "IPSL (Institut Pierre Simon Laplace, Paris, France)",
+        "model_id": "IPSL-CM5A-LR",
+        "modeling_realm": "ocean",
+        "parent_experiment": "historical",
+        "parent_experiment_id": "historical",
+        "parent_experiment_rip": "r1i1p1",
+        "physics_version": 1,
+        "product": "output",
+        "project_id": "CMIP5",
+        "realization": 1,
+        "references": "Model documentation and further reference available here : http://icmc.ipsl.fr",
+        "source": "IPSL-CM5A-LR (2010) : atmos : LMDZ4 (LMDZ4_v5, 96x95x39); ocean : ORCA2 (NEMOV2_3, 2x2L31); seaIce : LIM2 (NEMOV2_3); ocnBgchem : PISCES (NEMOV2_3); land : ORCHIDEE (orchidee_1_9_4_AR5)",
+        "table_id": "Table Omon (31 January 2011) d2d6beec2b8fea5bbed33920a6e08bbe",
+        "title": "IPSL-CM5A-LR model output prepared for CMIP5 RCP4.5",
+        "tracking_id": "aec7dc50-a700-4217-b680-7a1c1a0aa5f0"
+    },
+    "scan_metadata": {
+        "last_scanned": "2020-04-02T15:23:08.998265",
+        "location": "ceda",
+        "mode": "quick"
+    },
+    "variable": {
+        "_FillValue": "1e+20",
+        "associated_files": "baseURL: http://cmip-pcmdi.llnl.gov/CMIP5/dataLocation gridspecFile: gridspec_ocean_fx_IPSL-CM5A-LR_rcp45_r0i0p0.nc",
+        "cell_methods": "time: mean (interval: 30 minutes) area: mean where sea",
+        "history": "2011-10-06T00:38:52Z altered by CMOR: replaced missing value flag (9.96921e+36) with standard missing value (1e+20).",
+        "long_name": "Global Average Thermosteric Sea Level Change",
+        "original_name": "zostoga",
+        "standard_name": "global_average_thermosteric_sea_level_change",
+        "units": "m",
+        "var_id": "zostoga"
+    }
+}
