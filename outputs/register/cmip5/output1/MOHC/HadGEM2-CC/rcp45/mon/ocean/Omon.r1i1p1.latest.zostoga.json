@@ -1,0 +1,72 @@
+{
+    "coordinates": {
+        "time": {
+            "axis": "T",
+            "bounds": "time_bnds",
+            "calendar": "360_day",
+            "id": "time",
+            "length": 1141,
+            "long_name": "time",
+            "max": "2100-12-16T00:00:00",
+            "min": "2005-12-16T00:00:00",
+            "standard_name": "time"
+        }
+    },
+    "data": {
+        "coord_names": [
+            "time"
+        ],
+        "max": null,
+        "min": null,
+        "rank": 1,
+        "shape": [
+            1141
+        ]
+    },
+    "global_attrs": {
+        "Conventions": "CF-1.4",
+        "branch_time": 52560.0,
+        "cmor_version": "2.7.1",
+        "contact": "chris.d.jones@metoffice.gov.uk, steven.hardiman@metoffice.gov.uk",
+        "creation_date": "2011-10-13T16:38:28Z",
+        "experiment": "RCP4.5",
+        "experiment_id": "rcp45",
+        "forcing": "GHG, Oz, SA, LU, Sl, Vl, BC, OC, (GHG = CO2, N2O, CH4, CFCs)",
+        "frequency": "mon",
+        "history": "MOHC pp to CMOR/NetCDF convertor (version 1.10.3) 2011-10-13T16:35:48Z CMOR rewrote data to comply with CF standards and CMIP5 requirements.",
+        "initialization_method": 1,
+        "institute_id": "MOHC",
+        "institution": "Met Office Hadley Centre, Fitzroy Road, Exeter, Devon, EX1 3PB, UK, (http://www.metoffice.gov.uk)",
+        "mo_runid": "akgii",
+        "model_id": "HadGEM2-CC",
+        "modeling_realm": "ocean",
+        "parent_experiment": "historical",
+        "parent_experiment_id": "historical",
+        "parent_experiment_rip": "r1i1p1",
+        "physics_version": 1,
+        "product": "output",
+        "project_id": "CMIP5",
+        "realization": 1,
+        "references": "Jones, C.D. et al. (2011) The HadGEM2-ES implementation of CMIP5 centennial simulations. Geosci. Model Dev., 4, 543-570, http://www.geosci-model-dev.net/4/543/2011/gmd-4-543-2011.html; Martin G.M. et al. (2011) The HadGEM2 family of Met Office Unified Model climate configurations, Geosci. Model Dev., 4, 723-757, http://www.geosci-model-dev.net/4/723/2011/gmd-4-723-2011.html; Collins, W.J. et al. (2011) Development and evaluation of an Earth-system model - HadGEM2, Geosci. Model Dev. Discuss., 4, 997-1062, http://www.geosci-model-dev-discuss.net/4/997/2011/gmdd-4-997-2011.html",
+        "source": "HadGEM2-CC (2011) atmosphere: HadGAM2(N96L60); ocean: HadGOM2 (lat: 1.0-0.3 lon: 1.0 L40); land-surface/vegetation: MOSES2 and TRIFFID; ocean biogeochemistry: diat-HadOCC",
+        "table_id": "Table Omon (26 July 2011) 25bb94a0408beca44c0f5b601258a94e",
+        "title": "HadGEM2-CC model output prepared for CMIP5 RCP4.5",
+        "tracking_id": "79970860-9b66-4130-8582-d9b7e5af1eee"
+    },
+    "scan_metadata": {
+        "last_scanned": "2020-04-02T15:23:28.482534",
+        "location": "ceda",
+        "mode": "quick"
+    },
+    "variable": {
+        "_FillValue": "1e+20",
+        "associated_files": "baseURL: http://cmip-pcmdi.llnl.gov/CMIP5/dataLocation gridspecFile: gridspec_ocean_fx_HadGEM2-CC_rcp45_r0i0p0.nc",
+        "cell_methods": "time: mean area: mean where sea",
+        "comment": "mo: Changes are calculated with respect to a reference state  which is the initial annual mean (starting 1/12/1859) of the  control simulation piControl/r1i1p1.",
+        "long_name": "Global Average Thermosteric Sea Level Change",
+        "original_name": "mo: Idl2csv(func = 'zostoga')",
+        "standard_name": "global_average_thermosteric_sea_level_change",
+        "units": "m",
+        "var_id": "zostoga"
+    }
+}

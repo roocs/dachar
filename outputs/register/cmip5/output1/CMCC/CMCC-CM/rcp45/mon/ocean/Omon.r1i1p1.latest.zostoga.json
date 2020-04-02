@@ -1,0 +1,71 @@
+{
+    "coordinates": {
+        "time": {
+            "axis": "T",
+            "bounds": "time_bnds",
+            "calendar": "gregorian",
+            "id": "time",
+            "length": 1140,
+            "long_name": "time",
+            "max": "2100-12-16T12:00:00",
+            "min": "2006-01-16T12:00:00",
+            "standard_name": "time"
+        }
+    },
+    "data": {
+        "coord_names": [
+            "time"
+        ],
+        "max": null,
+        "min": null,
+        "rank": 1,
+        "shape": [
+            1140
+        ]
+    },
+    "global_attrs": {
+        "Conventions": "CF-1.4",
+        "branch_time": 56978.0,
+        "cmor_version": "2.7.1",
+        "comment": "RCP4.5 simulation starting at the end of the historical run",
+        "contact": "Silvio Gualdi (gualdi@bo.ingv.it)",
+        "creation_date": "2012-04-17T12:29:33Z",
+        "experiment": "RCP4.5",
+        "experiment_id": "rcp45",
+        "forcing": "Nat,GHG,SA,TO,Sl",
+        "frequency": "mon",
+        "history": "Model output postprocessed with  CDO (https://code.zmaw.de/projects) 2012-04-17T12:29:33Z CMOR rewrote data to comply with CF standards and CMIP5 requirements.",
+        "initialization_method": 1,
+        "institute_id": "CMCC",
+        "institution": "CMCC - Centro Euro-Mediterraneo per i Cambiamenti Climatici, Bologna, Italy",
+        "model_id": "CMCC-CM",
+        "modeling_realm": "ocean",
+        "parent_experiment": "historical",
+        "parent_experiment_id": "historical",
+        "parent_experiment_rip": "N/A",
+        "physics_version": 1,
+        "product": "output",
+        "project_id": "CMIP5",
+        "realization": 1,
+        "references": "model described in the documentation at http://www.cmcc.it/data-models/models",
+        "source": "CMCC-CM",
+        "table_id": "Table Omon (27 April 2011) 340eddd4fd838d90fa9ffe1345ecbd73",
+        "title": "CMCC-CM model output prepared for CMIP5 RCP4.5",
+        "tracking_id": "e9edbce0-f563-43f4-ba89-c5536b467b48"
+    },
+    "scan_metadata": {
+        "last_scanned": "2020-04-02T15:22:23.351420",
+        "location": "ceda",
+        "mode": "quick"
+    },
+    "variable": {
+        "_FillValue": "1e+20",
+        "associated_files": "baseURL: http://cmip-pcmdi.llnl.gov/CMIP5/dataLocation gridspecFile: gridspec_ocean_fx_CMCC-CM_rcp45_r0i0p0.nc",
+        "cell_methods": "time: mean (interval: 1 month) area: mean where sea",
+        "long_name": "Global Average Thermosteric Sea Level Change",
+        "original_name": "zostoga",
+        "standard_name": "global_average_thermosteric_sea_level_change",
+        "units": "m",
+        "var_id": "zostoga"
+    }
+}

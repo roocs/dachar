@@ -1,0 +1,69 @@
+{
+    "coordinates": {
+        "time": {
+            "axis": "T",
+            "bounds": "time_bnds",
+            "calendar": "proleptic_gregorian",
+            "id": "time",
+            "length": 1140,
+            "long_name": "time",
+            "max": "2100-12-16T12:00:00",
+            "min": "2006-01-16T12:00:00",
+            "standard_name": "time"
+        }
+    },
+    "data": {
+        "coord_names": [
+            "time"
+        ],
+        "max": null,
+        "min": null,
+        "rank": 1,
+        "shape": [
+            1140
+        ]
+    },
+    "global_attrs": {
+        "Conventions": "CF-1.4",
+        "branch_time": 56978.0,
+        "cmor_version": "2.6.0",
+        "contact": "cmip5-mpi-esm@dkrz.de",
+        "creation_date": "2012-02-18T15:12:59Z",
+        "experiment": "RCP4.5",
+        "experiment_id": "rcp45",
+        "forcing": "GHG,Oz,SD,Sl,Vl,LU",
+        "frequency": "mon",
+        "history": "Model raw output postprocessing with modelling environment (IMDI) at DKRZ: URL: http://svn-mad.zmaw.de/svn/mad/Model/IMDI/trunk, REV: 4304 2012-02-18T15:12:59Z CMOR rewrote data to comply with CF standards and CMIP5 requirements.",
+        "initialization_method": 1,
+        "institute_id": "MPI-M",
+        "institution": "Max Planck Institute for Meteorology",
+        "model_id": "MPI-ESM-MR",
+        "modeling_realm": "ocean",
+        "parent_experiment": "historical",
+        "parent_experiment_id": "historical",
+        "parent_experiment_rip": "r1i1p1",
+        "physics_version": 1,
+        "product": "output",
+        "project_id": "CMIP5",
+        "realization": 1,
+        "references": "ECHAM6: n/a; JSBACH: Raddatz et al., 2007. Will the tropical land biosphere dominate the climate-carbon cycle feedback during the twenty first century? Climate Dynamics, 29, 565-574, doi 10.1007/s00382-007-0247-8;  MPIOM: Marsland et al., 2003. The Max-Planck-Institute global ocean/sea ice model with orthogonal curvilinear coordinates. Ocean Modelling, 5, 91-127;  HAMOCC: Technical Documentation, http://www.mpimet.mpg.de/fileadmin/models/MPIOM/HAMOCC5.1_TECHNICAL_REPORT.pdf;",
+        "source": "MPI-ESM-MR 2011; URL: http://svn.zmaw.de/svn/cosmos/branches/releases/mpi-esm-cmip5/src/mod; atmosphere: ECHAM6 (REV: 4936), T63L47; land: JSBACH (REV: 4936); ocean: MPIOM (REV: 4936), GR15L40; sea ice: 4936; marine bgc: HAMOCC (REV: 4936);",
+        "table_id": "Table Omon (12 January 2012) c17931a1bad4e38015cbd162d50c56e5",
+        "title": "MPI-ESM-MR model output prepared for CMIP5 RCP4.5",
+        "tracking_id": "6ce2d57c-3c3b-4e97-a963-5b001e8a13d5"
+    },
+    "scan_metadata": {
+        "last_scanned": "2020-04-02T15:23:47.536443",
+        "location": "ceda",
+        "mode": "quick"
+    },
+    "variable": {
+        "_FillValue": "1e+20",
+        "associated_files": "baseURL: http://cmip-pcmdi.llnl.gov/CMIP5/dataLocation gridspecFile: gridspec_ocean_fx_MPI-ESM-MR_rcp45_r0i0p0.nc",
+        "cell_methods": "time: mean area: mean where sea",
+        "long_name": "Global Average Thermosteric Sea Level Change",
+        "standard_name": "global_average_thermosteric_sea_level_change",
+        "units": "m",
+        "var_id": "zostoga"
+    }
+}

@@ -1,0 +1,73 @@
+{
+    "coordinates": {
+        "time": {
+            "axis": "T",
+            "bounds": "time_bnds",
+            "calendar": "noleap",
+            "id": "time",
+            "length": 1140,
+            "long_name": "time",
+            "max": "2100-12-16T12:00:00",
+            "min": "2006-01-16T12:00:00",
+            "standard_name": "time"
+        }
+    },
+    "data": {
+        "coord_names": [
+            "time"
+        ],
+        "max": null,
+        "min": null,
+        "rank": 1,
+        "shape": [
+            1140
+        ]
+    },
+    "global_attrs": {
+        "Conventions": "CF-1.4",
+        "branch_time": 56940.0,
+        "comment": "Model output post-processed by Didier Monselesan (didier.monselesan@csiro.au) for the IPCC Fifth Assessment.",
+        "contact": "Project leaders: Stephen Jeffrey (Stephen.Jeffrey@qld.gov.au) & Leon Rotstayn (Leon.Rotstayn@csiro.au). Project team: Mark Collier (Mark.Collier@csiro.au: diagnostics & post-processing), Stacey Dravitzki (Stacey.Dravitzki@csiro.au: post-processing), Carlo Hamalainen (Carlo.Hamalainen@qld.gov.au: post-processing), Steve Jeffrey (Stephen.Jeffrey@qld.gov.au: modeling & post-processing), Chris Moeseneder (Chris.Moeseneder@csiro.au: post-processing), Leon Rotstayn (Leon.Rotstayn@csiro.au: modeling & atmos. physics), Jozef Syktus (Jozef.Syktus@qld.gov.au: model evaluation), Kenneth Wong (Kenneth.Wong@qld.gov.au: data management), Contributors: Martin Dix (Martin.Dix@csiro.au: tech. support), Hal Gordon (Hal.Gordon@csiro.au: atmos. dynamics), Eva Kowalczyk (Eva.Kowalczyk@csiro.au: land-surface), Siobhan O'Farrell (Siobhan.OFarrell@csiro.au: ocean & sea-ice)",
+        "creation_date": "2012-02-03T11:12:14Z",
+        "experiment": "RCP4.5",
+        "experiment_id": "rcp45",
+        "forcing": "Ant,Nat (RCP 4.5)",
+        "frequency": "mon",
+        "history": "Experiment was initially truncated at December 2099 as RCP data for ozone were not available for 2100 and beyond. Modelling for year 2100 was performed using ozone data from 2099.",
+        "initialization_method": 1,
+        "institute_id": "CSIRO-QCCCE",
+        "institution": "Australian Commonwealth Scientific and Industrial Research Organization (CSIRO) Marine and Atmospheric Research (Melbourne, Australia) in collaboration with the Queensland Climate Change Centre of Excellence (QCCCE) (Brisbane, Australia)",
+        "model_id": "CSIRO-Mk3-6-0",
+        "modeling_realm": "ocean",
+        "parent_experiment": "historical",
+        "parent_experiment_id": "historical",
+        "parent_experiment_rip": "r1i1p1",
+        "physics_version": 1,
+        "product": "output",
+        "project_id": "CMIP5",
+        "realization": 1,
+        "references": "a) Rotstayn, L., Collier, M., Dix, M., Feng, Y., Gordon, H., O\\'Farrell, S., Smith, I. and Syktus, J. 2010. Improved simulation of Australian climate and ENSO-related climate variability in a GCM with an interactive aerosol treatment. Int. J. Climatology, vol 30(7), pp1067-1088, DOI 10.1002/joc.1952 b) Please refer to online documentation at: http://cmip-pcmdi.llnl.gov/cmip5/",
+        "source": "CSIRO-Mk3-6-0 2010 atmosphere: AGCM v7.3.8 (T63 spectral, 1.875 degrees EW x approx. 1.875 degrees NS, 18 levels); ocean: GFDL MOM2.2 (1.875 degrees EW x approx. 0.9375 degrees NS, 31 levels)",
+        "table_id": "Table Omon (27 April 2011) 9e1a53e4873bf6f26879903e165fe4a0",
+        "title": "CSIRO-Mk3-6-0 model output prepared for CMIP5 RCP4.5",
+        "tracking_id": "3af2dcdb-3f6d-459f-b667-0993e0465a1b",
+        "version_number": "v20110913"
+    },
+    "scan_metadata": {
+        "last_scanned": "2020-04-02T15:23:03.418807",
+        "location": "ceda",
+        "mode": "quick"
+    },
+    "variable": {
+        "_FillValue": "1e+20",
+        "associated_files": "baseURL: http://cmip-pcmdi.llnl.gov/CMIP5/dataLocation gridspecFile: gridspec_ocean_fx_CSIRO-Mk3-6-0_rcp45_r0i0p0.nc",
+        "cell_methods": "time: mean area: mean where sea",
+        "comment": "Data is stored on the native ocean T-grid on which the data was generated. (MOM2 uses a rectangular staggered grid with T cells and U cells.)",
+        "history": "At 2012-02-03T11:12:14Z derived from depth integrated seawater thermosteric relative density anomaly.",
+        "long_name": "Global Average Thermosteric Sea Level Change",
+        "standard_name": "global_average_thermosteric_sea_level_change",
+        "time": 56955.5,
+        "units": "m",
+        "var_id": "zostoga"
+    }
+}
