@@ -1,0 +1,71 @@
+{
+    "coordinates": {
+        "time": {
+            "axis": "T",
+            "bounds": "time_bnds",
+            "calendar": "noleap",
+            "id": "time",
+            "length": 1140,
+            "long_name": "time",
+            "max": "2100-12-16T12:00:00",
+            "min": "2006-01-16T12:00:00",
+            "standard_name": "time"
+        }
+    },
+    "data": {
+        "coord_names": [
+            "time"
+        ],
+        "max": null,
+        "min": null,
+        "rank": 1,
+        "shape": [
+            1140
+        ]
+    },
+    "global_attrs": {
+        "Conventions": "CF-1.4",
+        "branch_time": 2006.0,
+        "cmor_version": "2.5.7",
+        "contact": "Kenneth Lo (cdkkl@giss.nasa.gov)",
+        "creation_date": "2012-07-20T18:59:11Z",
+        "experiment": "RCP4.5",
+        "experiment_id": "rcp45",
+        "forcing": "GHG, LU, Sl, Vl, BC, OC, SA, Oz (also includes orbital change - BC on snow - Nitrate aerosols)",
+        "frequency": "mon",
+        "history": "2012-07-20T18:59:11Z CMOR rewrote data to comply with CF standards and CMIP5 requirements.",
+        "initialization_method": 1,
+        "institute_id": "NASA-GISS",
+        "institution": "NASA/GISS (Goddard Institute for Space Studies) New York, NY",
+        "model_id": "GISS-E2-R-CC",
+        "modeling_realm": "ocean",
+        "parent_experiment": "historical",
+        "parent_experiment_id": "historical",
+        "parent_experiment_rip": "r1i1p1",
+        "physics_version": 1,
+        "product": "output",
+        "project_id": "CMIP5",
+        "realization": 1,
+        "references": "http://data.giss.nasa.gov/modelE/ar5",
+        "source": "GISS-E2-R-CC-E4arobio_g8RCP45 Atmosphere: GISS-E2; Ocean: R",
+        "table_id": "Table Omon (31 January 2011) cc794627c4e54d878f7dc954d2385b4c",
+        "title": "GISS-E2-R-CC model output prepared for CMIP5 RCP4.5",
+        "tracking_id": "5405d2b2-7ce5-485b-9083-fe4304fe346a"
+    },
+    "scan_metadata": {
+        "last_scanned": "2020-04-02T15:23:55.461109",
+        "location": "ceda",
+        "mode": "quick"
+    },
+    "variable": {
+        "_FillValue": "1e+20",
+        "associated_files": "baseURL: http://cmip-pcmdi.llnl.gov/CMIP5/dataLocation gridspecFile: gridspec_ocean_fx_GISS-E2-R-CC_rcp45_r0i0p0.nc",
+        "cell_methods": "time: mean area: mean where sea",
+        "history": "2012-07-20T18:59:11Z altered by CMOR: replaced missing value flag (-1e+30) with standard missing value (1e+20).",
+        "long_name": "Global Average Thermosteric Sea Level Change",
+        "original_name": "dummy",
+        "standard_name": "global_average_thermosteric_sea_level_change",
+        "units": "m",
+        "var_id": "zostoga"
+    }
+}

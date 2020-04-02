@@ -11,119 +11,10 @@ import json
 import collections
 import os
 import glob
-import argparse
 
 from dachar import config
 from dachar.utils import options, switch_ds
 from dachar.utils.character import extract_character
-
-
-def _get_arg_parser():
-    """
-    Parses arguments given at the command line
-
-    :return: Namespace object built from attributes parsed from command line.
-    """
-    parser = argparse.ArgumentParser()
-    project_options = options.known_projects
-    location_options = options.locations
-
-    parser.add_argument(
-        "project",
-        nargs=1,
-        type=str,
-        choices=project_options,
-        help=f'Project ID, must be one of: {project_options}'
-    )
-
-    parser.add_argument(
-        "-d",
-        "--dataset-ids",
-        nargs=1,
-        type=str,
-        default=None,
-        required=False,
-        help='List of comma-separated dataset identifiers'
-    )
-
-    parser.add_argument(
-        "-p",
-        "--paths",
-        nargs=1,
-        type=str,
-        default=None,
-        required=False,
-        help='List of comma-separated directories to search'
-    )
-
-    parser.add_argument(
-        "-f",
-        "--facets",
-        nargs=1,
-        type=str,
-        default=None,
-        required=False,
-        help='Set of facets to use, formatted as: x=hello,y=2,z=bye'
-    )
-
-    parser.add_argument(
-        "-e",
-        "--exclude",
-        nargs=1,
-        type=str,
-        default=None,
-        required=False,
-        help='Regular expressions for excluding paths from being scanned'
-    )
-
-    parser.add_argument(
-        "-m",
-        "--mode",
-        nargs=1,
-        type=str,
-        default="quick",
-        required=False,
-        help='Scanning mode: can be either quick or full. A full scan returns '
-             'max and min values while a quick scan excludes them. Defaults to quick.'
-    )
-
-    parser.add_argument(
-        "-l",
-        "--location",
-        nargs=1,
-        type=str,
-        default="ceda",
-        required=True,
-        choices=location_options,
-        help=f'Location of scan, must be one of: {location_options}'
-    )
-
-    return parser
-
-
-def _to_list(item):
-    if not item: return item
-    return item[0].split(',')
-
-
-def _to_dict(item):
-    if not item: return item
-    return dict([_.split('=') for _ in item[0].split(',')])
-
-
-def parse_args():
-    parser = _get_arg_parser()
-    args = parser.parse_args()
-
-    project = args.project[0]
-    ds_ids = _to_list(args.dataset_ids)
-    paths = _to_list(args.paths)
-    facets = _to_dict(args.facets)
-    exclude = _to_list(args.exclude)
-    mode = args.mode[0]
-    location = args.location[0]
-
-    return project, ds_ids, paths, facets, exclude, mode, location
 
 
 def to_json(character, output_path):
@@ -451,14 +342,3 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
 
     print(f'[INFO] Wrote JSON file: {outputs["json"]}')
 
-
-def main():
-    """
-    Runs script if called on command line
-    """
-    project, ds_ids, paths, facets, exclude, mode, location = parse_args()
-    scan_datasets(project, mode, location, ds_ids, paths, facets, exclude)
-
-
-if __name__ == "__main__":
-    main()
