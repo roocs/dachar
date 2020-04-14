@@ -12,7 +12,7 @@ class _TestStore(_BaseJsonStore):
     config = {'store_type': 'local',
               'local.base_dir': '/tmp/test-store',
               'local.dir_grouping_level': 4}
-    mappers = {'*': '__all__'}
+    id_mappers = {'*': '__all__'}
     required_fields = ['data']
     search_defaults = ['id', 'data']
 
@@ -25,28 +25,55 @@ recs = [
 
 store = None
 
+
 def _get_store():
     return _TestStore()
+
 
 def setup_module():
     global store
     store = _TestStore()
 
+
 def test_verify_store():
     # Tests that the store gets created - via setup_module()
     pass
 
+
 def test_put():
-    store.put(*recs[0])
+    _id, content = recs[0]
+    store.put(_id, content)
+    fpath = store._id_to_path(_id)
+    os.path.isfile(fpath)
+
+
+def test_put_maps_asterisk():
+    _id = '1.1.*.1.*.*.1'
+    store.put(_id, {'data': 'test'})
+    fpath = store._id_to_path(_id)
+
+    bdir = store.config['local.base_dir']
+    assert(fpath == os.path.join(bdir, '1/1/__all__/1.__all__.__all__.1.json'))
+    assert(os.path.isfile(fpath))
+    store.delete(_id)
+
 
 def test_get():
     rec = store.get(recs[0][0])
     assert(rec == recs[0][1])
 
+
 def test_delete():
     _id = recs[0][0]
     store.delete(_id)
     assert(store.get(_id) is None)
+
+    # Check that directories also get pruned
+    dr = os.path.dirname(store._id_to_path(_id))
+    while len(dr) > len(store.config['local.base_dir']):
+        assert(not os.path.exists(dr))
+        dr = os.path.dirname(dr)
+
 
 def test_validate_non_json():
     try:
@@ -54,11 +81,13 @@ def test_validate_non_json():
     except Exception as exc:
         assert(str(exc) == 'Cannot serialise content to valid JSON.')
 
+
 def test_put_fail_validate():
     try:
         store.put(*recs[1])
     except ValueError as exc:
         assert(str(exc).find('Required content "data" not found.') > -1)
+
 
 def test_get_all_ids():
     store.put(*recs[0])
@@ -66,7 +95,8 @@ def test_get_all_ids():
     all_ids = [_ for _ in store._get_all_ids()]
     assert(all_ids == [recs[0][0], recs[2][0]])
 
-def test_search():
+
+def test_search_by_term():
     # Search with default fields + exact match
     resp = store.search('great match', exact=True, fields=None, ignore_defaults=False)
     assert(resp == [recs[0][1]])
@@ -98,6 +128,21 @@ def test_search():
     # Search wih failed match
     resp = store.search('zzz', exact=False, fields=None, ignore_defaults=False)
     assert(resp == [])
+
+
+def test_search_by_id():
+    # Search for non-existent id
+    resp = store.search('zzz', exact=False, match_ids=True, ignore_defaults=True)
+    assert(resp == [])
+
+    # Search by partial ID
+    resp = store.search('5.6.b', exact=False, match_ids=True, ignore_defaults=True)
+    assert(resp == [recs[0][1]])
+
+    # Search for exact ID
+    resp = store.search(recs[0][0], exact=True, match_ids=True, ignore_defaults=False)
+    assert(resp == [recs[0][1]])
+
 
 def teardown_module():
     dr = _TestStore.config['local.base_dir']

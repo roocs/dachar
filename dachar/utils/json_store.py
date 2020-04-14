@@ -2,14 +2,13 @@ import os
 import json
 
 
-# TO-DO: Fix this to use tmpdir in pytest!!!!
 class _BaseJsonStore(object):
 
     store_name = '_BASE'
     config = {'store_type': 'local',
               'local.base_dir': '/tmp/json-store',
               'local.dir_grouping_level': 4}
-    mappers = {'*': '__all__'}
+    id_mappers = {'*': '__all__'}
     required_fields = []
     search_defaults = []
 
@@ -22,7 +21,7 @@ class _BaseJsonStore(object):
 
         required = {'store_name': str,
                     'config': dict,
-                    'mappers': dict,
+                    'id_mappers': dict,
                     'required_fields': list,
                     'search_defaults': list}
 
@@ -67,6 +66,13 @@ class _BaseJsonStore(object):
 
         json_path = self._id_to_path(id)
         os.remove(json_path)
+        dr = os.path.dirname(json_path)
+
+        while len(dr) > len(self.config['local.base_dir']):
+            if not os.listdir(dr):
+                os.rmdir(dr)
+
+            dr = os.path.dirname(dr)
 
     def put(self, id, content):
         self._validate(content)
@@ -115,30 +121,47 @@ class _BaseJsonStore(object):
     def get_all(self):
         # Generator to return all records
         for id in self._get_all_ids():
-            yield self.get(id)
+            yield id, self.get(id)
 
-    def search(self, term, exact=False, fields=None, ignore_defaults=False):
+    def search(self, term, exact=False, match_ids=False, fields=None, ignore_defaults=False):
         results = []
 
-        for record in self.get_all():
-            if self._match(record, term, exact, fields, ignore_defaults):
+        for _id, record in self.get_all():
+            if (match_ids and self._match_id(term, _id, exact=exact)) or \
+                  self._match(record, term, exact=exact, fields=fields, ignore_defaults=ignore_defaults):
                 results.append(record)
 
         return results
+
+    def _map(self, x, reverse=False):
+        # Applies name mappers to/from ID/path
+        mapper = self.id_mappers
+
+        if reverse:
+            mapper = dict([(v, k) for k, v in self.id_mappers.items()])
+
+        for find_s, replace_s in mapper.items():
+            x = x.replace(find_s, replace_s)
+
+        return x
 
     def _id_to_path(self, id):
         # Define a "grouped" ds_id that splits facets across directories and then groups
         # the final set into a file path, based on config.DIR_GROUPING_LEVEL value
         gl = self.config['local.dir_grouping_level']
         parts = id.split('.')
+
         grouped_id = '/'.join(parts[:-gl]) + '/' + '.'.join(parts[-gl:])
-        return os.path.join(self.config['local.base_dir'], grouped_id + '.json')
+        fpath = os.path.join(self.config['local.base_dir'], grouped_id + '.json')
+        return self._map(fpath)
 
     def _path_to_id(self, fpath):
         # Opposite of self._id_to_path()
         s = fpath.replace(self.config['local.base_dir'], '').strip('/')
         s = os.path.splitext(s)[0]
-        return s.replace('/', '.')
+
+        s = s.replace('/', '.')
+        return self._map(s, reverse=True)
 
     def _get_all_ids(self):
         stype = self.config['store_type']
@@ -186,3 +209,11 @@ class _BaseJsonStore(object):
 
         return False
 
+    def _match_id(self, term, id, exact=False):
+        term = str(term).lower()
+        id = str(id).lower()
+
+        if term == id or (not exact and term in id):
+            return True
+
+        return False
