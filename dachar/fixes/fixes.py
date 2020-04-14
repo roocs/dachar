@@ -1,5 +1,6 @@
 import os
 import json
+import datetime
 
 import SETTINGS
 from lib import utils
@@ -17,7 +18,7 @@ example_fixes = {
              'args': [1],
              'kwargs': None,
         },
-    }    
+    }
 }
 
 
@@ -28,7 +29,7 @@ def write_fixes():
    for ds_id in ds_ids:
 
        grouped_ds_id = utils.get_grouped_ds_id(ds_id)
-       json_path = SETTINGS.FIX_PATH.format(**vars()) 
+       json_path = SETTINGS.FIX_PATH.format(**vars())
 
        dr = os.path.dirname(json_path)
        if not os.path.isdir(dr):
@@ -40,6 +41,68 @@ def write_fixes():
            json.dump(content, writer, indent=4, sort_keys=True)
 
        print(f'[INFO] Wrote: {json_path}')
+
+
+class _BaseFix(object):
+
+    FIX_NAME = 'UNDEFINED'
+    CATEGORY = 'UNDEFINED'
+    DESCRIPTION = 'UNDEFINED'
+
+    ALLOWED_STATUSES = 'unset', 'suggested', 'rejected', 'accepted'
+
+    NCML_TEMPLATE = """E.g. ...
+<variable name="temperature">
+  <logicalReduce dimNames="latitude longitude" />
+</variable>
+    """
+    JSON_TEMPLATE = """{{
+  "fix_name": "{self.FIX_NAME}",
+  "category": "{self.CATEGORY}",
+  "args": "{args}",
+  "kwargs": "{kwargs}"
+}}"""
+
+    def __init__(self):
+        self._load()
+
+    def _load(self):
+
+        self.update('unset')
+
+    def __repr__(self):
+        return f"""<Fix: {self.FIX_NAME} (category: {self.CATEGORY})>
+
+{self.description}
+
+Arguments: {self.args}
+Keyword arguments: {self.kwargs}
+"""
+
+    def to_ncml(self):
+        return self.NCML_TEMPLATE.format(**locals(), **globals())
+
+    def to_json(self):
+        return self.JSON_TEMPLATE.format(**locals(), **globals())
+
+    def update(self, status):
+        self.status = status
+
+    @property
+    def status(self):
+        return self.__status
+
+    @status.setter
+    def status(self, value):
+        if value not in self.ALLOWED_STATUSES:
+            raise ValueError(f'Invalid status: must be set to one of: {self.ALLOWED_STATUSES}')
+
+        self.__status = value
+        self.__last_updated = datetime.datetime.now()
+
+    @property
+    def last_updated(self):
+        return self.__last_updated
 
 
 def main():
