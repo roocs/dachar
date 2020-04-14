@@ -14,7 +14,7 @@ __license__ = "BSD"
 from setuptools import setup, find_packages
 
 # One strategy for storing the overall version is to put it in the top-level
-# package's __init__ but Nb. __init__.py files are not needed to declare
+# package's __init__ but Nb. test_json_store.py files are not needed to declare
 # packages in Python 3
 from dachar import __version__ as _package_version
 
