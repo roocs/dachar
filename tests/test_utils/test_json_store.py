@@ -12,7 +12,7 @@ class _TestStore(_BaseJsonStore):
     config = {'store_type': 'local',
               'local.base_dir': '/tmp/test-store',
               'local.dir_grouping_level': 4}
-    id_mappers = {'*': '__all__'}
+    id_mappers = {'*': '__ALL__'}
     required_fields = ['data']
     search_defaults = ['id', 'data']
 
@@ -53,7 +53,7 @@ def test_put_maps_asterisk():
     fpath = store._id_to_path(_id)
 
     bdir = store.config['local.base_dir']
-    assert(fpath == os.path.join(bdir, '1/1/__all__/1.__all__.__all__.1.json'))
+    assert(fpath == os.path.join(bdir, '1/1/__ALL__/1.__ALL__.__ALL__.1.json'))
     assert(os.path.isfile(fpath))
     store.delete(_id)
 
@@ -123,6 +123,10 @@ def test_search_by_term():
 
     # Search with custom multiple fields and partial match
     resp = store.search('e', exact=False, fields=['data', 'data.d2.test'], ignore_defaults=True)
+    assert(resp == [recs[0][1], recs[2][1]])
+
+    # Search everything if no fields and ignore defaults point to search nothing
+    resp = store.search('e', exact=False, fields=None, ignore_defaults=True)
     assert(resp == [recs[0][1], recs[2][1]])
 
     # Search wih failed match

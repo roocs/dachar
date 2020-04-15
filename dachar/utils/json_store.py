@@ -8,7 +8,7 @@ class _BaseJsonStore(object):
     config = {'store_type': 'local',
               'local.base_dir': '/tmp/json-store',
               'local.dir_grouping_level': 4}
-    id_mappers = {'*': '__all__'}
+    id_mappers = {'*': '__ALL__'}
     required_fields = []
     search_defaults = []
 
@@ -123,7 +123,7 @@ class _BaseJsonStore(object):
         for id in self._get_all_ids():
             yield id, self.get(id)
 
-    def search(self, term, exact=False, match_ids=False, fields=None, ignore_defaults=False):
+    def search(self, term, exact=False, match_ids=True, fields=None, ignore_defaults=False):
         results = []
 
         for _id, record in self.get_all():
@@ -201,9 +201,19 @@ class _BaseJsonStore(object):
         if not ignore_defaults:
             search_fields.update(set(self.search_defaults))
 
-        for field in search_fields:
-            found = str(self._lookup(field, record)).lower()
+        # If no search fields defined - then search whole record as a string
+        use_entire_record = '__USE_ENTIRE_RECORD__'
+        if not search_fields:
+            search_fields = [use_entire_record]
 
+        for field in search_fields:
+
+            if field == use_entire_record:
+                found = record
+            else:
+                found = self._lookup(field, record)
+
+            found = str(found).lower()
             if term == found or (not exact and term in found):
                 return True
 
