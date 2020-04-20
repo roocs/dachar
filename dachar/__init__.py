@@ -11,3 +11,4 @@ __version__ = "0.1.0"
 from .scan import *
 from .utils import *
 from .analyse import *
+from .fixes import *
