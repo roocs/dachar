@@ -1,3 +1,6 @@
 xarray>=0.15
 dask[complete]
 netcdf4
+Cython
+netcdftime
+git+https://github.com/ellesmith88/time-checks.git#egg=time-checks
