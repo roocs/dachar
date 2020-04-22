@@ -1,3 +1,5 @@
+from dachar.utils.common import UNDEFINED
+
 from dachar.fixes._base_fix import _BaseDatasetFix
 
 
@@ -34,17 +36,20 @@ For example:
     ref_implementation = 'daops.post_processors.squeeze_dims'
 
     ncml_template = """
-      <variable name="temperature">
-        <logicalReduce dimNames="latitude longitude" />
+      <variable name="{self.variable***}">
+        <logicalReduce dimNames="{' '.join(self.kwargs['dims'])}" />
       </variable>
       """
 
-    json_template = """{{
+    template = {
       "fix_id": "{self.fix_id}",
       "title": "{self.title}",
       "description": "{self.description}",
       "category": "{self.category}",
       "reference_implementation": "{self.ref_implementation}",
       "ds_id": "{self.ds_id}",
-      "kwargs": "{self.kwargs}"
-      }}"""
+      "kwargs": "{self.kwargs}",
+      "status": "{self.status}"
+    }
+
+    status = UNDEFINED

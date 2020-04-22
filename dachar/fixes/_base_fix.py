@@ -7,25 +7,27 @@ ALLOWED_FIX_STATUSES = 'unset', 'suggested', 'rejected', 'accepted'
 
 class _BaseDatasetFix(object):
 
-    _fix_id = UNDEFINED
-    _title = UNDEFINED
-    _description = UNDEFINED
+    fix_id = UNDEFINED
+    title = UNDEFINED
+    description = UNDEFINED
 
-    _category = UNDEFINED
-    _required_kwargs = UNDEFINED
-    _ref_implementation = UNDEFINED
+    category = UNDEFINED
+    required_kwargs = UNDEFINED
+    ref_implementation = UNDEFINED
 
-    _ncml_template = """E.g. ...
+    status = UNDEFINED
+
+    ncml_template = """E.g. ...
     <variable name="temperature">
       <logicalReduce dimNames="latitude longitude" />
     </variable>
         """
 
-    _json_template = """{{
+    template = {
       "fix_id": "{self.fix_id}",
       "category": "{self.category}",
       "kwargs": "{kwargs}"
-    }}"""
+    }
 
 
     def __init__(self, ds_id, **kwargs):
@@ -61,7 +63,7 @@ Keyword arguments: {self.kwargs}
         return self.ncml_template.format(**self.kwargs)
 
     def to_json(self):
-        return self.json_template.format(**self.kwargs)
+        return self.template.format(**self.kwargs)
 
     def update(self, status):
         self.status = status

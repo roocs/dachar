@@ -2,9 +2,6 @@ import importlib
 
 from dachar.fixes.fix_api import get_fix_categories, get_fix_dict
 
-
-
-
 def test_get_fix_categories():
     expected_fix_categories = ['coord_fixes']
     assert(get_fix_categories() == expected_fix_categories)

@@ -5,6 +5,8 @@ import glob
 import dachar.fixes.coord_fixes as coord_fixes
 
 
+
+
 def get_fix_modules():
     module_dir = os.path.dirname(os.path.abspath(__file__))
     return glob.glob(f'{module_dir}/*_fixes.py')
@@ -25,7 +27,11 @@ def get_fix_dict():
     return d
 
 
-get_fix_dict()
+def get_fix(fix_id):
+    if fix_id:
+        from .coord_fixes import SqueezeDimensionsFix
+        return SqueezeDimensionsFix
+
 
 example_fixes = {
     'cmip5.output1.INM.inmcm4.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga': {
