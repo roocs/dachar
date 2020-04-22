@@ -1,6 +1,8 @@
 import os
 import json
 
+from .common import nested_lookup
+
 
 class _BaseJsonStore(object):
 
@@ -25,8 +27,8 @@ class _BaseJsonStore(object):
                     'required_fields': list,
                     'search_defaults': list}
 
-        for key, _type in required.items():
-            if not hasattr(cls, key) or not isinstance(getattr(cls, key), _type):
+        for key, dtype in required.items():
+            if not hasattr(cls, key) or not type(getattr(cls, key)) is dtype:
                 raise Exception(f'Invalid store definition: check class attr: {key}')
 
     def get(self, id):
@@ -74,7 +76,10 @@ class _BaseJsonStore(object):
 
             dr = os.path.dirname(dr)
 
-    def put(self, id, content):
+    def put(self, id, content, force=False):
+        if self.exists(id) and not force:
+            raise FileExistsError(f'Record already exists: {id}. Use "force=False" to overwrite.')
+
         self._validate(content)
         self._save(id, content)
 
@@ -177,20 +182,7 @@ class _BaseJsonStore(object):
                 yield self._path_to_id(os.path.join(dr, fpath))
 
     def _lookup(self, key_path, item, must_exist=False):
-        not_found = '___NOT_FOUND__'
-
-        for key in key_path.split('.'):
-            if type(item) == dict:
-                item = item.get(key, not_found)
-            else:
-                item = not_found
-
-            if item == not_found:
-                if must_exist:
-                    raise KeyError(f'Required content "{key}" not found.')
-                return None
-
-        return item
+        return nested_lookup(key_path, item, must_exist=must_exist)
 
     def _match(self, record, term, exact=False, fields=None, ignore_defaults=False):
         search_fields = set()

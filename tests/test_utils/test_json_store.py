@@ -26,11 +26,14 @@ recs = [
 store = None
 
 
-def _get_store():
-    return _TestStore()
+def _clear_store():
+    dr = _TestStore.config['local.base_dir']
+    if os.path.isdir(dr):
+        shutil.rmtree(dr)
 
 
 def setup_module():
+    _clear_store()
     global store
     store = _TestStore()
 
@@ -45,6 +48,20 @@ def test_put():
     store.put(_id, content)
     fpath = store._id_to_path(_id)
     os.path.isfile(fpath)
+
+
+def test_put_force_parameter():
+    _id, content = recs[0]
+    if not store.exists(_id):
+        store.put(_id, content)
+
+    try:
+        store.put(_id, content)
+    except FileExistsError as exc:
+        assert(str(exc) == f'Record already exists: {_id}. Use "force=False" to overwrite.')
+
+    store.put(_id, content, force=True)
+
 
 
 def test_put_maps_asterisk():
@@ -149,6 +166,4 @@ def test_search_by_id():
 
 
 def teardown_module():
-    dr = _TestStore.config['local.base_dir']
-    if os.path.isdir(dr):
-        shutil.rmtree(dr)
+    _clear_store()
