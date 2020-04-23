@@ -36,6 +36,7 @@ def test_fake_corrupt_json_file(tmpdir):
 
 
 def test_file_checker():
+    ds_id = ["c3s-cordex.output.EUR-11.IPSL.MOHC-HadGEM2-ES.rcp85.r1i1p1.IPSL-WRF381P.v1.day.psl.v20190212"]
     scan_datasets(project='c3s-cordex', ds_ids=ds_id, paths=options.project_base_dirs['c3s-cordex'],
                   mode='quick', location='ceda')
 
