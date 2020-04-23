@@ -15,6 +15,7 @@ import glob
 from dachar import config
 from dachar.utils import options, switch_ds
 from dachar.utils.character import extract_character
+from dachar.scan.check_files import check_files
 
 
 def to_json(character, output_path):
@@ -313,9 +314,11 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
     expected_facets = options.facet_rules[project]
     var_id = options.get_facet('variable', facets, project)
 
-    character = extract_character(nc_files, location, var_id=var_id,
-                                      mode=mode, expected_attrs=expected_facets)
+    try:
+        check_files(nc_files)
 
+    except Exception as exc:
+        raise
 
     try:
         character = extract_character(nc_files, location, var_id=var_id,
