@@ -156,8 +156,12 @@ class _BaseJsonStore(object):
         gl = self.config['local.dir_grouping_level']
         parts = id.split('.')
 
+        if len(parts) <= gl:
+            raise KeyError(f'Identifier name cannot be safely translated to file path: {id}')
+
         grouped_id = '/'.join(parts[:-gl]) + '/' + '.'.join(parts[-gl:])
         fpath = os.path.join(self.config['local.base_dir'], grouped_id + '.json')
+
         return self._map(fpath)
 
     def _path_to_id(self, fpath):

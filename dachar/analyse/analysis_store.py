@@ -12,14 +12,44 @@ class AnalysisResultsStore(_BaseJsonStore):
               'local.base_dir': '/tmp/an-res-store',
               'local.dir_grouping_level': 4}
     id_mappers = {'*': '__ALL__'}
-    required_fields = ['dataset_ids', 'analysis_metadata', 'checks', 'results', 'summary',
-                       'checks.check_id', 'checks.result.details',
-                       'checks.proposed_fix.fix_id', 'checks.proposed_fix.dataset_id',
-                       'checks.proposed_fix.operands', 'summary.fixes',
-                       'summary.fixes.fix_id', 'summary.fixes.dataset_ids', 'summary.fixes.operands']
+    required_fields = ['sample_id', 'dataset_ids', 'checks', 'fixes', 'analysis_metadata']
     search_defaults = []
 
 
 ar_store = AnalysisResultsStore()
+
+import datetime
+
+eg_record = {
+    'sample_id': 'cmip5.*',
+    'dataset_ids': ['cmip5.tas', 'cmip5.pr'],
+    'checks': ['RankCheck', 'OutlierRangeCheck', 'OtherCheck'],
+    'fixes': [
+        {
+            'fix_id': 'RankFix',
+            'dataset_id': 'cmip5.pr',
+            'operands': {
+                'rank': 2
+            },
+            'status': 'proposed'
+        },
+        {
+            'fix_id': 'OtherCheck',
+            'dataset_id': 'cmip5.tas',
+            'operands': {},
+            'status': 'proposed'
+        },
+        {
+            'fix_id': 'OtherCheck',
+            'dataset_id': 'cmip5.pr',
+            'operands': {},
+            'status': 'proposed'
+        },
+    ],
+    'analysis_metadata': {
+        'location': 'ceda',
+        'datetime': datetime.datetime.now()
+    }
+}
 
 

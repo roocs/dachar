@@ -1,4 +1,5 @@
 import json
+import datetime
 
 UNDEFINED = 'UNDEFINED'
 FIX_STATUS_VALUES = ['proposed', 'rejected', 'accepted', 'withdrawn']
@@ -25,6 +26,10 @@ def nested_lookup(key_path, item, must_exist=False):
             return None
 
     return item
+
+
+def now_string():
+    return datetime.datetime.now().isoformat().split('.')[0]
 
 
 class JDict(dict):

@@ -43,6 +43,13 @@ def test_verify_store():
     pass
 
 
+def test_put_fails_if_id_causes_unsafe_path():
+    try:
+        store.put('unsafe', recs[0][1])
+    except KeyError as exc:
+        assert(str(exc) == "'Identifier name cannot be safely translated to file path: unsafe'")
+
+
 def test_put():
     _id, content = recs[0]
     store.put(_id, content)
