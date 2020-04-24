@@ -5,5 +5,5 @@ class RankCheck(_BaseCheck):
 
     characteristics = ['data.coord_names', 'data.shape']
 
-    def run(self, population):
+    def run(self, sample):
         return 1
