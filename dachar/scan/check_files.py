@@ -49,7 +49,7 @@ def check_var_id_exists(file, var_id):
 
     :param file: File to check for variable in
     :param var_id: Variable to check for
-    :return:
+    :raises: Raises Inconsistency error if the variable isn't in the file
     """
     ds = Dataset(file)
     try:
@@ -64,11 +64,13 @@ def check_var_id_exists(file, var_id):
 
 def compare_var_attrs(compare_file, file, var_id):
     """
+    Compares the attributes of the given variable across a comparison file and a given file.
+    Raises an error if they are not consistent.
 
-    :param compare_file:
-    :param file:
-    :param var_id:
-    :return:
+    :param compare_file: The file to compare against.
+    :param file: The file to carry out the check on.
+    :param var_id: The variable to check the attributes of.
+    :raises: Raises Inconsistency error if the variable attributes differ
     """
     compare_dict = extract_var_attrs(compare_file, var_id)
     var_dict = extract_var_attrs(file, var_id)
@@ -85,10 +87,12 @@ def compare_var_attrs(compare_file, file, var_id):
 
 def get_coords(file, var_id):
     """
+    Gets a list of the variable coordinates of a given file excluding the main
+    variable and the time variables.
 
-    :param file:
-    :param var_id:
-    :return:
+    :param file: The file to extract the variable coordinates from.
+    :param var_id: The variable id of the main variable of the file.
+    :return: A list of the variable coordinates excluding those related to time.
     """
     ds = Dataset(file)
     coords = []
@@ -105,11 +109,12 @@ def get_coords(file, var_id):
 
 def compare_coord_vars(compare_file, file, coords):
     """
+    Compares the attributes and the values of the coordinate variables
 
-    :param compare_file:
-    :param file:
-    :param coords:
-    :return:
+    :param compare_file: The file to compare against
+    :param file: The file to carry out the checks on
+    :param coords: The list of coordinates to check
+    :raises: Raises Inconsistency error if the variable coordinates differ
     """
     # compare coord attributes
     for coord in coords:
@@ -130,11 +135,11 @@ def compare_coord_vars(compare_file, file, coords):
 
 def convert_to_dss(file_paths):
     """
+    Converts a list of netCDF file paths into a list of netCDF dataset objects
 
-    :param file_paths:
-    :return:
+    :param file_paths: list of files paths of the netCDF files
+    :return: A list of netCDF dataset objects
     """
-    """ Converts a list of netcdf file paths into a dictionary of datasets"""
     datasets = []
     for fpath in file_paths:
         datasets.append(Dataset(fpath))
@@ -143,9 +148,11 @@ def convert_to_dss(file_paths):
 
 def check_time(file_paths):
     """
+    Uses time-checks to check that there is temporal continuity
+    between the file names and the contents of the files.
 
-    :param file_paths:
-    :return:
+    :param file_paths: list of files paths of the netCDF files to check
+    :raises: Raises Inconsistency error if the time check fails
     """
     # use time-checker
     datasets = convert_to_dss(file_paths)
@@ -156,9 +163,12 @@ def check_time(file_paths):
 
 def check_files(file_paths):
     """
+    Carries out multiple checks on a list of netCDF files to check their
+    consistency in attributes, values and temporal continuity before scanning.
 
-    :param file_paths:
-    :return:
+    :param file_paths: List of file paths to be scanned
+    :raises: Raises Inconsistency error if there are any inconsistencies which
+    prevent scanning
     """
     compare_file = file_paths[0]
     var_id = extract_var_id(compare_file)
