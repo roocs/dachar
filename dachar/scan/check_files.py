@@ -52,10 +52,9 @@ def check_var_id_exists(file, var_id):
     :raises: Raises Inconsistency error if the variable isn't in the file
     """
     ds = Dataset(file)
-    try:
-        assert var_id in ds.variables
+    if var_id in ds.variables:
         ds.close()
-    except AssertionError as exc:
+    else:
         raise InconsistencyError(
             f"[ERROR] Main variable does not exist in all files. "
             f"Error in file {file}"
@@ -76,9 +75,9 @@ def compare_var_attrs(compare_file, file, var_id):
     var_dict = extract_var_attrs(file, var_id)
     for key in keys_to_check:
         if key in compare_dict:
-            try:
-                assert compare_dict[key] == var_dict[key]
-            except (AssertionError, KeyError) as exc:
+            if compare_dict[key] == var_dict[key]:
+                continue
+            else:
                 raise InconsistencyError(
                     f"[ERROR] Variable attributes for variable {var_id} are not consistent across all files. "
                     f"Could not scan. Inconsistent attribute: {key}"
@@ -120,17 +119,18 @@ def compare_coord_vars(compare_file, file, coords):
     for coord in coords:
         compare_var_attrs(compare_file, file, coord)
         # compare coord values
-        try:
-            compare_ds = Dataset(compare_file)
-            ds = Dataset(file)
-            assert (compare_ds.variables[coord][:] == ds.variables[coord][:]).all()
+        compare_ds = Dataset(compare_file)
+        ds = Dataset(file)
+        if (compare_ds.variables[coord][:] == ds.variables[coord][:]).all():
             compare_ds.close()
             ds.close()
-        except AssertionError as exc:
+            continue
+        else:
             raise InconsistencyError(
                 f"[ERROR] Coordinate variables values are not consistent across all files. "
                 f"Could not scan. Inconsistent coordinate: {coord}"
             )
+
 
 
 def convert_to_dss(file_paths):
