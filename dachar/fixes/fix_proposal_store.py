@@ -46,10 +46,6 @@ class FixProposalStore(_BaseJsonStore):
         for key, value in to_update.items():
             container[key] = value
 
-    def _get_empty_content(self, ds_id):
-        return {'dataset_id': ds_id,
-                'fixes': []}
-
     def _update_or_add_fix(self, fix_id, content, fix, status, reason=''):
         # Go through list of fixes, if fix_id exists in the list, add to that item
         for this_fix in content['fixes']:
