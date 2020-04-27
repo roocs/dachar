@@ -55,14 +55,12 @@ def check_var_id_exists(file, var_id):
     """
     ds = Dataset(file)
 
-    if var_id in ds.variables:
-        ds.close()
-
-    else:
+    if var_id not in ds.variables:
         raise InconsistencyError(
             f'[ERROR] Main variable does not exist in all files. '
             f'Error in file {file}'
         )
+    ds.close()
 
 
 def compare_var_attrs(compare_file, file, var_id):
@@ -81,10 +79,7 @@ def compare_var_attrs(compare_file, file, var_id):
     for key in keys_to_check:
         if key in compare_dict:
 
-            if compare_dict[key] == var_dict[key]:
-                continue
-
-            else:
+            if compare_dict[key] != var_dict[key]:
                 raise InconsistencyError(
                     f'[ERROR] Variable attributes for variable {var_id} are not consistent across all files. '
                     f'Could not scan. Inconsistent attribute: {key}'
@@ -104,11 +99,7 @@ def get_coords(file, var_id):
     coords = []
 
     for variable in ds.variables:
-        if variable == var_id:
-            continue
-        elif variable in ['time', 'time_bnds']:
-            continue
-        else:
+        if variable != var_id and variable not in ['time', 'time_bnds']:
             coords.append(variable)
     ds.close()
 
@@ -131,16 +122,14 @@ def compare_coord_vars(compare_file, file, coords):
         compare_ds = Dataset(compare_file)
         ds = Dataset(file)
 
-        if (compare_ds.variables[coord][:] == ds.variables[coord][:]).all():
-            compare_ds.close()
-            ds.close()
-            continue
-
-        else:
+        if (compare_ds.variables[coord][:] != ds.variables[coord][:]).any():
             raise InconsistencyError(
                 f'[ERROR] Coordinate variables values are not consistent across all files. '
                 f'Could not scan. Inconsistent coordinate: {coord}'
             )
+        compare_ds.close()
+        ds.close()
+
 
 
 def convert_to_dss(file_paths):
