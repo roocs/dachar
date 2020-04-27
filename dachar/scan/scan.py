@@ -194,13 +194,14 @@ def _get_output_paths(project, ds_id):
     :param project: top-level project.
     :param ds_id: Dataset Identifier (DSID)
     :return: dictionary of output paths with keys:
-             'success', 'json', 'no_files_error', 'extract_error', 'write_error', 'batch'
+             'success', 'json', 'no_files_error', 'pre_extract_error', 'extract_error', 'write_error', 'batch'
     """
     grouped_ds_id = switch_ds.get_grouped_ds_id(ds_id)
 
     paths = {
         'json': config.JSON_OUTPUT_PATH.format(**vars()),
         'no_files_error': config.NO_FILES_PATH.format(**vars()),
+        'pre_extract_error': config.PRE_EXTRACT_ERROR_PATH.format(**vars()),
         'extract_error': config.EXTRACT_ERROR_PATH.format(**vars()),
         'write_error': config.WRITE_ERROR_PATH.format(**vars()),
         'batch': config.BATCH_OUTPUT_PATH.format(**vars())
@@ -238,8 +239,8 @@ def is_registered(json_path):
 
 def _check_for_min_max(json_path):
     data = json.load(open(json_path))
-    mx = data["data"]["max"]
-    mn = data["data"]["min"]
+    mx = data['data']['max']
+    mn = data['data']['min']
     if mx and mn:
         return True
     else:
@@ -274,12 +275,12 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
     outputs = _get_output_paths(project, ds_id)
 
     # check json file exists
-    registration = is_registered(outputs["json"])
+    registration = is_registered(outputs['json'])
     if registration:
         try:
             # if json file exists get mode
-            data = json.load(open(outputs["json"]))
-            mode = data["scan_metadata"]["mode"]
+            data = json.load(open(outputs['json']))
+            mode = data['scan_metadata']['mode']
             if mode == 'quick':
                 print(f'[INFO] Already ran for: {ds_id} in quick mode')
                 return True
@@ -292,11 +293,11 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
 
         # flag that a corrupt JSON file exists
         except json.decoder.JSONDecodeError as exc:
-            os.remove(outputs["json"])
+            os.remove(outputs['json'])
             print(f'[INFO] Corrupt JSON file. Deleting and re-running.')
 
     # Delete previous failure files and log files
-    for file_key in ('no_files_error', 'extract_error', 'write_error'):
+    for file_key in ('no_files_error', 'pre_extract_error', 'extract_error', 'write_error'):
 
         err_file = outputs[file_key]
         if os.path.exists(err_file):
@@ -318,7 +319,12 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
         check_files(nc_files)
 
     except Exception as exc:
-        raise
+        # Create error file if files have inconsistencies
+        print(exc)
+        with open(outputs['pre_extract_error'], 'w') as writer:
+            writer.write(str(exc))
+
+        return False
 
     try:
         character = extract_character(nc_files, location, var_id=var_id,

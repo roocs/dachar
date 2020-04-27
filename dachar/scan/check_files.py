@@ -2,7 +2,7 @@ from netCDF4 import Dataset
 
 from time_checks.multifile_time_checks import check_multifile_temporal_continuity
 
-keys_to_check = ["standard_name", "long_name", "units", "_FillValue", "missing_value"]
+keys_to_check = ['standard_name', 'long_name', 'units', '_FillValue', 'missing_value']
 
 
 class InconsistencyError(Exception):
@@ -18,9 +18,9 @@ def extract_var_id(fpath):
     :param fpath: The file path of the file to extract the var_id from
     :return: The variable id of the main variable in the given file
     """
-    # for cmip5 file structure
-    file_name = fpath.split("/")[-2]
-    var_id = file_name.split("_")[0]
+    file_name = fpath.split('/')[-2]
+    var_id = file_name.split('_')[0]
+
     return var_id
 
 
@@ -33,6 +33,7 @@ def extract_var_attrs(fpath, var_id):
     :return: A dictionary of the variable attributes
     """
     ds = Dataset(fpath)
+
     var_dict = dict(
         [
             (attr, getattr(ds.variables[var_id], attr))
@@ -40,6 +41,7 @@ def extract_var_attrs(fpath, var_id):
         ]
     )
     ds.close()
+
     return var_dict
 
 
@@ -52,12 +54,14 @@ def check_var_id_exists(file, var_id):
     :raises: Raises Inconsistency error if the variable isn't in the file
     """
     ds = Dataset(file)
+
     if var_id in ds.variables:
         ds.close()
+
     else:
         raise InconsistencyError(
-            f"[ERROR] Main variable does not exist in all files. "
-            f"Error in file {file}"
+            f'[ERROR] Main variable does not exist in all files. '
+            f'Error in file {file}'
         )
 
 
@@ -73,14 +77,17 @@ def compare_var_attrs(compare_file, file, var_id):
     """
     compare_dict = extract_var_attrs(compare_file, var_id)
     var_dict = extract_var_attrs(file, var_id)
+
     for key in keys_to_check:
         if key in compare_dict:
+
             if compare_dict[key] == var_dict[key]:
                 continue
+
             else:
                 raise InconsistencyError(
-                    f"[ERROR] Variable attributes for variable {var_id} are not consistent across all files. "
-                    f"Could not scan. Inconsistent attribute: {key}"
+                    f'[ERROR] Variable attributes for variable {var_id} are not consistent across all files. '
+                    f'Could not scan. Inconsistent attribute: {key}'
                 )
 
 
@@ -95,14 +102,16 @@ def get_coords(file, var_id):
     """
     ds = Dataset(file)
     coords = []
+
     for variable in ds.variables:
         if variable == var_id:
             continue
-        elif variable in ["time", "time_bnds"]:
+        elif variable in ['time', 'time_bnds']:
             continue
         else:
             coords.append(variable)
     ds.close()
+
     return coords
 
 
@@ -121,16 +130,17 @@ def compare_coord_vars(compare_file, file, coords):
         # compare coord values
         compare_ds = Dataset(compare_file)
         ds = Dataset(file)
+
         if (compare_ds.variables[coord][:] == ds.variables[coord][:]).all():
             compare_ds.close()
             ds.close()
             continue
+
         else:
             raise InconsistencyError(
-                f"[ERROR] Coordinate variables values are not consistent across all files. "
-                f"Could not scan. Inconsistent coordinate: {coord}"
+                f'[ERROR] Coordinate variables values are not consistent across all files. '
+                f'Could not scan. Inconsistent coordinate: {coord}'
             )
-
 
 
 def convert_to_dss(file_paths):
@@ -141,8 +151,10 @@ def convert_to_dss(file_paths):
     :return: A list of netCDF dataset objects
     """
     datasets = []
+
     for fpath in file_paths:
         datasets.append(Dataset(fpath))
+
     return datasets
 
 
@@ -157,8 +169,9 @@ def check_time(file_paths):
     # use time-checker
     datasets = convert_to_dss(file_paths)
     result, err = check_multifile_temporal_continuity(datasets, time_index_in_name=-1)
+
     if result is not True:
-        raise InconsistencyError(f"[ERROR] {err}")
+        raise InconsistencyError(f'[ERROR] {err}')
 
 
 def check_files(file_paths):
@@ -170,13 +183,19 @@ def check_files(file_paths):
     :raises: Raises Inconsistency error if there are any inconsistencies which
     prevent scanning
     """
+    if len(file_paths) <= 1:
+        return True
+
     compare_file = file_paths[0]
     var_id = extract_var_id(compare_file)
     coords = get_coords(compare_file, var_id)
-    for file in file_paths:
+    check_var_id_exists(compare_file, var_id)
+
+    for file in file_paths[1:]:
         check_var_id_exists(file, var_id)
         compare_var_attrs(compare_file, file, var_id)
         compare_coord_vars(compare_file, file, coords)
-        compare_var_attrs(compare_file, file, "time")
-        compare_var_attrs(compare_file, file, "time_bnds")
+        compare_var_attrs(compare_file, file, 'time')
+        compare_var_attrs(compare_file, file, 'time_bnds')
+
     check_time(file_paths)
