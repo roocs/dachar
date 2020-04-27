@@ -55,7 +55,7 @@ class TestFileChecker:
     def change_fpath_of_test_file(self, fpath, new_path):
         fname = fpath.split("/")[-1]
         ds = xr.open_mfdataset(
-            fpath, use_cftime=True, combine="by_coords", compat="equals"
+            fpath, use_cftime=True, combine="by_coords"
         )
         if not os.path.exists(new_path):
             os.makedirs(new_path)
