@@ -19,7 +19,7 @@ F1, F2, F3 = test_files
 
 def open(file_paths):
     return xr.open_mfdataset(
-        file_paths, use_cftime=True, combine='by_coords', compat='equals'
+        file_paths, use_cftime=True, combine='by_coords'
     )
 
 
@@ -34,14 +34,14 @@ def _check_and_open(file_paths):
 # for example: 'tas_Amon_modify_coord_value_203012-205511.nc'
 # otherwise test file names need to start with the variable followed by and underscore ('tas_..')
 
-
+# make files temporary?
 def make_nc_modify_var_attr(nc_path, var_id, attr, value, path='tests/test_outputs/'):
     ds = open(nc_path)
     ds[var_id].attrs[attr] = value
     if not os.path.exists(path):
         os.makedirs(path)
     ds.to_netcdf(path=os.path.join(path, 'tas_modify_var_attr.nc'))
-    tmp_path = path+'tas_modify_var_attr.nc'
+    tmp_path = os.path.join(path, 'tas_modify_var_attr.nc')
     return tmp_path
 
 
@@ -51,7 +51,7 @@ def make_nc_modify_var_id(nc_path, old_var_id, new_var_id, path='tests/test_outp
     if not os.path.exists(path):
         os.makedirs(path)
     ds.to_netcdf(path=os.path.join(path, 'tas_modify_var_id.nc'))
-    tmp_path = path+'tas_modify_var_id.nc'
+    tmp_path = os.path.join(path, 'tas_modify_var_id.nc')
     return tmp_path
 
 
@@ -62,7 +62,7 @@ def make_nc_modify_fill_value(nc_path, var_id, fill_value, path='tests/test_outp
     if not os.path.exists(path):
         os.makedirs(path)
     ds.to_netcdf(path=os.path.join(path,'tas_modify_fill_value.nc'))
-    tmp_path = path+'tas_modify_fill_value.nc'
+    tmp_path = os.path.join(path,'tas_modify_fill_value.nc')
     return tmp_path
 
 
@@ -75,7 +75,7 @@ def make_nc_modify_coord_value(nc_path, path='tests/test_outputs/'):
     if not os.path.exists(path):
         os.makedirs(path)
     ds_new.to_netcdf(path=os.path.join(path, 'tas_modify_coord_value.nc'))
-    tmp_path = path + 'tas_modify_coord_value.nc'
+    tmp_path = os.path.join(path, 'tas_modify_coord_value.nc')
     return tmp_path
 
 
