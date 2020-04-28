@@ -3,4 +3,4 @@ dask[complete]
 netcdf4
 Cython
 netcdftime
-git+https://github.com/ellesmith88/time-checks.git#egg=time-checks
+git+https://github.com/cedadev/time-checks.git#egg=time-checks
