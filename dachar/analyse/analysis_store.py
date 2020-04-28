@@ -16,8 +16,6 @@ class AnalysisResultsStore(_BaseJsonStore):
     search_defaults = []
 
 
-ar_store = AnalysisResultsStore()
-
 import datetime
 
 eg_record = {

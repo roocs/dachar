@@ -2,9 +2,7 @@ import logging
 
 from dachar.utils import UNDEFINED, nested_lookup, JDict
 
-
-from dachar.scan.char_store import dc_store
-from dachar.fixes.fix_store import fix_store
+from dachar import fix_proposal_store, dc_store
 from dachar.fixes.fix_api import get_fix
 
 logging.basicConfig()
@@ -13,26 +11,28 @@ log = logging.getLogger(__name__)
 
 # AGREED PLAN
 """
+
 1. Fix Store is only the published fixes.
 2. Withdrawn fixes are recorded in change log.
-3. Analysis Results holds the status of each fix.
-4. In the Analysis Results:
- - fixes:
-    ds_id
-    fix_id
-    kwargs
+3. Fix Proposal Store holds the status of each fix.
+4. In the Fix Proposal Store:
+ - ds_id
+   fixes:
+    fix:
+      fix_id
+      operands
+    reason
     status
+    timestamp
     history:
-      proposed: datetime:
-      accepted: datetime:
-      rejected: datetime: reason
-      withdrawn: datetime: reason
+      [{status, reason, timestamp},
+       {status, reason, timestamp}]
 
-5. So, Fix Store needs:
-# Make sure it logs to history
-
-
+5. Make sure it logs to history
 """
+
+#TODO: Should we send in pre-loaded cache object of all the dc_store records
+#      - then each check uses them directly.
 
 class _BaseCheck(object):
 
@@ -95,15 +95,16 @@ class _BaseCheck(object):
                 atypical_content.append(key)
 
         # We now have:
-        # if one value occurs more than typical threshold:  set as typical
-        # if any value occurs less than atypical threshold: append to atypical list
+        # if a value occurs more than the typical threshold:     set as typical
+        # if any value occurs less than the atypical threshold:  append to the atypical list (to fix)
 
         # Suggest fixes for any values that are atypical but ONLY do so if typical values are found
         if typical_content is not None:
-            for atypical in atypical_content:
-                for ds_id in results[atypical_content]:
 
-                    self._process_fix(ds_id, atypical_content, typical_content)
+            for atypical in atypical_content:
+
+                for ds_id in results[atypical]:
+                    self._process_fix(ds_id, atypical, typical_content)
 
     def _extract_content(self):
         content = []
@@ -124,33 +125,8 @@ class _BaseCheck(object):
         # Return a Fix based on that difference
         raise NotImplementedError
 
-    def _propose_fix(self, ds_id, fix, force=False):
-        #!TODO:
-        # 1. Read if existing fix is in place
-        # 2. Get status
-        """
-        if force == True:
-            propose
-
-        elif status == ACCEPTED:
-            do nothing
-        elif status == PROPOSED:
-            do nothing
-        elif status == REJECTED:
-            do nothing
-        else:
-            propose
-        """
-        if not fix_store.exists(ds_id):
-            fix_store.put(ds_id, fix)
-        else:
-            loaded = fix_store.get(ds_id)
-            status = loaded.get('status', 'UNKNOWN')
-
-            if status in fix_store.STATUS_VALUES:
-                log.warning(f'Fix not written; already found with status: {status} for: {ds_id}')
-
-            fix['status'] = ???
+    def _propose_fix(self, ds_id, fix):
+        fix_proposal_store.propose(ds_id, fix)
 
 
 

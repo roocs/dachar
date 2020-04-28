@@ -32,7 +32,7 @@ For example:
     """
 
     category = 'coord_fixes'
-    required_kwargs = ['dims']
+    required_operands = ['dims']
     ref_implementation = 'daops.post_processors.squeeze_dims'
 
     ncml_template = """
@@ -42,14 +42,12 @@ For example:
       """
 
     template = {
-      "fix_id": "{self.fix_id}",
-      "title": "{self.title}",
-      "description": "{self.description}",
-      "category": "{self.category}",
-      "reference_implementation": "{self.ref_implementation}",
-      "ds_id": "{self.ds_id}",
-      "kwargs": "{self.kwargs}",
-      "status": "{self.status}"
+      'fix_id': '{self.fix_id}',
+      'title': '{self.title}',
+      'description': '{self.description}',
+      'category': '{self.category}',
+      'reference_implementation': '{self.ref_implementation}',
+      'ds_id': '{self.ds_id}',
+      'operands': '{self.operands}'
     }
 
-    status = UNDEFINED

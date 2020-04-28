@@ -81,5 +81,3 @@ class FixProposalStore(_BaseJsonStore):
         self.put(ds_id, content, force=True)
 
 
-fix_proposal_store = FixProposalStore()
-
