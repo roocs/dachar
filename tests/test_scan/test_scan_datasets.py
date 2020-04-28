@@ -17,7 +17,6 @@ F1, F2, F3 = test_files
 
 options.project_base_dirs["c3s-cordex"] = \
     "tests/mini-esgf-data/test_data/group_workspaces/jasmin2/cp4cds1/data"
-options.project_base_dirs["cmip5"] = "tests/test_outputs/"
 
 
 class TestCorruptJson:
@@ -52,6 +51,8 @@ class TestCorruptJson:
 
 
 class TestFileChecker:
+
+
     def change_fpath_of_test_file(self, fpath, new_path):
         fname = fpath.split("/")[-1]
         ds = xr.open_mfdataset(
@@ -71,9 +72,10 @@ class TestFileChecker:
         ds_id = ["cmip5.output1.MOHC.HadGEM2-ES.rcp85.mon.atmos.Amon.r1i1p1.latest.tas"]
 
         grouped_ds_id = switch_ds.get_grouped_ds_id(ds_id[0])
+        options.project_base_dirs["cmip5"] = "tests/test_outputs/"
 
-        failure_file = f"./outputs/logs/failure/pre_extract_error/{grouped_ds_id}.log"
-        json_file = f"./outputs/logs/register/{grouped_ds_id}.json"
+        failure_file = f"outputs/logs/failure/pre_extract_error/{grouped_ds_id}.log"
+        json_file = f"outputs/logs/register/{grouped_ds_id}.json"
 
         if os.path.exists(failure_file):
             os.unlink(failure_file)
