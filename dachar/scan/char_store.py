@@ -13,6 +13,3 @@ class DatasetCharacterStore(_BaseJsonStore):
     search_defaults = []
 
 
-dc_store = DatasetCharacterStore()
-
-

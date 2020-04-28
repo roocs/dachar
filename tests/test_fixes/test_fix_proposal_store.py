@@ -2,16 +2,9 @@ import os
 import shutil
 
 from dachar.utils.common import now_string
-from dachar.fixes.fix_proposal_store import FixProposalStore
-
 
 # Create a new dummy store to run tests on
-class _TestFixProposalStore(FixProposalStore):
-
-    store_name = 'TestFixProposalStore'
-    config = {'store_type': 'local',
-              'local.base_dir': '/tmp/test-fix-proposal-store',
-              'local.dir_grouping_level': 4}
+from tests._stores_for_tests import _TestFixProposalStore
 
 fixes = [
     {'fix_id': 'Fix1', 'operands': {'arg1': '1'}, 'ncml': '<NcML1>'},

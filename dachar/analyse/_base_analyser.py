@@ -43,6 +43,7 @@ class GrandAnalyser(object):
         for i in range(1000):
             yield i
 
+
 class SampleBuilder(object):
 
     def __init__(self, project):

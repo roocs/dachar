@@ -1,17 +1,8 @@
 import os
 import shutil
 
-from dachar.fixes.fix_store import FixStore
-
-
 # Create a new dummy store to run tests on
-class _TestFixStore(FixStore):
-
-    store_name = 'TestFixStore'
-    config = {'store_type': 'local',
-              'local.base_dir': '/tmp/test-fix-store',
-              'local.dir_grouping_level': 4}
-
+from tests._stores_for_tests import _TestFixStore
 
 recs = [
     {'fix_id': 'Fix1', 'operands': {'arg1': '1'}, 'ncml': '<NcML1>'},

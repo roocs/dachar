@@ -42,5 +42,3 @@ class FixStore(_BaseJsonStore):
                 break
 
 
-fix_store = FixStore()
-
