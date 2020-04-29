@@ -1,6 +1,30 @@
 from dachar.utils import UNDEFINED
 
 
+
+
+"""
+1. Per project, can we run a massive "analyse all" job.
+2. We need to know what each sample looks like.
+ - see: https://github.com/roocs/dachar/issues/37
+3. Need to generate each sample id based on rules.
+4. We need an "analyse one sample" workflow manager - class.
+  - for each check:
+    - run check:
+      - propose fixes if required
+  - log all results to Json Store
+"""
+
+"""
+Separately:
+1. Review proposed checks
+2. Test
+3. Publish OR Reject checks
+  - which automatically updates the Fix Store.
+"""
+
+
+
 class _BaseSampleAnalyser(object):
 
     checks = UNDEFINED
@@ -27,6 +51,7 @@ class _BaseSampleAnalyser(object):
 
 
 class GrandAnalyser(object):
+#!!! What about project?
 
     def __init__(self):
         self._analyse_all()
