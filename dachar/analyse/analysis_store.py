@@ -1,3 +1,6 @@
+import datetime
+
+from dachar import __version__ as version
 from dachar.utils.json_store import _BaseJsonStore
 
 
@@ -16,37 +19,31 @@ class AnalysisResultsStore(_BaseJsonStore):
     search_defaults = []
 
 
-import datetime
-
 eg_record = {
-    'sample_id': 'cmip5.*',
-    'dataset_ids': ['cmip5.tas', 'cmip5.pr'],
+    'sample_id': 'c3s-cordex.output.EUR-11.IPSL.MOHC-HadGEM2-ES.rcp85.r1i1p1.IPSL-WRF381P.v1.day.*.v20190212',
+    'dataset_ids': [
+        'c3s-cordex.output.EUR-11.IPSL.MOHC-HadGEM2-ES.rcp85.r1i1p1.IPSL-WRF381P.v1.day.tas.v20190212',
+        'c3s-cordex.output.EUR-11.IPSL.MOHC-HadGEM2-ES.rcp85.r1i1p1.IPSL-WRF381P.v1.day.pr.v20190212'
+    ],
     'checks': ['RankCheck', 'OutlierRangeCheck', 'OtherCheck'],
-    'fixes': [
+    'proposed_fixes': [
         {
             'fix_id': 'RankFix',
-            'dataset_id': 'cmip5.pr',
+            'dataset_id': 'c3s-cordex.output.EUR-11.IPSL.MOHC-HadGEM2-ES.rcp85.r1i1p1.IPSL-WRF381P.v1.day.pr.v20190212',
             'operands': {
                 'rank': 2
             },
-            'status': 'proposed'
         },
         {
             'fix_id': 'OtherCheck',
-            'dataset_id': 'cmip5.tas',
+            'dataset_id': 'c3s-cordex.output.EUR-11.IPSL.MOHC-HadGEM2-ES.rcp85.r1i1p1.IPSL-WRF381P.v1.day.tas.v20190212',
             'operands': {},
-            'status': 'proposed'
-        },
-        {
-            'fix_id': 'OtherCheck',
-            'dataset_id': 'cmip5.pr',
-            'operands': {},
-            'status': 'proposed'
-        },
+        }
     ],
     'analysis_metadata': {
         'location': 'ceda',
-        'datetime': datetime.datetime.now()
+        'datetime': datetime.datetime.now(),
+        'software_version': version
     }
 }
 
