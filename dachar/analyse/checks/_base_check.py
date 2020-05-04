@@ -106,7 +106,7 @@ class _BaseCheck(object):
         return content
 
     def _process_fix(self, ds_id, atypical_content, typical_content):
-        fix = self._deduce_fix(atypical_content, typical_content)
+        fix = self.deduce_fix(atypical_content, typical_content)
         self._propose_fix(ds_id, fix)
 
     def deduce_fix(self, ds_id, atypical_content, typical_content):
