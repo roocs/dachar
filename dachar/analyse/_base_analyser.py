@@ -4,9 +4,11 @@ from dachar import dc_store, fix_proposal_store, ar_store
 from dachar.fixes.fix_api import get_fix_categories, get_fix_dict
 from dachar.utils.options import get_checks
 from dachar.analyse.checks.coord_checks import RankCheck
+from dachar.utils import options
 
 import fnmatch
 import os
+import glob
 
 """
 1. Per project, can we run a massive "analyse all" job.
@@ -50,6 +52,35 @@ class AnalysisReport(object):
         self.data = {}
 
     @property
+    def proposed_fixes(self):
+        return self.data['proposed_fixes']
+
+    def add_fix(self, fix):
+        fixes = self.data.get('proposed_fixes', [])
+        fixes.append(fix)
+        self.data['proposed_fixes'] = fixes
+
+
+class FixProposal(object):
+    """
+    structure of record
+        {'dataset_id': 'ds.1.1.1.1.1.1',
+         'fixes': [{'fix': {'fix_id': 'fix_id',
+                            'title': 'title',
+                            'description': 'description',
+                            'category': 'category',
+                            'reference_implementation': 'ref_implementation',
+                            'operands': 'operands'},
+                    'history': [],
+                    'reason': '',
+                    'status': 'proposed',
+                    'timestamp': '2020-04-29T14:41:52'}]}
+    """
+
+    def __init__(self):
+        self.data = {}
+
+    @property
     def fixes(self):
         return self.data['fixes']
 
@@ -57,10 +88,6 @@ class AnalysisReport(object):
         fixes = self.data.get('fixes', [])
         fixes.append(fix)
         self.data['fixes'] = fixes
-
-
-class FixProposal(object):
-    pass
 
 
 class OneSampleAnalyser(object):
@@ -82,10 +109,13 @@ class OneSampleAnalyser(object):
         """ Gets list of possible ds_ids from sample_id"""
         #not actually sure how to do this
         # don't think it will work
+        base_dir = options.project_base_dirs[self.project]
+        sample_id = os.path.join(base_dir, '/'.join(sample_id.split('.')))
+
+
         sample = []
-        for file in '':
-            if fnmatch.fnmatch(file, sample_id):
-                sample.append(file)
+        for path in glob.glob(sample_id):
+            sample.append(path.split('/')[2:].replace('.', '/'))
 
         # should be return sample
 
@@ -204,9 +234,16 @@ class GrandAnalyser(object):
 
 
 if __name__ == '__main__':
-    zostoga_sample_id = "cmip5.output1.MOHC.HadGEM2-ES.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga"
-    zostoga = OneSampleAnalyser(zostoga_sample_id, 'cmip5', force=False)
-    zostoga.analyse()
+    zostoga_sample_id = "cmip5.output1.*.*.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga"
+    base_dir = options.project_base_dirs['cmip5']
+    sample_id = os.path.join(base_dir, '/'.join(zostoga_sample_id.split('.')))
+    print(sample_id)
+    sample = []
+    for path in glob.glob(sample_id):
+        sample.append(path.split('/')[2:].replace('.', '/'))
+    print(sample)
+    #zostoga = OneSampleAnalyser(zostoga_sample_id, 'cmip5', force=False)
+    #zostoga.analyse()
     # Try and get onesampleanalyser working for zostoga example - only check with
     # squeezedims
     # Needs to produce analysis record
