@@ -11,6 +11,8 @@ class FixStore(_BaseJsonStore):
     required_fields = ['dataset_id', 'fixes']
     search_defaults = []
 
+    # need to compare fix passed in with template in FixDetails?
+
     def publish_fix(self, ds_id, fix_content):
         if self.exists(ds_id):
             content = self.get(ds_id)

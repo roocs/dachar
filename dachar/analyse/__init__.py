@@ -1,4 +1,4 @@
 from .analyse import *
-from .analysis_store import AnalysisResultsStore
+from .analysis_store import AnalysisRecordsStore
 
-ar_store = AnalysisResultsStore()
+ar_store = AnalysisRecordsStore()

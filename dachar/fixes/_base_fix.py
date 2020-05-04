@@ -1,7 +1,22 @@
+
 from dachar.utils.common import UNDEFINED
 
 
-class _BaseDatasetFix(object):
+class FixDetails(object):
+    """
+    Structure of a fix
+    """
+    fix_template = {
+        'fix_id': 'fix_id',
+        'title': 'title',
+        'description': 'description',
+        'category': 'category',
+        'reference_implementation': 'ref_implementation',
+        'operands': 'operands'
+    }
+
+
+class _BaseDatasetFix(FixDetails):
 
     fix_id = UNDEFINED
     title = UNDEFINED
@@ -17,11 +32,8 @@ class _BaseDatasetFix(object):
     </variable>
         """
 
-    template = {
-      'fix_id': 'fix_id',
-      'category': 'category',
-      'operands': 'operands'
-    }
+    template = {'dataset_id': 'ds_id',
+                'fix': FixDetails.fix_template}
 
     def __init__(self, ds_id, **operands):
         self.ds_id = ds_id
@@ -51,7 +63,8 @@ Operands: {self.operands}
     def to_dict(self):
         d = {}
 
-        for k, getter in self.template.items():
+        d['dataset_id'] = getattr(self, 'ds_id')
+        for k, getter in self.template['fix'].items():
             d[k] = getattr(self, getter)
 
         return d

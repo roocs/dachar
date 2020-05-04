@@ -17,6 +17,26 @@ class FixProposalStore(_BaseJsonStore):
      - ignore
     """
 
+    """
+    structure of record
+        {'dataset_id': 'ds.1.1.1.1.1.1',
+         'fixes': [{'fix': {'fix_id': 'fix_id',
+                            'title': 'title',
+                            'description': 'description',
+                            'category': 'category',
+                            'reference_implementation': 'ref_implementation',
+                            'operands': 'operands'},
+                    'history': [],
+                    'reason': '',
+                    'status': 'proposed',
+                    'timestamp': '2020-04-29T14:41:52'}]}
+                    
+                    
+    Are title, description, category, ref_implementation needed here?                
+    Should ncml be in fix?
+    """
+
+
     store_name = 'Fix Proposal Store'
     config = {'store_type': 'local',
               'local.base_dir': '/tmp/fix-proposal-store',

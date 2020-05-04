@@ -2,7 +2,7 @@ import logging
 
 from dachar.utils import UNDEFINED, nested_lookup, JDict
 
-from dachar import fix_proposal_store, dc_store
+from dachar import fix_proposal_store
 from dachar.fixes.fix_api import get_fix
 
 logging.basicConfig()
@@ -51,21 +51,6 @@ class _BaseCheck(object):
 
     def __init__(self, sample):
         self.sample = sample
-        self._load()
-
-    def _load(self):
-        # Checks sample has been characterised
-        self._cache = {}
-        missing = []
-
-        for ds_id in self.sample:
-            if not dc_store.exists(ds_id):
-                missing.append(ds_id)
-            else:
-                self._cache[ds_id] = dc_store.get(ds_id)
-
-        if missing:
-            raise Exception(f'Some data sets not characterised for sample: {missing}')
 
     def run(self):
         content = self._extract_content()
@@ -104,13 +89,17 @@ class _BaseCheck(object):
             for atypical in atypical_content:
 
                 for ds_id in results[atypical]:
-                    self._process_fix(ds_id, atypical, typical_content)
+                    return ds_id, atypical, typical_content
+                    #self._process_fix(ds_id, atypical, typical_content)
+
+        else:
+            return False
 
     def _extract_content(self):
         content = []
 
         for ds_id in self.sample:
-            items = dict([(key, nested_lookup(key, self._cache[ds_id], must_exist=True))
+            items = dict([(key, nested_lookup(key, self.sample[ds_id], must_exist=True))
                           for key in self.characteristics])
             content.append((ds_id, items))
 
@@ -120,7 +109,7 @@ class _BaseCheck(object):
         fix = self._deduce_fix(atypical_content, typical_content)
         self._propose_fix(ds_id, fix)
 
-    def _deduce_fix(self, atypical_content, typical_content):
+    def deduce_fix(self, ds_id, atypical_content, typical_content):
         # Compare two dictionaries to work out what the difference is
         # Return a Fix based on that difference
         raise NotImplementedError

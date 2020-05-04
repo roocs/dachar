@@ -8,7 +8,7 @@ class RankCheck(_BaseCheck):
     associated_fix = 'SqueezeDimensionsFix'
 
 
-    def _deduce_fix(self, atypical_content, typical_content):
+    def deduce_fix(self, ds_id, atypical_content, typical_content):
         x = atypical_content['data.coord_names']
 
         fix_cls = get_fix(self.associated_fix)
@@ -17,6 +17,8 @@ class RankCheck(_BaseCheck):
         fix = fix_cls(ds_id, **operands)
         d = fix.to_dict()
         return d
+
+    # dict of ds_id and fix?
 
 
 
