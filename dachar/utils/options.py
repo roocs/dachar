@@ -22,6 +22,13 @@ mappings = {
     }
 }
 
+common_checks = ['RankCheck']
+checks = {
+    'cmip5': [],
+    'cmip6': ['test'],
+    'cordex': []
+}
+
 
 def map_facet(facet, project):
     # Return mapped value or the same facet name
@@ -33,8 +40,16 @@ def get_facet(facet_name, facets, project):
     return facets[map_facet(facet_name, project)]
 
 
+def get_checks(project):
+    # Return list of checks to carry out based on project
+    project_checks = checks.get(project)
+    return [*project_checks, *common_checks]
+
+
 """
 dataset_id = cordex.%(product)s.%(domain)s.%(institute)s.%(driving_model)s.%(experiment)s.%(ensemble)s.%(rcm_name)s.%(rcm_version)s.%(time_frequency)s.%(variable)s
 
 directory_format = %(root)s/%(project)s/%(product)s/%(domain)s/%(institute)s/%(driving_model)s/%(experiment)s/%(ensemble)s/%(rcm_model)s/%(rcm_version)s/%(time_frequency)s/%(variable)s/%(version)s
 """
+
+

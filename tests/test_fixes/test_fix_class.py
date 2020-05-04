@@ -1,6 +1,7 @@
 import importlib
+import pprint as pp
 
-from dachar.fixes.fix_api import get_fix_categories, get_fix_dict
+from dachar.fixes.fix_api import get_fix_categories, get_fix_dict, get_fix
 from dachar.fixes._base_fix import _BaseDatasetFix
 
 
@@ -55,15 +56,15 @@ class _TestFix(_BaseDatasetFix):
 
     ncml_template = '<JustStuff info="{thing}">{other}</JustStuff>'
 
-    template = {
-      'fix_id': 'fix_id',
-      'title': 'title',
-      'description': 'description',
-      'category': 'category',
-      'reference_implementation': 'ref_implementation',
-      'ds_id': 'ds_id',
-      'operands': 'operands'
-    }
+    # template = {
+    #   'fix_id': 'fix_id',
+    #   'title': 'title',
+    #   'description': 'description',
+    #   'category': 'category',
+    #   'reference_implementation': 'ref_implementation',
+    #   'ds_id': 'ds_id',
+    #   'operands': 'operands'
+    # }
 
 
 def test_eg_fix():
@@ -71,12 +72,12 @@ def test_eg_fix():
     assert(fix.description == _TestFix.description)
 
     expected_dict = {
+      'dataset_id': 'ds1',
       'fix_id': _TestFix.fix_id,
       'title': _TestFix.title,
       'description': _TestFix.description,
       'category': _TestFix.category,
       'reference_implementation': _TestFix.ref_implementation,
-      'ds_id': 'ds1',
       'operands': {'thing': 23, 'other': 'hello'}
     }
 

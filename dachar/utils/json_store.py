@@ -78,7 +78,7 @@ class _BaseJsonStore(object):
 
     def put(self, id, content, force=False):
         if self.exists(id) and not force:
-            raise FileExistsError(f'Record already exists: {id}. Use "force=False" to overwrite.')
+            raise FileExistsError(f'Record already exists: {id}. Use "force=True" to overwrite.')
 
         self._validate(content)
         self._save(id, content)

@@ -2,12 +2,10 @@ from dachar.utils.common import UNDEFINED
 
 from dachar.fixes._base_fix import _BaseDatasetFix
 
-
 __all__ = ['SqueezeDimensionsFix']
 
 
 class SqueezeDimensionsFix(_BaseDatasetFix):
-
     fix_id = 'SqueezeDimensionsFix'
     title = ' Squeeze singleton dimensions of the main variable'
     description = """
@@ -40,14 +38,3 @@ For example:
         <logicalReduce dimNames="{' '.join(self.kwargs['dims'])}" />
       </variable>
       """
-
-    template = {
-      'fix_id': '{self.fix_id}',
-      'title': '{self.title}',
-      'description': '{self.description}',
-      'category': '{self.category}',
-      'reference_implementation': '{self.ref_implementation}',
-      'ds_id': '{self.ds_id}',
-      'operands': '{self.operands}'
-    }
-

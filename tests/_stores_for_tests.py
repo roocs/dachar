@@ -1,4 +1,4 @@
-from dachar import FixProposalStore, FixStore, DatasetCharacterStore
+from dachar import FixProposalStore, FixStore, DatasetCharacterStore, AnalysisRecordsStore
 
 
 class _TestDatasetCharacterStore(DatasetCharacterStore):
@@ -23,3 +23,12 @@ class _TestFixStore(FixStore):
     config = {'store_type': 'local',
               'local.base_dir': '/tmp/test-fix-store',
               'local.dir_grouping_level': 4}
+
+
+class _TestAnalysisStore(AnalysisRecordsStore):
+
+    store_name = 'TestAnalysisResultsStore'
+    config = {'store_type': 'local',
+              'local.base_dir': '/tmp/test-analysis-store',
+              'local.dir_grouping_level': 4}
+

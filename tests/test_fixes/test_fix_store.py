@@ -4,9 +4,25 @@ import shutil
 # Create a new dummy store to run tests on
 from tests._stores_for_tests import _TestFixStore
 
+# recs = [
+#     {'fix_id': 'Fix1', 'operands': {'arg1': '1'}, 'ncml': '<NcML1>'},
+#     {'fix_id': 'Fix2', 'operands': {'arg2': '2'}, 'ncml': '<NcML2>'}
+# ]
+
+
 recs = [
-    {'fix_id': 'Fix1', 'operands': {'arg1': '1'}, 'ncml': '<NcML1>'},
-    {'fix_id': 'Fix2', 'operands': {'arg2': '2'}, 'ncml': '<NcML2>'}
+    {'fix_id': 'Fix1',
+     'title': 'Apply Fix 1',
+     'description': 'Applies fix 1',
+     'category': 'test_fixes',
+     'reference_implementation': 'daops.test.test_fix1',
+     'operands': {'arg1': '1'}},
+    {'fix_id': 'Fix2',
+     'title': 'Apply Fix 2',
+     'description': 'Applies fix 2',
+     'category': 'test_fixes',
+     'reference_implementation': 'daops.test.test_fix2',
+     'operands': {'arg2': '2'}}
 ]
 
 

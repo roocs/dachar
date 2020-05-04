@@ -31,18 +31,27 @@ def get_fix(fix_id):
         return SqueezeDimensionsFix
 
 
-example_fixes = {
-    'cmip5.output1.INM.inmcm4.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga': {
-        'pre_processor': {
-             'func': 'daops.pre_processors.do_nothing',
-             'args': None,
-             'kwargs': None,
-        },
-        'post_processor': {
-             'func': 'daops.post_processors.squeeze_dims',
-             'args': [1],
-             'kwargs': None,
-        },
-    }
-}
+# example_fixes = {
+#     'cmip5.output1.INM.inmcm4.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga': {
+#         'pre_processor': {
+#              'func': 'daops.pre_processors.do_nothing',
+#              'args': None,
+#              'kwargs': None,
+#         },
+#         'post_processor': {
+#              'func': 'daops.post_processors.squeeze_dims',
+#              'args': [1],
+#              'kwargs': None,
+#         },
+#     }
+# }
 
+fix_template = {'dataset_id': 'ds_id',
+                'fix': {'fix_id': 'fix_id',
+                        'title': 'title',
+                        'description': 'description',
+                        'category': 'category',
+                        'reference_implementation':
+                        'ref_implementation',
+                        'operands': 'operands'}
+                }
