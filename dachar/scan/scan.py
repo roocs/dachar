@@ -31,6 +31,10 @@ def to_json(character, output_path):
         json.dump(character, writer, indent=4, sort_keys=True)
 
 
+# def to_character_store(ds_id, character):
+#     dc_store.put(ds_id, character)
+
+
 def _get_ds_paths_from_paths(paths, project):
     """
     Return an OrderedDict of {<ds_id>: <ds_path>} found under the paths provided
@@ -313,10 +317,6 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
     expected_facets = options.facet_rules[project]
     var_id = options.get_facet('variable', facets, project)
 
-    character = extract_character(nc_files, location, var_id=var_id,
-                                      mode=mode, expected_attrs=expected_facets)
-
-
     try:
         character = extract_character(nc_files, location, var_id=var_id,
                                       mode=mode, expected_attrs=expected_facets)
@@ -331,14 +331,18 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
 
         return False
 
-    # Output to JSON file
-    try:
-        output = to_json(character, outputs['json'])
-    except Exception as exc:
-        print(f'[ERROR] Could not write JSON output: {outputs["json"]}')
-        # Create error file if can't output file
-        open(outputs['write_error'], 'w')
-        return False
+    return character, ds_id
 
-    print(f'[INFO] Wrote JSON file: {outputs["json"]}')
+    #to_character_store(ds_id, character)
+
+    # Output to JSON file
+    # try:
+    #     output = to_json(character, outputs['json'])
+    # except Exception as exc:
+    #     print(f'[ERROR] Could not write JSON output: {outputs["json"]}')
+    #     # Create error file if can't output file
+    #     open(outputs['write_error'], 'w')
+    #     return False
+    #
+    # print(f'[INFO] Wrote JSON file: {outputs["json"]}')
 

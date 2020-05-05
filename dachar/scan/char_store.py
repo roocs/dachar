@@ -8,8 +8,8 @@ class DatasetCharacterStore(_BaseJsonStore):
               'local.base_dir': '/tmp/ds-char-store',
               'local.dir_grouping_level': 4}
     id_mappers = {'*': '__ALL__'}
-    required_fields = ['coordinates', 'data', 'global_attrs', 'scan_metadata', 'variable',
-                       'coordinates.bounds']
+    required_fields = ['coordinates', 'data', 'global_attrs', 'scan_metadata', 'variable']#,
+                       #'coordinates.bounds']
     search_defaults = []
 
 

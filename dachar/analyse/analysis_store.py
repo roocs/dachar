@@ -13,7 +13,7 @@ class AnalysisRecordsStore(_BaseJsonStore):
               'local.base_dir': '/tmp/an-res-store',
               'local.dir_grouping_level': 4}
     id_mappers = {'*': '__ALL__'}
-    required_fields = ['sample_id', 'dataset_ids', 'checks', 'fixes', 'analysis_metadata']
+    required_fields = ['sample_id', 'dataset_ids', 'checks', 'proposed_fixes', 'analysis_metadata']
     search_defaults = []
 
 

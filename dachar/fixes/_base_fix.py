@@ -2,21 +2,42 @@
 from dachar.utils.common import UNDEFINED
 
 
+# class FixDetails(object):
+#     """
+#     Structure of a fix
+#     """
+#     fix_template = {
+#         'fix_id': 'fix_id',
+#         'title': 'title',
+#         'description': 'description',
+#         'category': 'category',
+#         'reference_implementation': 'ref_implementation',
+#         'operands': 'operands'
+#     }
+
+
 class FixDetails(object):
-    """
-    Structure of a fix
-    """
-    fix_template = {
-        'fix_id': 'fix_id',
-        'title': 'title',
-        'description': 'description',
-        'category': 'category',
-        'reference_implementation': 'ref_implementation',
-        'operands': 'operands'
-    }
+
+    def __init__(self, ds_id, fix_id, title, description, category, ref_implementation, operands):
+        self.record = {
+                'dataset_id': {
+                    'ds_id': ds_id},
+                'fix': {
+                    'fix_id': fix_id,
+                    'title': title,
+                    'description': description,
+                    'category': category,
+                    'reference_implementation': ref_implementation,
+                    'operands': operands
+                }
+            }
+
+    @property
+    def dict(self):
+        return self.record
 
 
-class _BaseDatasetFix(FixDetails):
+class _BaseDatasetFix(object):
 
     fix_id = UNDEFINED
     title = UNDEFINED
@@ -31,9 +52,6 @@ class _BaseDatasetFix(FixDetails):
       <logicalReduce dimNames="latitude longitude" />
     </variable>
         """
-
-    template = {'dataset_id': 'ds_id',
-                'fix': FixDetails.fix_template}
 
     def __init__(self, ds_id, **operands):
         self.ds_id = ds_id
@@ -61,10 +79,7 @@ Operands: {self.operands}
         return self.ncml_template.format(**self.operands)
 
     def to_dict(self):
-        d = {}
+        d = FixDetails(self.ds_id, self.fix_id, self.title, self.description, self.category,
+                       self.ref_implementation, self.operands)
 
-        d['dataset_id'] = getattr(self, 'ds_id')
-        for k, getter in self.template['fix'].items():
-            d[k] = getattr(self, getter)
-
-        return d
+        return d.dict

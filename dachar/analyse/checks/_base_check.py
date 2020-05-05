@@ -1,8 +1,10 @@
 import logging
+import pprint as pp
 
 from dachar.utils import UNDEFINED, nested_lookup, JDict
 
-from dachar import fix_proposal_store
+from dachar import fix_proposal_store, dc_store
+
 from dachar.fixes.fix_api import get_fix
 
 logging.basicConfig()
@@ -46,15 +48,30 @@ class _BaseCheck(object):
     characteristics = UNDEFINED
     associated_fix = UNDEFINED
 
-    typical_threshold = .8
-    atypical_threshold = .2
+    typical_threshold = .6
+    atypical_threshold = .4
 
     def __init__(self, sample):
         self.sample = sample
+        self._load()
+
+    def _load(self):
+        # Checks sample has been characterised
+        self._cache = {}
+        missing = []
+
+        for ds_id in self.sample:
+            if not dc_store.exists(ds_id):
+                missing.append(ds_id)
+            else:
+                self._cache[ds_id] = dc_store.get(ds_id)
+
+        if missing:
+            raise Exception(f'Some data sets not characterised for sample: {missing}')
 
     def run(self):
         content = self._extract_content()
-
+        pp.pprint(content)
         # Create a dictionary that can
         results = JDict()
 
@@ -62,15 +79,21 @@ class _BaseCheck(object):
             results.setdefault(items, [])
             results[items].append(ds_id)
 
+
         total = len(content)
 
 #        print(f'\n[INFO] Testing: {keys} - found {len(results)} varieties')
         typical_content = None
         atypical_content = []
 
+        fake_results = {'test1': ['1.1.1.1.1'],
+                        'test2': ['1.1.1.1.1', '2.1.1.1.1']}
+
         # Count different values found and convert to fractions of total
-        for key in sorted(results):
-            ds_ids = results[key]
+        for key in fake_results:
+            #sorted(results):
+
+            ds_ids = fake_results[key]
             fraction = len(ds_ids) / total
 
             if fraction >= self.typical_threshold:
@@ -88,7 +111,7 @@ class _BaseCheck(object):
 
             for atypical in atypical_content:
 
-                for ds_id in results[atypical]:
+                for ds_id in fake_results[atypical]:
                     return ds_id, atypical, typical_content
                     #self._process_fix(ds_id, atypical, typical_content)
 
@@ -99,7 +122,7 @@ class _BaseCheck(object):
         content = []
 
         for ds_id in self.sample:
-            items = dict([(key, nested_lookup(key, self.sample[ds_id], must_exist=True))
+            items = dict([(key, nested_lookup(key, self._cache[ds_id], must_exist=True))
                           for key in self.characteristics])
             content.append((ds_id, items))
 
