@@ -116,10 +116,12 @@ class FakeOneSampleAnalyser(object):
 
         check = check(self._sample)
         run = check.run()
-        if run is not None:
+        if run:
             ds_id, atypical, typical_content = run
             d = check.deduce_fix(ds_id, atypical, typical_content)
             return d
+        else:
+            return False
 
     def analyse(self):
 
@@ -136,9 +138,12 @@ class FakeOneSampleAnalyser(object):
         results = {}
 
         for check in checks:
-            # check_cls = locate('dachar.analyse.checks.coord_checks.RankCheck')
-            check_cls = RankCheck
-            results[check] = self.run_check(check_cls)
+            check_cls = locate(f'dachar.analyse.checks.{check}')
+            result = self.run_check(check_cls)
+            if result:
+                results[check] = result
+            else:
+                pass
 
         for check in results:
             fix_dict = results.get(check)

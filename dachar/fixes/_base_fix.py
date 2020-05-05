@@ -2,20 +2,6 @@
 from dachar.utils.common import UNDEFINED
 
 
-# class FixDetails(object):
-#     """
-#     Structure of a fix
-#     """
-#     fix_template = {
-#         'fix_id': 'fix_id',
-#         'title': 'title',
-#         'description': 'description',
-#         'category': 'category',
-#         'reference_implementation': 'ref_implementation',
-#         'operands': 'operands'
-#     }
-
-
 class FixDetails(object):
 
     def __init__(self, ds_id, fix_id, title, description, category, ref_implementation, operands):

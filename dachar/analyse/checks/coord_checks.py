@@ -6,7 +6,7 @@ __all__ = ['RankCheck']
 
 
 class RankCheck(_BaseCheck):
-    characteristics = ['data.coord_names']#, 'data.shape']
+    characteristics = ['data.coord_names', 'data.shape']
     associated_fix = 'SqueezeDimensionsFix'
 
     def deduce_fix(self, ds_id, atypical_content, typical_content):

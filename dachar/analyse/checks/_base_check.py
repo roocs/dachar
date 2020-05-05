@@ -36,6 +36,7 @@ log = logging.getLogger(__name__)
 #TODO: Should we send in pre-loaded cache object of all the dc_store records
 #      - then each check uses them directly.
 
+
 class _BaseCheck(object):
 
     # Required class attributes:
@@ -48,8 +49,8 @@ class _BaseCheck(object):
     characteristics = UNDEFINED
     associated_fix = UNDEFINED
 
-    typical_threshold = .6
-    atypical_threshold = .4
+    typical_threshold = .8
+    atypical_threshold = .2
 
     def __init__(self, sample):
         self.sample = sample
@@ -71,7 +72,6 @@ class _BaseCheck(object):
 
     def run(self):
         content = self._extract_content()
-        pp.pprint(content)
         # Create a dictionary that can
         results = JDict()
 
@@ -79,21 +79,19 @@ class _BaseCheck(object):
             results.setdefault(items, [])
             results[items].append(ds_id)
 
-
         total = len(content)
 
-#        print(f'\n[INFO] Testing: {keys} - found {len(results)} varieties')
+#       print(f'\n[INFO] Testing: {keys} - found {len(results)} varieties')
         typical_content = None
         atypical_content = []
 
-        fake_results = {'test1': ['1.1.1.1.1'],
-                        'test2': ['1.1.1.1.1', '2.1.1.1.1']}
+        # fake_results = {'test1': ['1.1.1.1.1'],
+        #                 'test2': ['1.1.1.1.1', '2.1.1.1.1']}
 
         # Count different values found and convert to fractions of total
-        for key in fake_results:
-            #sorted(results):
+        for key in results.keys():
 
-            ds_ids = fake_results[key]
+            ds_ids = results[key]
             fraction = len(ds_ids) / total
 
             if fraction >= self.typical_threshold:
@@ -111,7 +109,7 @@ class _BaseCheck(object):
 
             for atypical in atypical_content:
 
-                for ds_id in fake_results[atypical]:
+                for ds_id in results[atypical]:
                     return ds_id, atypical, typical_content
                     #self._process_fix(ds_id, atypical, typical_content)
 

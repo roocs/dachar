@@ -22,7 +22,7 @@ mappings = {
     }
 }
 
-common_checks = ['RankCheck']
+common_checks = ['coord_checks.RankCheck']
 checks = {
     'cmip5': [],
     'cmip6': ['test'],
