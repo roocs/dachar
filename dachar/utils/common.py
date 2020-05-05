@@ -45,6 +45,9 @@ class JDict(dict):
         jkey = self._tostring(key)
         return super().__getitem__(jkey)
 
+    def keys(self):
+        return [json.loads(_) for _ in super().keys()]
+
     def __delitem__(self, key):
         jkey = self._tostring(key)
         super().__delitem__(jkey)

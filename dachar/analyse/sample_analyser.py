@@ -132,10 +132,12 @@ class OneSampleAnalyser(object):
 
         check = check(self._sample)
         run = check.run()
-        if run is not None:
+        if run:
             ds_id, atypical, typical_content = run
             d = check.deduce_fix(ds_id, atypical, typical_content)
             return d
+        else:
+            return False
 
     def analyse(self):
         """
@@ -157,7 +159,11 @@ class OneSampleAnalyser(object):
 
         for check in checks:
             check_cls = locate(f'dachar.analyse.checks.{check}')
-            results[check] = self.run_check(check_cls)
+            result = self.run_check(check_cls)
+            if result:
+                results[check] = result
+            else:
+                pass
 
         for check in results:
             fix_dict = results.get(check)
