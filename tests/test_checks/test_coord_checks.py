@@ -2,8 +2,7 @@ from dachar.analyse.checks.coord_checks import *
 
 
 from tests._stores_for_tests import _TestDatasetCharacterStore, \
-    _TestFixProposalStore, _TestFixStore
-
+    _TestFixProposalStore
 
 char_store = None
 prop_store = None

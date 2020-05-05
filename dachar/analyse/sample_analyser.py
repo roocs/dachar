@@ -1,8 +1,5 @@
-from dachar.utils import UNDEFINED
-from dachar.fixes._base_fix import FixDetails
 from dachar import dc_store, fix_proposal_store, ar_store
 from dachar.utils.options import get_checks
-from dachar.analyse.checks.coord_checks import RankCheck
 from dachar.utils import options
 from dachar import __version__ as version
 
@@ -51,7 +48,6 @@ class AnalysisReport(object):
     """
 
     def __init__(self, sample_id, ds_ids, checks):
-        self.data = {}
         self.record = {
             'sample_id': sample_id,
             'dataset_ids': ds_ids,
@@ -59,48 +55,19 @@ class AnalysisReport(object):
             'proposed_fixes': [],
             'analysis_metadata': {
                 'location': 'ceda',
-                'datetime': datetime.datetime.now(),
+                'datetime': (datetime.datetime.now()).strftime('%d/%m/%Y, %H:%M'),
                 'software_version': version
             }
         }
 
-    # @property
-    # def proposed_fixes(self):
-    #     return self.data['proposed_fixes']
-
     def add_fix(self, fix):
-        fixes = self.data.get('proposed_fixes', [])
+        fixes = self.record.get('proposed_fixes', [])
         fixes.append(fix)
-        self.data['proposed_fixes'] = fixes
+        self.record['proposed_fixes'] = fixes
 
-
-# class FixProposal(object):
-#     """
-#     structure of record
-#         {'dataset_id': 'ds.1.1.1.1.1.1',
-#          'fixes': [{'fix': {'fix_id': 'fix_id',
-#                             'title': 'title',
-#                             'description': 'description',
-#                             'category': 'category',
-#                             'reference_implementation': 'ref_implementation',
-#                             'operands': 'operands'},
-#                     'history': [],
-#                     'reason': '',
-#                     'status': 'proposed',
-#                     'timestamp': '2020-04-29T14:41:52'}]}
-#     """
-#
-#     def __init__(self):
-#         self.data = {}
-#
-#     @property
-#     def fixes(self):
-#         return self.data['fixes']
-#
-#     def add_fix(self, fix):
-#         fixes = self.data.get('fixes', [])
-#         fixes.append(fix)
-#         self.data['fixes'] = fixes
+    @property
+    def content(self):
+        return self.record
 
 
 class OneSampleAnalyser(object):
@@ -108,8 +75,6 @@ class OneSampleAnalyser(object):
     Takes a sample id and project
     Runs checks on the sample - checks vary per project (cmip5, cmip6, cordex)
     Proposes fixes based on checks run
-    returns results as a dict
-
     """
 
     def __init__(self, sample_id, project, force=False):
@@ -117,32 +82,35 @@ class OneSampleAnalyser(object):
         self.project = project
         self.force = force
 
-    def _load_ids(self, sample_id):
+    def _load_ids(self):
         """ Gets list of possible ds_ids from sample_id"""
 
         base_dir = options.project_base_dirs[self.project]
-        sample_id = os.path.join(base_dir, '/'.join(sample_id.split('.')))
+        _sample_id = os.path.join(base_dir, '/'.join(self.sample_id.split('.')))
 
-        sample = []
-        for path in glob.glob(sample_id):
-            sample.append('.'.join(path.split('/')[4:]))
+        self._sample = []
+        for path in glob.glob(_sample_id):
+            if self.project in ['cmip5', 'cmip6', 'cordex']:
+                self._sample.append('.'.join(path.split('/')[4:]))
+            else:
+                self._sample.append('.'.join(path.split('/')[5:]))
 
-        return sample
+        return self._sample
 
     def _characterised(self):
         """ Checks whether ds_ids in sample have been characterised.
         Gets character files from the store or raises and exception
         if some haven't been characterised"""
 
-        sample = self._load_ids(self)
-        self._cache = {}
+        sample_ids = self._load_ids()
         missing = []
+        sample = []
 
-        for ds_id in sample:
+        for ds_id in sample_ids:
             if not dc_store.exists(ds_id):
                 missing.append(ds_id)
             else:
-                self._cache[ds_id] = dc_store.get(ds_id)
+                sample.append(ds_id)
 
         if missing:
             raise Exception(f'Some data sets not characterised for sample: {missing}')
@@ -154,28 +122,25 @@ class OneSampleAnalyser(object):
         :return:
         """
         if ar_store.exists(self.sample_id) and self.force is True:
-            print(f'Overwriting existing analuysis for {self.sample_id}.')
+            print(f'Overwriting existing analysis for {self.sample_id}.')
         elif ar_store.exists(self.sample_id) and self.force is False:
             raise Exception(f'Analysis already run for {self.sample_id}. '
                             f'Use force=True to overwrite.')
 
-    def run_check(self, check, sample):
-        """ runs each check and returns any proposed fixes
-        What does it run checks on? - all ds_ids in the sample
-         needs to get checks"""
+    def run_check(self, check):
+        """ runs each check and returns any proposed fixes"""
 
-        # needs to keep track of fix proposal and return
-        # need to create check object using name of check
-        check = check(sample)
+        check = check(self._sample)
         run = check.run()
         if run is not None:
-            d = check.deduce_fix(run)
+            ds_id, atypical, typical_content = run
+            d = check.deduce_fix(ds_id, atypical, typical_content)
             return d
 
     def analyse(self):
         """
-        Analyse runs checks, proposes fixes and
-        saves all results in proposed fixes store(?)
+        Analyse runs checks, proposes fixes proposes them to fix proposal store.
+        Also puts a record in analysis record store.
         :return:
         """
         # check if analysed and characterised
@@ -183,34 +148,29 @@ class OneSampleAnalyser(object):
         self._analysed()
 
         # get ds_ids in sample and get list of checks to run
-        sample = self._cache
         checks = get_checks(self.project)
 
         # Create analysis record
-        a_record = AnalysisReport(self.sample_id, sample, checks)
+        a_record = AnalysisReport(self.sample_id, self._sample, checks)
 
         results = {}
 
         for check in checks:
             check_cls = locate(f'dachar.analyse.checks.{check}')
-            results[check] = self.run_check(check_cls, sample)
+            results[check] = self.run_check(check_cls)
 
         for check in results:
             fix_dict = results.get(check)
             a_record.add_fix(fix_dict)
-            fix_proposal_store.propose(fix_dict['dataset_id'], fix_dict['fix'])
+            fix_proposal_store.propose(fix_dict['dataset_id']['ds_id'], fix_dict['fix'])
 
-        ar_store.put(self.sample_id, a_record, force=self.force)
+        ar_store.put(self.sample_id, a_record.content, force=self.force)
 
-        # @property
-        # def results(self):
-        #     return self.results
-        print(f'[INFO] Analysis complete for {self.sample_id}')
+        print(f'[INFO] Analysis complete for sample: {self.sample_id}')
 
 
-# not sure abput this one? - could use a function to analyse all samples
 
-class GrandAnalyser(object):
+class AnalyseMany(object):
     """
     To run over all samples of a given project?
     """
@@ -229,12 +189,5 @@ class GrandAnalyser(object):
         for i in range(1000):
             yield i
 
-
-if __name__ == '__main__':
-    zostoga_sample_id = "cmip5.output1.*.*.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga"
-    zostoga = OneSampleAnalyser(zostoga_sample_id, 'cmip5', force=False)
-    zostoga.analyse()
-    # Try and get onesampleanalyser working for zostoga example - only check with
-    # squeezedims
-    # Needs to produce analysis record
-    # and propose fixes to fixes store
+# write function to create sample ids from cli and use AnalyseMany to run analysis
+# AnalyseMany uses OneSampleAnalyser
