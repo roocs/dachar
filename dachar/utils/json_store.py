@@ -94,7 +94,6 @@ class _BaseJsonStore(object):
 
     def _validate_fields(self, content):
         errors = []
-
         for key_path in self.required_fields:
             try:
                 self._lookup(key_path, content, must_exist=True)

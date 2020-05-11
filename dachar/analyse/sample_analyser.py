@@ -1,8 +1,8 @@
-from dachar import dc_store, fix_proposal_store, ar_store
+from dachar import dc_store, fix_proposal_store
 from dachar.utils.options import get_checks
 from dachar.utils import options
 from dachar import __version__ as version
-
+from . import AnalysisRecordsStore
 
 import os
 import datetime
@@ -29,7 +29,7 @@ Separately:
   - which automatically updates the Fix Store.
 """
 
-
+ar_store = AnalysisRecordsStore()
 class SampleBuilder(object):
     """
     Build each sample id based on rules
@@ -132,10 +132,15 @@ class OneSampleAnalyser(object):
 
         check = check(self._sample)
         run = check.run()
+        dict_list = []
         if run:
-            ds_id, atypical, typical_content = run
-            d = check.deduce_fix(ds_id, atypical, typical_content)
-            return d
+            results, atypical_content, typical_content = run
+            for atypical in atypical_content:
+                for ds_id in results[atypical]:
+                    d = check.deduce_fix(ds_id, atypical, typical_content)
+                    if d:
+                        dict_list.append(d)
+            return dict_list
         else:
             return False
 
@@ -161,7 +166,8 @@ class OneSampleAnalyser(object):
             check_cls = locate(f'dachar.analyse.checks.{check}')
             result = self.run_check(check_cls)
             if result:
-                results[check] = result
+                for d in result:
+                    results[check] = d
             else:
                 pass
 
