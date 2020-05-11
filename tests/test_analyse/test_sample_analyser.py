@@ -2,26 +2,36 @@ import os
 import shutil
 import glob
 from pydoc import locate
-import datetime
+
 
 from tests._stores_for_tests import _TestFixProposalStore, _TestAnalysisStore, _TestDatasetCharacterStore
 from dachar.utils import options
 from dachar.scan.scan import scan_dataset, get_dataset_paths
 from dachar.utils.options import get_checks
-from dachar import __version__ as version
-from dachar.analyse.checks.coord_checks import RankCheck
+from dachar.analyse import AnalysisReport, OneSampleAnalyser
+
+# how to use real class and change stores used??
 
 
 char_store = None
 prop_store = None
 analysis_store = None
 
+# dc_store = None
+# fix_proposal_store = None
+# ar_store = None
+
+
 options.project_base_dirs['cmip5'] = \
     'tests/mini-esgf-data/test_data/badc/cmip5/data'
 
 ds_ids = ['cmip5.output1.INM.inmcm4.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga',
           'cmip5.output1.MPI-M.MPI-ESM-LR.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga',
-          'cmip5.output1.MOHC.HadGEM2-ES.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga']
+          'cmip5.output1.BCC.bcc-csm1-1.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga',
+          'cmip5.output1.MOHC.HadGEM2-ES.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga',
+          'cmip5.output1.CCCma.CanCM4.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga',
+          'cmip5.output1.IPSL.IPSL-CM5A-LR.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga',
+          'cmip5.output1.IPSL.IPSL-CM5A-MR.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga']
 
 
 def clear_stores():
@@ -38,38 +48,15 @@ def setup_module():
     global char_store
     global prop_store
     global analysis_store
+    # global dc_store
+
     char_store = _TestDatasetCharacterStore()
     prop_store = _TestFixProposalStore()
     analysis_store = _TestAnalysisStore()
 
-
-class AnalysisReport(object):
-    """
-    Provides structure for analysis report object
-    """
-
-    def __init__(self, sample_id, ds_ids, checks):
-        self.record = {
-            'sample_id': sample_id,
-            'dataset_ids': ds_ids,
-            'checks': checks,
-            'proposed_fixes': [],
-            'analysis_metadata': {
-                'location': 'ceda',
-                'datetime': (datetime.datetime.now()).strftime('%d/%m/%Y, %H:%M'),
-                'software_version': version
-            }
-        }
-
-    def add_fix(self, fix):
-        fixes = self.record.get('proposed_fixes', [])
-        fixes.append(fix)
-        self.record['proposed_fixes'] = fixes
-
-    @property
-    def content(self):
-        return self.record
-
+    # dc_store = Mock()
+    # ar_store = Mock()
+    # fix_proposal_store = Mock()
 
 class FakeOneSampleAnalyser(object):
 
@@ -85,7 +72,10 @@ class FakeOneSampleAnalyser(object):
 
         self._sample = []
         for path in glob.glob(_sample_id):
-            self._sample.append('.'.join(path.split('/')[6:]))
+            if self.project in ['cmip5', 'cmip6', 'cordex']:
+                self._sample.append('.'.join(path.split('/')[6:]))
+            else:
+                self._sample.append('.'.join(path.split('/')[7:]))
 
         return self._sample
 
@@ -116,10 +106,15 @@ class FakeOneSampleAnalyser(object):
 
         check = check(self._sample)
         run = check.run()
+        dict_list = []
         if run:
-            ds_id, atypical, typical_content = run
-            d = check.deduce_fix(ds_id, atypical, typical_content)
-            return d
+            results, atypical_content, typical_content = run
+            for atypical in atypical_content:
+                for ds_id in results[atypical]:
+                    d = check.deduce_fix(ds_id, atypical, typical_content)
+                    if d:
+                        dict_list.append(d)
+            return dict_list
         else:
             return False
 
@@ -141,7 +136,8 @@ class FakeOneSampleAnalyser(object):
             check_cls = locate(f'dachar.analyse.checks.{check}')
             result = self.run_check(check_cls)
             if result:
-                results[check] = result
+                for d in result:
+                    results[check] = d
             else:
                 pass
 

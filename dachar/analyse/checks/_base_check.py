@@ -49,8 +49,8 @@ class _BaseCheck(object):
     characteristics = UNDEFINED
     associated_fix = UNDEFINED
 
-    typical_threshold = .8
-    atypical_threshold = .2
+    typical_threshold = .56
+    atypical_threshold = .44
 
     def __init__(self, sample):
         self.sample = sample
@@ -107,10 +107,12 @@ class _BaseCheck(object):
         # Suggest fixes for any values that are atypical but ONLY do so if typical values are found
         if typical_content is not None:
 
-            for atypical in atypical_content:
-
-                for ds_id in results[atypical]:
-                    return ds_id, atypical, typical_content
+            return results, atypical_content, typical_content
+            # for atypical in atypical_content:
+            #
+            #     for ds_id in results[atypical]:
+            #         return ds_id, atypical, typical_content
+            #         print('results=', ds_id, atypical, typical_content)
                     #self._process_fix(ds_id, atypical, typical_content)
 
         else:
