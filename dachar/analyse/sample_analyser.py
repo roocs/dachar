@@ -29,7 +29,7 @@ Separately:
   - which automatically updates the Fix Store.
 """
 
-ar_store = AnalysisRecordsStore()
+
 class SampleBuilder(object):
     """
     Build each sample id based on rules
@@ -42,19 +42,19 @@ class SampleBuilder(object):
         return "cmip5.output1.MOHC.HadGEM2-ES.historical.mon.land.Lmon.*.latest.rh"
 
 
-class AnalysisReport(object):
+class AnalysisRecord(object):
     """
     Provides structure for analysis report object
     """
 
-    def __init__(self, sample_id, ds_ids, checks):
+    def __init__(self, sample_id, ds_ids, location, checks):
         self.record = {
             'sample_id': sample_id,
             'dataset_ids': ds_ids,
             'checks': checks,
             'proposed_fixes': [],
             'analysis_metadata': {
-                'location': 'ceda',
+                'location': location,
                 'datetime': (datetime.datetime.now()).strftime('%d/%m/%Y, %H:%M'),
                 'software_version': version
             }
@@ -77,10 +77,14 @@ class OneSampleAnalyser(object):
     Proposes fixes based on checks run
     """
 
-    def __init__(self, sample_id, project, force=False):
+    def __init__(self, sample_id, project, location, char_store, arecord_store, fix_prop_store, force=False):
         self.sample_id = sample_id
         self.project = project
         self.force = force
+        self.location = location
+        self.dc_store = char_store
+        self.ar_store = arecord_store
+        self.fix_proposal_store = fix_prop_store
 
     def _load_ids(self):
         """ Gets list of possible ds_ids from sample_id"""
@@ -100,14 +104,14 @@ class OneSampleAnalyser(object):
     def _characterised(self):
         """ Checks whether ds_ids in sample have been characterised.
         Gets character files from the store or raises and exception
-        if some haven't been characterised"""
+        if some haven't been characterised """
 
         sample_ids = self._load_ids()
         missing = []
         sample = []
 
         for ds_id in sample_ids:
-            if not dc_store.exists(ds_id):
+            if not self.dc_store.exists(ds_id):
                 missing.append(ds_id)
             else:
                 sample.append(ds_id)
@@ -121,9 +125,9 @@ class OneSampleAnalyser(object):
         If analysed and force = True then carry on. Print statements to say what is happening
         :return:
         """
-        if ar_store.exists(self.sample_id) and self.force is True:
+        if self.ar_store.exists(self.sample_id) and self.force is True:
             print(f'Overwriting existing analysis for {self.sample_id}.')
-        elif ar_store.exists(self.sample_id) and self.force is False:
+        elif self.ar_store.exists(self.sample_id) and self.force is False:
             raise Exception(f'Analysis already run for {self.sample_id}. '
                             f'Use force=True to overwrite.')
 
@@ -158,7 +162,7 @@ class OneSampleAnalyser(object):
         checks = get_checks(self.project)
 
         # Create analysis record
-        a_record = AnalysisReport(self.sample_id, self._sample, checks)
+        a_record = AnalysisRecord(self.sample_id, self._sample, self.location, checks)
 
         results = {}
 
@@ -174,12 +178,17 @@ class OneSampleAnalyser(object):
         for check in results:
             fix_dict = results.get(check)
             a_record.add_fix(fix_dict)
-            fix_proposal_store.propose(fix_dict['dataset_id']['ds_id'], fix_dict['fix'])
+            self.fix_proposal_store.propose(fix_dict['dataset_id']['ds_id'], fix_dict['fix'])
 
-        ar_store.put(self.sample_id, a_record.content, force=self.force)
+        self.ar_store.put(self.sample_id, a_record.content, force=self.force)
 
         print(f'[INFO] Analysis complete for sample: {self.sample_id}')
 
+
+def analyse(project, sample_id, location, force):
+    ar_store = AnalysisRecordsStore()
+    analysis = OneSampleAnalyser(sample_id, project, location, dc_store, ar_store, fix_proposal_store, force)
+    analysis.analyse()
 
 
 class AnalyseMany(object):
@@ -200,6 +209,9 @@ class AnalyseMany(object):
     def _get_sample(self):
         for i in range(1000):
             yield i
+
+
+
 
 # write function to create sample ids from cli and use AnalyseMany to run analysis
 # AnalyseMany uses OneSampleAnalyser

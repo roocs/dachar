@@ -10,7 +10,8 @@ import argparse
 import sys
 
 from dachar.utils import options
-from dachar import scan, analyse, fixes
+from dachar import scan, sample_analyser, fixes
+from dachar import dc_store
 
 
 def _to_list(item):
@@ -120,11 +121,12 @@ def parse_args_scan(args):
 
 def scan_main(args):
     project, ds_ids, paths, facets, exclude, mode, location = parse_args_scan(args)
-    scan.scan_datasets(project, mode, location, ds_ids, paths, facets, exclude)
+    scan.scan_datasets(project, mode, location, dc_store, ds_ids, paths, facets, exclude)
 
 
 def _get_arg_parser_analyse(parser):
     project_options = options.known_projects
+    location_options = options.locations
 
     parser.add_argument(
         "project",
@@ -135,13 +137,33 @@ def _get_arg_parser_analyse(parser):
     )
 
     parser.add_argument(
-        "-d",
-        "--dataset-ids",
+        "-s",
+        "--sample-id",
         nargs=1,
         type=str,
         default=None,
         required=True,
-        help='List of comma-separated dataset identifiers'
+        help='Sample id with * indicating the facets that change '
+    )
+
+    parser.add_argument(
+        "-l",
+        "--location",
+        nargs=1,
+        type=str,
+        default="ceda",
+        required=True,
+        choices=location_options,
+        help=f'Location of scan, must be one of: {location_options}'
+    )
+
+    parser.add_argument(
+        "-f",
+        "--force",
+        nargs=1,
+        type=str,
+        default=False,
+        help=f'If True then analysis records will be overwritten if they already exist.'
     )
 
     return parser
@@ -149,14 +171,16 @@ def _get_arg_parser_analyse(parser):
 
 def parse_args_analyse(args):
     project = args.project[0]
-    ds_ids = args.dataset_ids[0].split(',')
+    sample_id = args.sample_id[0]
+    location = args.location[0]
+    force = args.force[0]
 
-    return project, ds_ids
+    return project, sample_id, location, force
 
 
 def analyse_main(args):
-    project, ds_ids = parse_args_analyse(args)
-    analyse.analyse_datasets(project, ds_ids)
+    project, sample_id, location, force = parse_args_analyse(args)
+    sample_analyser.analyse(project, sample_id, location, force)
 
 
 def write_fixes_main(args):

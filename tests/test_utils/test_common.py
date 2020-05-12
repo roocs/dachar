@@ -48,6 +48,6 @@ def test_get_items_larger_sequence_5():
     res = get_extra_items_in_larger_sequence(small, large)
     assert (res is None)
 
-#typical content: {'data.coord_names': ['time'], 'data.shape': [3540]}
+# typical content: {'data.coord_names': ['time'], 'data.shape': [3540]}
 
-#atypical content: [{'data.coord_names': ['lev', 'time'], 'data.shape': [1, 1140]}, {'data.coord_names': ['time'], 'data.shape': [3529]}, {'data.coord_names': ['time'], 'data.shape': [360]}]
+# atypical content: [{'data.coord_names': ['lev', 'time'], 'data.shape': [1, 1140]}, {'data.coord_names': ['time'], 'data.shape': [3529]}, {'data.coord_names': ['time'], 'data.shape': [360]}]
