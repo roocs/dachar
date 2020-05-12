@@ -30,8 +30,7 @@ def clear_stores():
 def populate_dc_store():
     ds_paths = get_dataset_paths('cmip5', ds_ids=ds_ids, paths=options.project_base_dirs['cmip5'])
     for ds_id, ds_path in ds_paths.items():
-        character, ds_id = scan_dataset('cmip5', ds_id, ds_path, 'full', 'ceda')
-        char_store.put(ds_id, character, force=True)
+        scan_dataset('cmip5', ds_id, ds_path, 'full', char_store, 'ceda')
 
 
 def setup_module():
@@ -65,7 +64,12 @@ def test_RankCheck_deduce_fix():
     assert (d['fix']['operands']) == {'dims': ['lev']}
 
 
+class _TestRankCheck(RankCheck):
+    typical_threshold = .7
+    atypical_threshold = .3
+
+
 def test_with_different_thresholds():
-    """test with different results - want fix to be not be
-    suitable and return none"""
-    pass
+    x = _TestRankCheck(ds_ids)
+    res = x.run()
+    assert res is False
