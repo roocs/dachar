@@ -5,7 +5,7 @@ class _TestDatasetCharacterStore(DatasetCharacterStore):
 
     store_name = 'TestDatasetCharacterStore'
     config = {'store_type': 'local',
-              'local.base_dir': '/tmp/ds-char-store',
+              'local.base_dir': '/tmp/test-ds-char-store',
               'local.dir_grouping_level': 4}
 
 
