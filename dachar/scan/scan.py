@@ -16,6 +16,7 @@ import glob
 from dachar import config
 from dachar.utils import options, switch_ds
 from dachar.utils.character import extract_character
+from dachar.utils.get_stores import get_dc_store
 
 
 def to_json(character, output_path):
@@ -139,7 +140,7 @@ def get_dataset_paths(project, ds_ids=None, paths=None, facets=None, exclude=Non
     return ds_paths
 
 
-def scan_datasets(project, mode, location, char_store, ds_ids=None, paths=None, facets=None, exclude=None):
+def scan_datasets(project, mode, location, ds_ids=None, paths=None, facets=None, exclude=None):
     """
     Loops over ESGF data sets and scans them for character.
 
@@ -173,7 +174,7 @@ def scan_datasets(project, mode, location, char_store, ds_ids=None, paths=None, 
     ds_paths = get_dataset_paths(project, ds_ids=ds_ids, paths=paths, facets=facets, exclude=exclude)
 
     for ds_id, ds_path in ds_paths.items():
-        scanner = scan_dataset(project, ds_id, ds_path, char_store, mode, location)
+        scanner = scan_dataset(project, ds_id, ds_path, mode, location)
 
         count += 1
         if scanner is False:
@@ -246,7 +247,7 @@ def _check_for_min_max(json_path):
         return False
 
 
-def scan_dataset(project, ds_id, ds_path, mode, char_store, location):
+def scan_dataset(project, ds_id, ds_path, mode, location):
     """
     Scans a set of files found under the `ds_path`.
 
@@ -332,14 +333,15 @@ def scan_dataset(project, ds_id, ds_path, mode, char_store, location):
 
     # output to JSON character store
     try:
-        char_store.put(ds_id, character)
+        get_dc_store().put(ds_id, character)
+        print('name=', get_dc_store().store_name)
     except Exception as exc:
         print(f'[ERROR] Exception: {exc}')
         # Create error file if can't output file
         open(outputs['write_error'], 'w')
         return False
 
-    print(f'[INFO] Wrote to character store') # add file path to json file ?
+    print(f'[INFO] Written to character store') # add file path to json file ?
 
     # Output to JSON file
     # try:
