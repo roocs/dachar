@@ -173,7 +173,7 @@ def scan_datasets(project, mode, location, char_store, ds_ids=None, paths=None, 
     ds_paths = get_dataset_paths(project, ds_ids=ds_ids, paths=paths, facets=facets, exclude=exclude)
 
     for ds_id, ds_path in ds_paths.items():
-        scanner = scan_dataset(project, ds_id, ds_path, char_store, mode, location)
+        scanner = scan_dataset(project, ds_id, ds_path, mode, char_store, location)
 
         count += 1
         if scanner is False:
@@ -339,7 +339,7 @@ def scan_dataset(project, ds_id, ds_path, mode, char_store, location):
         open(outputs['write_error'], 'w')
         return False
 
-    print(f'[INFO] Wrote to character store') # add file path to json file ?
+    print(f'[INFO] Written to character store') # add file path to json file ?
 
     # Output to JSON file
     # try:
