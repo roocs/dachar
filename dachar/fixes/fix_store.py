@@ -2,6 +2,7 @@ from dachar.utils.json_store import _BaseJsonStore
 
 
 class FixStore(_BaseJsonStore):
+    _instance = None
 
     store_name = 'Fix Store'
     config = {'store_type': 'local',
