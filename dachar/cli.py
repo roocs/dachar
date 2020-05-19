@@ -11,7 +11,6 @@ import sys
 
 from dachar.utils import options
 from dachar import scan, sample_analyser, fixes
-from dachar import dc_store
 
 
 def _to_list(item):
@@ -121,7 +120,7 @@ def parse_args_scan(args):
 
 def scan_main(args):
     project, ds_ids, paths, facets, exclude, mode, location = parse_args_scan(args)
-    scan.scan_datasets(project, mode, location, dc_store, ds_ids, paths, facets, exclude)
+    scan.scan_datasets(project, mode, location, ds_ids, paths, facets, exclude)
 
 
 def _get_arg_parser_analyse(parser):

@@ -4,11 +4,12 @@ import glob
 
 from tests._stores_for_tests import _TestFixProposalStore, _TestAnalysisStore, _TestDatasetCharacterStore
 from dachar.utils import options
+from dachar.analyse.checks import _base_check
+from dachar.analyse import sample_analyser
+from dachar.scan import scan
 from dachar.scan.scan import scan_dataset, get_dataset_paths
 from dachar.analyse import OneSampleAnalyser
-from mockito import mock, when
-
-# how to use real class and change stores used??
+from unittest.mock import Mock
 
 char_store = None
 prop_store = None
@@ -47,7 +48,6 @@ def setup_module():
 
 
 class _TestOneSampleAnalyser(OneSampleAnalyser):
-
     def _load_ids(self):
         """ Gets list of possible ds_ids from sample_id"""
 
@@ -63,22 +63,30 @@ class _TestOneSampleAnalyser(OneSampleAnalyser):
 
         return self._sample
 
+# use mock to change the stores used to the test stores
 
 # populate test character store
 def populate_dc_store():
+    scan.get_dc_store = Mock(return_value=char_store)
+
     ds_paths = get_dataset_paths('cmip5', ds_ids=ds_ids, paths=options.project_base_dirs['cmip5'])
     for ds_id, ds_path in ds_paths.items():
-        scan_dataset('cmip5', ds_id, ds_path, 'full', char_store, 'ceda')
+        scan_dataset('cmip5', ds_id, ds_path, 'full', 'ceda')
 
 
 def test_analyse():
-    populate_dc_store()
-    zostoga_sample_id = "cmip5.output1.*.*.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga"
-    zostoga = _TestOneSampleAnalyser(zostoga_sample_id, 'cmip5', 'ceda', char_store, analysis_store,
-                                     prop_store, force=True)
+    sample_analyser.get_ar_store = Mock(return_value=analysis_store)
+    sample_analyser.get_dc_store = Mock(return_value=char_store)
+    sample_analyser.get_fix_prop_store = Mock(return_value=prop_store)
+    _base_check.get_dc_store = Mock(return_value=char_store)
 
+    populate_dc_store()
+
+    zostoga_sample_id = "cmip5.output1.*.*.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga"
+    zostoga = _TestOneSampleAnalyser(zostoga_sample_id, 'cmip5', 'ceda', force=True)
     zostoga.analyse()
 
 
 def teardown_module():
     clear_stores()
+

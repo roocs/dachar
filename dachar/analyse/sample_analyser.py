@@ -1,8 +1,7 @@
-from dachar import dc_store, fix_proposal_store
+from dachar.utils.get_stores import get_ar_store, get_dc_store, get_fix_prop_store
 from dachar.utils.options import get_checks
 from dachar.utils import options
 from dachar import __version__ as version
-from . import AnalysisRecordsStore
 
 import os
 import datetime
@@ -77,14 +76,11 @@ class OneSampleAnalyser(object):
     Proposes fixes based on checks run
     """
 
-    def __init__(self, sample_id, project, location, char_store, arecord_store, fix_prop_store, force=False):
+    def __init__(self, sample_id, project, location, force=False):
         self.sample_id = sample_id
         self.project = project
         self.force = force
         self.location = location
-        self.dc_store = char_store
-        self.ar_store = arecord_store
-        self.fix_proposal_store = fix_prop_store
 
     def _load_ids(self):
         """ Gets list of possible ds_ids from sample_id"""
@@ -111,7 +107,7 @@ class OneSampleAnalyser(object):
         sample = []
 
         for ds_id in sample_ids:
-            if not self.dc_store.exists(ds_id):
+            if not get_dc_store().exists(ds_id):
                 missing.append(ds_id)
             else:
                 sample.append(ds_id)
@@ -125,9 +121,9 @@ class OneSampleAnalyser(object):
         If analysed and force = True then carry on. Print statements to say what is happening
         :return:
         """
-        if self.ar_store.exists(self.sample_id) and self.force is True:
+        if get_ar_store().exists(self.sample_id) and self.force is True:
             print(f'Overwriting existing analysis for {self.sample_id}.')
-        elif self.ar_store.exists(self.sample_id) and self.force is False:
+        elif get_ar_store().exists(self.sample_id) and self.force is False:
             raise Exception(f'Analysis already run for {self.sample_id}. '
                             f'Use force=True to overwrite.')
 
@@ -178,16 +174,15 @@ class OneSampleAnalyser(object):
         for check in results:
             fix_dict = results.get(check)
             a_record.add_fix(fix_dict)
-            self.fix_proposal_store.propose(fix_dict['dataset_id']['ds_id'], fix_dict['fix'])
+            get_fix_prop_store().propose(fix_dict['dataset_id']['ds_id'], fix_dict['fix'])
 
-        self.ar_store.put(self.sample_id, a_record.content, force=self.force)
+        get_ar_store().put(self.sample_id, a_record.content, force=self.force)
 
         print(f'[INFO] Analysis complete for sample: {self.sample_id}')
 
 
 def analyse(project, sample_id, location, force):
-    ar_store = AnalysisRecordsStore()
-    analysis = OneSampleAnalyser(sample_id, project, location, dc_store, ar_store, fix_proposal_store, force)
+    analysis = OneSampleAnalyser(sample_id, project, location, force)
     analysis.analyse()
 
 

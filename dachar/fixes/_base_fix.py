@@ -1,10 +1,11 @@
 
 from dachar.utils.common import UNDEFINED
+from dachar import __version__ as version
 
 
 class FixDetails(object):
 
-    def __init__(self, ds_id, fix_id, title, description, category, ref_implementation, operands):
+    def __init__(self, ds_id, fix_id, title, description, category, ref_implementation, operands, source):
         self.record = {
                 'dataset_id': {
                     'ds_id': ds_id},
@@ -14,7 +15,8 @@ class FixDetails(object):
                     'description': description,
                     'category': category,
                     'reference_implementation': ref_implementation,
-                    'operands': operands
+                    'operands': operands,
+                    'source': source
                 }
             }
 
@@ -39,8 +41,9 @@ class _BaseDatasetFix(object):
     </variable>
         """
 
-    def __init__(self, ds_id, **operands):
+    def __init__(self, ds_id, source=f'dachar version {version}', **operands):
         self.ds_id = ds_id
+        self.source = source
         self.operands = operands
         self._validate()
 
@@ -66,6 +69,6 @@ Operands: {self.operands}
 
     def to_dict(self):
         d = FixDetails(self.ds_id, self.fix_id, self.title, self.description, self.category,
-                       self.ref_implementation, self.operands)
+                       self.ref_implementation, self.operands, self.source)
 
         return d.dict
