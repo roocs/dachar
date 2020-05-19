@@ -9,7 +9,7 @@ from dachar.analyse import sample_analyser
 from dachar.scan import scan
 from dachar.scan.scan import scan_dataset, get_dataset_paths
 from dachar.analyse import OneSampleAnalyser
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 char_store = None
 prop_store = None
