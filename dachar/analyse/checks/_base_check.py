@@ -3,7 +3,7 @@ import pprint as pp
 
 from dachar.utils import UNDEFINED, nested_lookup, JDict
 
-from dachar import fix_proposal_store, dc_store
+from dachar.utils.get_stores import get_fix_prop_store, get_dc_store
 
 from dachar.fixes.fix_api import get_fix
 
@@ -62,10 +62,10 @@ class _BaseCheck(object):
         missing = []
 
         for ds_id in self.sample:
-            if not dc_store.exists(ds_id):
+            if not get_dc_store().exists(ds_id):
                 missing.append(ds_id)
             else:
-                self._cache[ds_id] = dc_store.get(ds_id)
+                self._cache[ds_id] = get_dc_store().get(ds_id)
 
         if missing:
             raise Exception(f'Some data sets not characterised for sample: {missing}')
@@ -138,7 +138,7 @@ class _BaseCheck(object):
         raise NotImplementedError
 
     def _propose_fix(self, ds_id, fix):
-        fix_proposal_store.propose(ds_id, fix)
+        get_fix_prop_store().propose(ds_id, fix)
 
 
 

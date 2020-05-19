@@ -4,13 +4,13 @@ from dachar.utils.common import get_extra_items_in_larger_sequence
 
 
 class RankCheck(_BaseCheck):
-    characteristics = ['data.coord_names', 'data.shape']
+    characteristics = ['data.dim_names', 'data.shape']
     associated_fix = 'SqueezeDimensionsFix'
 
     def deduce_fix(self, ds_id, atypical_content, typical_content):
 
-        atypical = atypical_content['data.coord_names']
-        typical = typical_content['data.coord_names']
+        atypical = atypical_content['data.dim_names']
+        typical = typical_content['data.dim_names']
         if len(atypical) > len(typical):
             extra_coords = get_extra_items_in_larger_sequence(typical, atypical)
 
