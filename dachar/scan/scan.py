@@ -174,7 +174,9 @@ def scan_datasets(project, mode, location, ds_ids=None, paths=None, facets=None,
     ds_paths = get_dataset_paths(project, ds_ids=ds_ids, paths=paths, facets=facets, exclude=exclude)
 
     for ds_id, ds_path in ds_paths.items():
+
         scanner = scan_dataset(project, ds_id, ds_path, mode, location)
+
 
         count += 1
         if scanner is False:
