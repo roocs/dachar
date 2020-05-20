@@ -49,8 +49,8 @@ class _BaseCheck(object):
     characteristics = UNDEFINED
     associated_fix = UNDEFINED
 
-    typical_threshold = .56
-    atypical_threshold = .44
+    typical_threshold = .4
+    atypical_threshold = .04
 
     def __init__(self, sample):
         self.sample = sample
@@ -93,6 +93,7 @@ class _BaseCheck(object):
 
             ds_ids = results[key]
             fraction = len(ds_ids) / total
+            print(fraction)
 
             if fraction >= self.typical_threshold:
                 typical_content = key

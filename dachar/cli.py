@@ -179,7 +179,7 @@ def parse_args_analyse(args):
     project = args.project[0]
     sample_id = args.sample_id[0]
     location = args.location[0]
-    force = args.force[0]
+    force = args.force
 
     return project, sample_id, location, force
 

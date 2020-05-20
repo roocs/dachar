@@ -18,24 +18,26 @@ def get_proposed_fixes():
 
 
 def process_proposed_fixes(proposed_fixes):
-
+    print(proposed_fixes)
     for proposed_fix in proposed_fixes:
-        fix = proposed_fix['fixes']['fix']
+        fix = proposed_fix['fixes'][0]['fix']
         ds_id = proposed_fix['dataset_id']
 
         # print fix so user can see what they are processing
-        print(fix)
+        print(type(proposed_fix))
 
         action = input("Enter action for proposed fix: ")
 
         if action == 'publish':
             get_fix_prop_store().publish(ds_id, fix)
+            print('[INFO] Fix has been published')
 
         if action == 'reject':
             reason = input("Enter a reason for rejection: ")
             get_fix_prop_store().reject(ds_id, fix, reason)
+            print('[INFO] Fix has been rejected')
 
-        if action == 'ignore':
+        else:
             pass
 
 
