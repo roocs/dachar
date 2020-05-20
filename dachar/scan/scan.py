@@ -137,6 +137,8 @@ def get_dataset_paths(project, ds_ids=None, paths=None, facets=None, exclude=Non
     else:
         raise NotImplementedError('Code currently breaks if not using "ds_ids" argument.')
 
+
+
     return ds_paths
 
 
@@ -173,10 +175,12 @@ def scan_datasets(project, mode, location, ds_ids=None, paths=None, facets=None,
     # Filter arguments to get a set of file paths to DSIDs
     ds_paths = get_dataset_paths(project, ds_ids=ds_ids, paths=paths, facets=facets, exclude=exclude)
 
+    if not ds_paths:
+        raise Exception(f'No datasets were found')
+
     for ds_id, ds_path in ds_paths.items():
 
         scanner = scan_dataset(project, ds_id, ds_path, mode, location)
-
 
         count += 1
         if scanner is False:

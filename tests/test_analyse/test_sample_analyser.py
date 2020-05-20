@@ -65,6 +65,7 @@ class _TestOneSampleAnalyser(OneSampleAnalyser):
 
 # use mock to change the stores used to the test stores
 
+
 # populate test character store
 def populate_dc_store():
     scan.get_dc_store = Mock(return_value=char_store)
@@ -83,10 +84,11 @@ def test_analyse():
     populate_dc_store()
 
     zostoga_sample_id = "cmip5.output1.*.*.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga"
-    zostoga = _TestOneSampleAnalyser(zostoga_sample_id, 'cmip5', 'ceda', force=True)
+    zostoga = _TestOneSampleAnalyser(zostoga_sample_id, 'cmip5', 'ceda')
     zostoga.analyse()
 
 
 def teardown_module():
-    clear_stores()
+    pass
+    # clear_stores()
 

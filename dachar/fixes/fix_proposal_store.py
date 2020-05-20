@@ -100,4 +100,27 @@ class FixProposalStore(_BaseJsonStore):
         self._update_or_add_fix(fix_id, content, fix, status=status, reason=reason)
         self.put(ds_id, content, force=True)
 
+    # def get_proposed_fixes(self, ds_id):
+    #     # go through fixes and return if status is proposed
+    #     if self.exists(ds_id):
+    #         content = self.get(ds_id)
+    #         for this_fix in content['fixes']:
+    #             if this_fix['status'] == 'proposed':
+    #                 return this_fix['fix']
+
+    def get_proposed_fixes(self):
+        # go through fixes and return if status is proposed
+        proposed_fixes = []
+
+        for ds_id, content in self.get_all():
+            if self.exists(ds_id):
+                content = self.get(ds_id)
+                for this_fix in content['fixes']:
+                    if this_fix['status'] == 'proposed':
+                        proposed_fixes.append(content)
+                        # proposed_fixes.append(this_fix['fix'])
+
+        return proposed_fixes
+
+
 
