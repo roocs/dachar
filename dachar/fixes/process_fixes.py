@@ -1,4 +1,4 @@
-from dachar.utils.get_stores import get_fix_prop_store
+from dachar.utils.get_stores import get_fix_prop_store, get_fix_store
 
 
 # def get_proposed_fixes(ds_ids):
@@ -18,7 +18,6 @@ def get_proposed_fixes():
 
 
 def process_proposed_fixes(proposed_fixes):
-    print(proposed_fixes)
     for proposed_fix in proposed_fixes:
         fix = proposed_fix['fixes'][0]['fix']
         ds_id = proposed_fix['dataset_id']
@@ -30,11 +29,14 @@ def process_proposed_fixes(proposed_fixes):
 
         if action == 'publish':
             get_fix_prop_store().publish(ds_id, fix)
+            get_fix_store().publish_fix(ds_id, fix)
+
             print('[INFO] Fix has been published')
 
         if action == 'reject':
             reason = input("Enter a reason for rejection: ")
             get_fix_prop_store().reject(ds_id, fix, reason)
+
             print('[INFO] Fix has been rejected')
 
         else:
