@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
+import os
+import shutil
 
+from dachar.utils._stores_for_tests import _TestFixProposalStore
 """Console script for dachar."""
 
 __author__ = """Elle Smith"""
@@ -10,7 +13,11 @@ import argparse
 import sys
 
 from dachar.utils import options
-from dachar import scan, sample_analyser, fixes
+from dachar.scan.scan import scan_datasets
+from dachar.analyse.sample_analyser import analyse
+from dachar.fixes import process_fixes
+from dachar.fixes.process_fixes import process_all_fixes
+from unittest.mock import Mock
 
 
 def _to_list(item):
@@ -120,7 +127,7 @@ def parse_args_scan(args):
 
 def scan_main(args):
     project, ds_ids, paths, facets, exclude, mode, location = parse_args_scan(args)
-    scan.scan_datasets(project, mode, location, ds_ids, paths, facets, exclude)
+    scan_datasets(project, mode, location, ds_ids, paths, facets, exclude)
 
 
 def _get_arg_parser_analyse(parser):
@@ -179,11 +186,29 @@ def parse_args_analyse(args):
 
 def analyse_main(args):
     project, sample_id, location, force = parse_args_analyse(args)
-    sample_analyser.analyse(project, sample_id, location, force)
+    analyse(project, sample_id, location, force)
 
 
-def write_fixes_main(args):
-    pass
+def _get_arg_parser_process_fixes(parser):
+
+    # parser.add_argument(
+    #     "-d",
+    #     "--dataset-ids",
+    #     nargs=1,
+    #     type=str,
+    #     default=None,
+    #     required=False,
+    #     help='List of comma-separated dataset identifiers'
+    # )
+
+    return parser
+
+# def parse_args_process_fixes(args):
+#     ds_ids = _to_list(args.dataset_ids)
+
+
+def process_fixes_main(args):
+    process_all_fixes()
 
 
 def main():
@@ -199,9 +224,9 @@ def main():
     _get_arg_parser_analyse(analyse_parser)
     analyse_parser.set_defaults(func=analyse_main)
 
-    fix_parser = subparsers.add_parser('write-fixes')
-    # _get_arg_parser_fixes(fix_parser)
-    fix_parser.set_defaults(func=write_fixes_main)
+    fix_parser = subparsers.add_parser('process-fixes')
+    _get_arg_parser_process_fixes(fix_parser)
+    fix_parser.set_defaults(func=process_fixes_main)
 
     args = main_parser.parse_args()
     args.func(args)
