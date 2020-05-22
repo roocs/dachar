@@ -2,7 +2,6 @@ from dachar.utils.json_store import _BaseJsonStore
 
 
 class FixStore(_BaseJsonStore):
-    _instance = None
 
     store_name = 'Fix Store'
     config = {'store_type': 'local',
@@ -11,8 +10,6 @@ class FixStore(_BaseJsonStore):
     id_mappers = {'*': '__ALL__'}
     required_fields = ['dataset_id', 'fixes']
     search_defaults = []
-
-    # need to compare fix passed in with template in FixDetails?
 
     def publish_fix(self, ds_id, fix_content):
         if self.exists(ds_id):

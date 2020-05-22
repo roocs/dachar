@@ -42,7 +42,6 @@ def _get_arg_parser_scan(parser):
 
     parser.add_argument(
         "project",
-        nargs=1,
         type=str,
         choices=project_options,
         help=f'Project ID, must be one of: {project_options}'
@@ -91,7 +90,6 @@ def _get_arg_parser_scan(parser):
     parser.add_argument(
         "-m",
         "--mode",
-        nargs=1,
         type=str,
         default="quick",
         required=False,
@@ -102,7 +100,6 @@ def _get_arg_parser_scan(parser):
     parser.add_argument(
         "-l",
         "--location",
-        nargs=1,
         type=str,
         default="ceda",
         required=True,
@@ -114,13 +111,13 @@ def _get_arg_parser_scan(parser):
 
 
 def parse_args_scan(args):
-    project = args.project[0]
+    project = args.project
     ds_ids = _to_list(args.dataset_ids)
     paths = _to_list(args.paths)
     facets = _to_dict(args.facets)
     exclude = _to_list(args.exclude)
-    mode = args.mode[0]
-    location = args.location[0]
+    mode = args.mode
+    location = args.location
 
     return project, ds_ids, paths, facets, exclude, mode, location
 
@@ -136,7 +133,6 @@ def _get_arg_parser_analyse(parser):
 
     parser.add_argument(
         "project",
-        nargs=1,
         type=str,
         choices=project_options,
         help=f'Project ID, must be one of: {project_options}'
@@ -145,7 +141,6 @@ def _get_arg_parser_analyse(parser):
     parser.add_argument(
         "-s",
         "--sample-id",
-        nargs=1,
         type=str,
         default=None,
         required=True,
@@ -155,7 +150,6 @@ def _get_arg_parser_analyse(parser):
     parser.add_argument(
         "-l",
         "--location",
-        nargs=1,
         type=str,
         default="ceda",
         required=True,
@@ -166,7 +160,6 @@ def _get_arg_parser_analyse(parser):
     parser.add_argument(
         "-f",
         "--force",
-        nargs=1,
         type=str,
         default=False,
         help=f'If True then analysis records will be overwritten if they already exist.'
@@ -176,9 +169,9 @@ def _get_arg_parser_analyse(parser):
 
 
 def parse_args_analyse(args):
-    project = args.project[0]
-    sample_id = args.sample_id[0]
-    location = args.location[0]
+    project = args.project
+    sample_id = args.sample_id
+    location = args.location
     force = args.force
 
     return project, sample_id, location, force
@@ -191,24 +184,27 @@ def analyse_main(args):
 
 def _get_arg_parser_process_fixes(parser):
 
-    # parser.add_argument(
-    #     "-d",
-    #     "--dataset-ids",
-    #     nargs=1,
-    #     type=str,
-    #     default=None,
-    #     required=False,
-    #     help='List of comma-separated dataset identifiers'
-    # )
+    parser.add_argument(
+        "-d",
+        "--dataset-ids",
+        nargs=1,
+        type=str,
+        default=None,
+        required=False,
+        help='List of comma-separated dataset identifiers'
+    )
 
     return parser
 
-# def parse_args_process_fixes(args):
-#     ds_ids = _to_list(args.dataset_ids)
+
+def parse_args_process_fixes(args):
+    ds_ids = _to_list(args.dataset_ids)
+    return ds_ids
 
 
 def process_fixes_main(args):
-    process_all_fixes()
+    ds_ids = parse_args_process_fixes(args)
+    process_all_fixes(ds_ids)
 
 
 def main():
