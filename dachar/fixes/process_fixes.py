@@ -5,6 +5,7 @@ import pprint
 def get_proposed_fixes(ds_ids=None):
     if ds_ids is None:
         proposed_fixes = get_fix_prop_store().get_proposed_fixes()
+        print(proposed_fixes)
     else:
         proposed_fixes = []
 
