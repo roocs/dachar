@@ -22,12 +22,12 @@ from unittest.mock import Mock
 
 def _to_list(item):
     if not item: return item
-    return item[0].split(',')
+    return item.split(',')
 
 
 def _to_dict(item):
     if not item: return item
-    return dict([_.split('=') for _ in item[0].split(',')])
+    return dict([_.split('=') for _ in item.split(',')])
 
 
 def _get_arg_parser_scan(parser):
@@ -50,7 +50,6 @@ def _get_arg_parser_scan(parser):
     parser.add_argument(
         "-d",
         "--dataset-ids",
-        nargs=1,
         type=str,
         default=None,
         required=False,
@@ -60,7 +59,6 @@ def _get_arg_parser_scan(parser):
     parser.add_argument(
         "-p",
         "--paths",
-        nargs=1,
         type=str,
         default=None,
         required=False,
@@ -70,7 +68,6 @@ def _get_arg_parser_scan(parser):
     parser.add_argument(
         "-f",
         "--facets",
-        nargs=1,
         type=str,
         default=None,
         required=False,
@@ -80,7 +77,6 @@ def _get_arg_parser_scan(parser):
     parser.add_argument(
         "-e",
         "--exclude",
-        nargs=1,
         type=str,
         default=None,
         required=False,
@@ -187,7 +183,6 @@ def _get_arg_parser_process_fixes(parser):
     parser.add_argument(
         "-d",
         "--dataset-ids",
-        nargs=1,
         type=str,
         default=None,
         required=False,
