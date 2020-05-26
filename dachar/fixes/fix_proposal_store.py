@@ -121,5 +121,9 @@ class FixProposalStore(_BaseJsonStore):
 
         return proposed_fixes
 
+    # def get_proposed_fixes_2(self):
+    #     proposed_fixes = self.search('proposed')
+    #     return proposed_fixes
+
 
 
