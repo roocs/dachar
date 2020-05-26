@@ -11,7 +11,8 @@ from unittest.mock import Mock
 ds_ids = ['ds.1.1.1.1.1.1',
           'ds.2.1.1.1.1.1',
           'ds.3.1.1.1.1.1',
-          'ds.4.1.1.1.1.1']
+          'ds.4.1.1.1.1.1',
+          'ds.5.1.1.1.1.1']
 
 fixes = [
     {'fix_id': 'Fix1',
@@ -38,6 +39,12 @@ fixes = [
      'category': 'test_fixes',
      'reference_implementation': 'daops.test.test_fix_by_id',
      'operands': {'arg4': '4'}},
+    {'fix_id': 'Fix 5 by id',
+     'title': 'Apply Fix 5 by id',
+     'description': 'Applies fix 5',
+     'category': 'test_fixes',
+     'reference_implementation': 'daops.test.test_fix5',
+     'operands': {'arg4': '5'}},
 ]
 
 prop_store = None
@@ -138,7 +145,7 @@ def test_process_proposed_fixes():
     process_fixes.get_fix_prop_store = Mock(return_value=prop_store)
     process_fixes.get_fix_store = Mock(return_value=f_store)
     generate_fix_proposal(ds_ids[2], fixes[2])
-    process_fixes.process_all_fixes()
+    process_fixes.process_all_fixes('process')
 
 
 def test_process_proposed_fixes_with_id():
@@ -146,8 +153,34 @@ def test_process_proposed_fixes_with_id():
     process_fixes.get_fix_store = Mock(return_value=f_store)
     generate_fix_proposal(ds_ids[3], fixes[3])
     # process_fixes.process_all_fixes(ds_ids[2])
-    process_fixes.process_all_fixes([ds_ids[3]])
+    process_fixes.process_all_fixes('process', [ds_ids[3]])
 
+
+def test_withdraw_fix():
+    process_fixes.get_fix_prop_store = Mock(return_value=prop_store)
+    process_fixes.get_fix_store = Mock(return_value=f_store)
+    generate_fix_proposal(ds_ids[4], fixes[4])
+    generate_published_fix(ds_ids[4], fixes[4])
+    f_store.publish_fix(ds_ids[4], fixes[4])
+    process_fixes.process_all_fixes('withdraw', [ds_ids[4]])
+
+
+def test_withdraw_2_fixes():
+    process_fixes.get_fix_prop_store = Mock(return_value=prop_store)
+    process_fixes.get_fix_store = Mock(return_value=f_store)
+    generate_fix_proposal(ds_ids[4], fixes[4])
+    generate_published_fix(ds_ids[4], fixes[4])
+    f_store.publish_fix(ds_ids[4], fixes[4])
+    generate_fix_proposal(ds_ids[4], fixes[3])
+    generate_published_fix(ds_ids[4], fixes[3])
+    f_store.publish_fix(ds_ids[4], fixes[3])
+    process_fixes.process_all_fixes('withdraw', [ds_ids[4]])
+
+
+def test_withdraw_fix_not_found():
+    process_fixes.get_fix_prop_store = Mock(return_value=prop_store)
+    process_fixes.get_fix_store = Mock(return_value=f_store)
+    process_fixes.process_all_fixes('withdraw', [ds_ids[1]])
 
 def teardown_module():
     pass

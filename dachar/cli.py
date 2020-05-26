@@ -189,17 +189,28 @@ def _get_arg_parser_process_fixes(parser):
         help='List of comma-separated dataset identifiers'
     )
 
+    parser.add_argument(
+        "-a",
+        "--action",
+        type=str,
+        default=None,
+        required=True,
+        help='Action to carry out on fixes: process for proposed fixes, withdraw to withdraw'
+             'existing fixes'
+    )
+
     return parser
 
 
 def parse_args_process_fixes(args):
     ds_ids = _to_list(args.dataset_ids)
-    return ds_ids
+    action = args.action
+    return ds_ids, action
 
 
 def process_fixes_main(args):
-    ds_ids = parse_args_process_fixes(args)
-    process_all_fixes(ds_ids)
+    action, ds_ids = parse_args_process_fixes(args)
+    process_all_fixes(action, ds_ids)
 
 
 def main():
