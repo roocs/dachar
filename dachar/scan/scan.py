@@ -338,25 +338,25 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
     # return character, ds_id
 
     # output to JSON character store
-    try:
-        get_dc_store().put(ds_id, character)
-        print('name=', get_dc_store().store_name)
-    except Exception as exc:
-        print(f'[ERROR] Exception: {exc}')
-        # Create error file if can't output file
-        open(outputs['write_error'], 'w')
-        return False
-
-    print(f'[INFO] Written to character store') # add file path to json file ?
-
-    # Output to JSON file
     # try:
-    #     output = to_json(character, outputs['json'])
+    #     get_dc_store().put(ds_id, character)
+    #     print('name=', get_dc_store().store_name)
     # except Exception as exc:
-    #     print(f'[ERROR] Could not write JSON output: {outputs["json"]}')
+    #     print(f'[ERROR] Exception: {exc}')
     #     # Create error file if can't output file
     #     open(outputs['write_error'], 'w')
     #     return False
     #
-    # print(f'[INFO] Wrote JSON file: {outputs["json"]}')
+    # print(f'[INFO] Written to character store') # add file path to json file ?
+
+    # Output to JSON file
+    try:
+        output = to_json(character, outputs['json'])
+    except Exception as exc:
+        print(f'[ERROR] Could not write JSON output: {outputs["json"]}')
+        # Create error file if can't output file
+        open(outputs['write_error'], 'w')
+        return False
+
+    print(f'[INFO] Wrote JSON file: {outputs["json"]}')
 
