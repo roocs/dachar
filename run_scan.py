@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from dachar.utils import switch_ds
 import argparse
 import glob
@@ -18,10 +20,20 @@ def convert_to_ds_id_and_scan(args):
     vars = glob.glob(f'{ensemble_path}/*')
 
     for var_path in vars:
-        ds_id = switch_ds.switch_ds(project, var_path)
-        print(ds_id)
-        cmd = f'dachar scan -l ceda -d {ds_id} -m full {project}'
-        # subprocess.call(cmd, shell=True)
+        versions = glob.glob(f'{var_path}/*')
+
+        ds_ids = []
+        for version_path in versions:
+            ds_id = switch_ds.switch_ds(project, version_path)
+
+            if ds_id.split('.')[-1] != 'files':
+                ds_ids.append(ds_id)
+
+        ds_id_list = str(ds_ids).strip("[]").replace(' ','').replace("'", "")
+
+        cmd = f'dachar scan -l ceda -d {ds_id_list} -m full {project}'
+        subprocess.call(cmd, shell=True)
+
 
 
 def main():

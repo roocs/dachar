@@ -1,5 +1,6 @@
 # scan all c3s-cmip5 datasets using lotus
 from dachar import config
+from dachar.utils import switch_ds
 import glob
 import os
 import subprocess
@@ -29,14 +30,23 @@ def get_ensemble(freq_path):
     for ensemble_path in ensembles:
 
         current_directory = os.getcwd()
-        output_base = config.BATCH_OUTPUT_PATH # need to figure out how log paths works
+
+        ds_id = switch_ds.switch_ds('c3s-cmip5', ensemble_path)
+        grouped_ds_id = switch_ds.get_grouped_ds_id(ds_id)
+        output_base = config.BATCH_OUTPUT_PATH.format(grouped_ds_id=grouped_ds_id)
+
+        dr = os.path.dirname(output_base)
+
+        if not os.path.isdir(dr):
+            os.makedirs(dr)
+
 
         # submit to lotus
-        # bsub_command = f"bsub -q {config.QUEUE} -W {config.WALLCLOCK} -o " \
-        #                f"{output_base}.out -e {output_base}.err {current_directory}" \
-        #                f"/run_scan.py -p {ensemble_path}"
+        bsub_command = f"bsub -q {config.QUEUE} -W {config.WALLCLOCK} -o " \
+                       f"{output_base}.out -e {output_base}.err {current_directory}" \
+                       f"/run_scan.py -p {ensemble_path}"
 
-        bsub_command = f'run_scan.py -p {ensemble_path}'
+        # bsub_command = f'{current_directory}/run_scan.py -p {ensemble_path}'
         subprocess.call(bsub_command, shell=True)
 
         print(f"running {bsub_command}")
