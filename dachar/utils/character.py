@@ -98,6 +98,8 @@ def _copy_dict_for_json(dct):
             value = float(value)
         elif isinstance(value, np.integer):
             value = int(value)
+        elif isinstance(value, np.ndarray):
+            value = value.tolist()
 
         d[key] = value
 
@@ -110,6 +112,7 @@ def get_variable_metadata(da):
 
     # Encode _FillValue as string because representation may be strange
     d['_FillValue'] = str(da.encoding.get('_FillValue', 'NOT_DEFINED'))
+
     return d
 
 
