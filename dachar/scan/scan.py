@@ -137,8 +137,6 @@ def get_dataset_paths(project, ds_ids=None, paths=None, facets=None, exclude=Non
     else:
         raise NotImplementedError('Code currently breaks if not using "ds_ids" argument.')
 
-
-
     return ds_paths
 
 
@@ -210,7 +208,7 @@ def _get_output_paths(project, ds_id):
         'no_files_error': config.NO_FILES_PATH.format(**vars()),
         'extract_error': config.EXTRACT_ERROR_PATH.format(**vars()),
         'write_error': config.WRITE_ERROR_PATH.format(**vars()),
-        'batch': config.BATCH_OUTPUT_PATH.format(**vars())
+        # 'batch': config.BATCH_OUTPUT_PATH.format(**vars())
     }
 
     # Make directories if not already there
