@@ -35,9 +35,7 @@ def convert_to_ds_id_and_scan(args):
         subprocess.call(cmd, shell=True)
 
 
-
 def main():
-
     args = arg_parse()
     convert_to_ds_id_and_scan(args)
 
