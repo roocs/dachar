@@ -1,0 +1,9 @@
+name: dachar
+channels:
+ - conda-forge
+ - defaults
+dependencies:
+ - numpy>=1.16
+ - xarray>=0.15
+ - netCDF4>=1.4
+ - dask>=2.6.0
