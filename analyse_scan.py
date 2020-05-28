@@ -27,7 +27,7 @@ output_dir = join(base_dir, 'register/')
 json_files = sum(len(files) for _, _, files in os.walk(output_dir))
 
 print('total json files =', json_files)
-print('Number of datasets succesfully scanned =', (json_files-write_errors))
+print('Number of datasets successfully scanned =', (json_files-write_errors))
 
 
 # how many datasets were attempted
