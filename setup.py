@@ -3,21 +3,19 @@
 
 """The setup script."""
 
-from setuptools import setup, find_packages
-
 __author__ = "Elle Smith"
 __contact__ = "eleanor.smith@stfc.ac.uk"
 __copyright__ = "Copyright 2018 United Kingdom Research and Innovation"
 __version__ = ""
 __license__ = "BSD"
 
+from setuptools import find_packages
+from setuptools import setup
 
-from setuptools import setup, find_packages
 
 # One strategy for storing the overall version is to put it in the top-level
 # package's __init__ but Nb. test_json_store.py files are not needed to declare
 # packages in Python 3
-from dachar import __version__ as _package_version
 
 # Populate long description setting with content of README
 #
