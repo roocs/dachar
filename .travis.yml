@@ -53,7 +53,7 @@ jobs:
         - conda create -n dachar -c conda-forge python=$TRAVIS_PYTHON_VERSION
         - source activate dachar
         - conda env update -f environment.yml
-        - conda install pytest coveralls pytest-cov
+        - conda install pytest coveralls pytest-cov xarray
       install:
         - conda install pip
         - pip install -e .
@@ -77,7 +77,7 @@ jobs:
         - conda create -n dachar -c conda-forge python=$DESIRED_PYTHON
         - source activate dachar
         - conda env update -f environment.yml
-        - conda install pytest coveralls pytest-cov
+        - conda install pytest coveralls pytest-cov xarray
       install:
         - conda install pip
         - pip install -e .
