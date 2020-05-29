@@ -4,6 +4,7 @@ from dachar.utils import switch_ds
 import argparse
 import glob
 import subprocess
+import re
 
 
 def arg_parse():
@@ -26,13 +27,13 @@ def convert_to_ds_id_and_scan(args):
         for version_path in versions:
             ds_id = switch_ds.switch_ds(project, version_path)
 
-            if ds_id.split('.')[-1] != 'files':
+            if re.search(r'^v', ds_id.split('.')[-1]):
                 ds_ids.append(ds_id)
 
         ds_id_list = str(ds_ids).strip("[]").replace(' ','').replace("'", "")
-
-        cmd = f'dachar scan -l ceda -d {ds_id_list} -m full {project}'
-        subprocess.call(cmd, shell=True)
+        print(ds_id_list)
+        # cmd = f'dachar scan -l ceda -d {ds_id_list} -m full {project}'
+        # subprocess.call(cmd, shell=True)
 
 
 def main():

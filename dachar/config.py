@@ -2,7 +2,7 @@ import os
 
 join = os.path.join
 QUEUE = "short-serial"
-WALLCLOCK = "00:30"
+WALLCLOCK = "01:00"
 DIR_GROUPING_LEVEL = 4
 CONCERN_THRESHOLD = 0.2
 _base_path = '/gws/smf/j04/cmip6_prep/c3s_34e'

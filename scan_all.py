@@ -42,11 +42,11 @@ def get_ensemble(freq_path):
 
 
         # submit to lotus
-        bsub_command = f"bsub -q {config.QUEUE} -W {config.WALLCLOCK} -o " \
-                       f"{output_base}.out -e {output_base}.err {current_directory}" \
-                       f"/run_scan.py -p {ensemble_path}"
+        # bsub_command = f"bsub -q {config.QUEUE} -W {config.WALLCLOCK} -o " \
+        #                f"{output_base}.out -e {output_base}.err {current_directory}" \
+        #                f"/run_scan.py -p {ensemble_path}"
 
-        # bsub_command = f'{current_directory}/run_scan.py -p {ensemble_path}'
+        bsub_command = f'{current_directory}/run_scan.py -p {ensemble_path}'
         subprocess.call(bsub_command, shell=True)
 
         print(f"running {bsub_command}")
