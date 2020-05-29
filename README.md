@@ -2,13 +2,13 @@
 
 [![Pypi](https://img.shields.io/pypi/v/dachar.svg)](https://pypi.python.org/pypi/dachar)
 
-[![Travis](https://img.shields.io/travis/ellesmith88/dachar.svg)](https://travis-ci.org/ellesmith88/dachar)
+[![Travis](https://img.shields.io/travis/ellesmith88/dachar.svg)](https://travis-ci.org/github/roocs/dachar)
 
 [![Documentation](https://readthedocs.org/projects/dachar/badge/?version=latest)](https://dachar.readthedocs.io/en/latest/?badge=latest)
 
 The "dachar" package (pronounced "day-car", like René Descartes, a founder of modern science and philosophy)
-is a python library used to capture and analyse the _character_ of scientific data sets. We typically focus on data sets held in the 
-Earth System Grid Federation (ESGF) catalogues. 
+is a python library used to capture and analyse the _character_ of scientific data sets. We typically focus on data sets held in the
+Earth System Grid Federation (ESGF) catalogues.
 
 ESGF data sets are usually defined by the following characteristics:
 
@@ -32,8 +32,8 @@ There are three main stages to the characterisation process:
  2. **Analysis**: Define _populations_ of data sets (that might be processed together)
  and analyse each _population_ to identify irregularities when comparing
  with other members of the population. Write the results of the analysis (JSON).
- 3. **Define Fixes**: Suggest fixes required to individual data sets to overcome the 
- irregularities. Write the required fixes to a new set of files (JSON). 
+ 3. **Define Fixes**: Suggest fixes required to individual data sets to overcome the
+ irregularities. Write the required fixes to a new set of files (JSON).
 
 # Credits
 

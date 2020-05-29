@@ -1,11 +1,12 @@
+import json
 import os
-os.path.
+
 
 class _BaseCheck(object):
     pass
 
-class RankCheck(_BaseCheck):
 
+class RankCheck(_BaseCheck):
     def __init__(self):
         pass
 
@@ -28,9 +29,7 @@ class RankCheck(_BaseCheck):
         pass
 
 
-
 class GrandAnalyser(object):
-
     def __init__(self, project):
         self._project = project
         self.analyse_all()
@@ -47,11 +46,14 @@ class GrandAnalyser(object):
         for i in range(1000):
             yield i
 
+
 # Is the check store a superset of the fixes?
+
 
 def prep_dir(dr):
     if not os.path.isdir(dr):
         os.makedirs(dr)
+
 
 class JsonStore(object):
 
@@ -67,23 +69,22 @@ class JsonStore(object):
     def put(self, id, content):
         pth = self._id_to_path(id)
 
-        with open(pth, 'w') as writer:
+        with open(pth, "w") as writer:
             json.dump(content, writer)
 
     def search(self, terms=None, freetext=None):
         pass
 
-    def get(self, id)
+    def get(self, id):
         return
 
     def _id_to_path(self, id):
-        comps = id.split('.', self.SPLIT_LEVEL)
-        fname = comps[-1] + '.json'
+        comps = id.split(".", self.SPLIT_LEVEL)
+        fname = comps[-1] + ".json"
         return os.path.join(self._location, *comps[:-1], fname)
 
 
 class CheckStore(object):
-
     def __init__(self):
         pass
 
@@ -101,7 +102,6 @@ class CheckStore(object):
 
 
 class PopulationBuilder(object):
-
     def __init__(self, project):
         self._project = project
 
