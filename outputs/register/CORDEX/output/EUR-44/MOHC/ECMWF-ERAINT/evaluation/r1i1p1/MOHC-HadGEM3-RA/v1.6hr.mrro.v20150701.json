@@ -1,0 +1,114 @@
+{
+    "coordinates": {
+        "rlat": {
+            "axis": "Y",
+            "bounds": "rlat_bnds",
+            "id": "rlat",
+            "length": 103,
+            "long_name": "latitude in rotated pole grid",
+            "max": 21.67000013589859,
+            "min": -23.20999962091446,
+            "standard_name": "grid_latitude",
+            "units": "degrees"
+        },
+        "rlon": {
+            "axis": "X",
+            "bounds": "rlon_bnds",
+            "id": "rlon",
+            "length": 106,
+            "long_name": "longitude in rotated pole grid",
+            "max": 17.989975333213806,
+            "min": -28.210024416446686,
+            "standard_name": "grid_longitude",
+            "units": "degrees"
+        },
+        "time": {
+            "axis": "T",
+            "bounds": "time_bnds",
+            "calendar": "proleptic_gregorian",
+            "id": "time",
+            "length": 30680,
+            "long_name": "time",
+            "max": "2010-12-31T21:00:00",
+            "min": "1990-01-01T03:00:00",
+            "standard_name": "time"
+        }
+    },
+    "data": {
+        "coord_names": [
+            "lon",
+            "lat",
+            "rlat",
+            "rlon",
+            "time"
+        ],
+        "dim_names": [
+            "time",
+            "rlat",
+            "rlon"
+        ],
+        "max": NaN,
+        "min": NaN,
+        "rank": 3,
+        "shape": [
+            30680,
+            103,
+            106
+        ]
+    },
+    "global_attrs": {
+        "CORDEX_domain": "EUR-44",
+        "Conventions": "CF-1.4",
+        "branch_time": 0.0,
+        "cmor_version": "2.9.1",
+        "contact": "erasmo.buonomo@metoffice.gov.uk",
+        "creation_date": "2015-04-01T22:09:47Z",
+        "driving_experiment": "ECMWF-ERAINT, evaluation, r1i1p1",
+        "driving_experiment_name": "evaluation",
+        "driving_model_ensemble_member": "r1i1p1",
+        "driving_model_id": "ECMWF-ERAINT",
+        "experiment": "Evaluation run with reanalysis forcing",
+        "experiment_id": "evaluation",
+        "forcing": "GHG, Oz, SA, AA, BC, Ds, OC, SS, (GHG = CO2, N2O, CH4, CFCs)",
+        "frequency": "6hr",
+        "history": "MOHC pp to CMOR/NetCDF convertor (version 1.15.2) 2015-04-01T22:09:08Z CMOR rewrote data to comply with CF standards and CORDEX requirements.",
+        "initialization_method": 1,
+        "institute_id": "MOHC",
+        "institution": "Met Office Hadley Centre, Fitzroy Road, Exeter, Devon, EX1 3PB, UK (http://www.metoffice.gov.uk)",
+        "mo_driving_runid": "external simulation",
+        "mo_runid": "annzv",
+        "model_id": "MOHC-HadGEM3-RA",
+        "modeling_realm": "land",
+        "parent_experiment": "N/A",
+        "parent_experiment_id": "N/A",
+        "parent_experiment_rip": "N/A",
+        "physics_version": 1,
+        "product": "output",
+        "project_id": "CORDEX",
+        "rcm_version_id": "v1",
+        "realization": 1,
+        "references": "'W. Moufouma-Okia and R. Jones (2015) Resolution dependence in simulating the African hydroclimate with the HadGEM3-RA regional climate model Climate Dynamics, Volume 44, Issue 3-4, pp 609-632, February 2015'",
+        "source": "MOHC Unified Model for regional analysis",
+        "table_id": "Table 6h (Sept 2013) dab27e71e491553fdad8e694bd75c997",
+        "title": "MOHC-HadGEM3-RA model output prepared for CORDEX Evaluation run with reanalysis forcing",
+        "tracking_id": "91b151f6-2ddd-4e71-abea-30f17eb3bd8b"
+    },
+    "scan_metadata": {
+        "last_scanned": "2020-06-01T13:00:05.953470",
+        "location": "ceda",
+        "mode": "full"
+    },
+    "variable": {
+        "_FillValue": "1e+20",
+        "associated_files": "gridspecFile: gridspec_land_fx_MOHC-HadGEM3-RA_evaluation_r0i0p0.nc",
+        "cell_methods": "time: mean area: mean where land",
+        "comment": "\"compute the total runoff (including \"\"drainage\"\" through the base of the soil model) leaving the land portion of the grid cell.\"",
+        "grid_mapping": "rotated_latitude_longitude",
+        "history": "2015-04-01T22:09:47Z altered by CMOR: replaced missing value flag (-1.07374e+09) with standard missing value (1e+20).",
+        "long_name": "Total Runoff",
+        "original_name": "mo: m01s08i234+m01s08i235",
+        "standard_name": "runoff_flux",
+        "units": "kg m-2 s-1",
+        "var_id": "mrro"
+    }
+}

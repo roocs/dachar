@@ -7,6 +7,10 @@ import subprocess
 
 # glob.glob('/group_workspaces/jasmin2/cp4cds1/vol1/data/c3s-cmip5/output1/*/*/*/*/*/*/*/*')
 
+# cordex: /group_workspaces/jasmin2/cp4cds1/vol1/data/c3s-cordex/output/EUR-11/
+
+# cmip5: /group_workspaces/jasmin2/cp4cds1/vol1/data/c3s-cmip5/output1/
+
 
 def get_institute_model_combination():
     models = glob.glob('/group_workspaces/jasmin2/cp4cds1/vol1/data/c3s-cmip5/output1/*/*/')
@@ -42,11 +46,11 @@ def get_ensemble(freq_path):
 
 
         # submit to lotus
-        # bsub_command = f"bsub -q {config.QUEUE} -W {config.WALLCLOCK} -o " \
-        #                f"{output_base}.out -e {output_base}.err {current_directory}" \
-        #                f"/run_scan.py -p {ensemble_path}"
+        bsub_command = f"bsub -q {config.QUEUE} -W {config.WALLCLOCK} -o " \
+                       f"{output_base}.out -e {output_base}.err {current_directory}" \
+                       f"/scan_chunk.py -p {ensemble_path}"
 
-        bsub_command = f'{current_directory}/run_scan.py -p {ensemble_path}'
+        # bsub_command = f'{current_directory}/scan_chunk.py -p {ensemble_path}'
         subprocess.call(bsub_command, shell=True)
 
         print(f"running {bsub_command}")

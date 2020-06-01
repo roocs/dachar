@@ -31,9 +31,10 @@ def convert_to_ds_id_and_scan(args):
                 ds_ids.append(ds_id)
 
         ds_id_list = str(ds_ids).strip("[]").replace(' ','').replace("'", "")
-        print(ds_id_list)
-        # cmd = f'dachar scan -l ceda -d {ds_id_list} -m full {project}'
-        # subprocess.call(cmd, shell=True)
+
+        # print(ds_id_list)
+        cmd = f'dachar scan -l ceda -d {ds_id_list} -m full {project}'
+        subprocess.call(cmd, shell=True)
 
 
 def main():
