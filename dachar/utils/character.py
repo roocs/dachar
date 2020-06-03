@@ -16,11 +16,11 @@ def get_coord_by_attr(dset, attr, value):
 
 
 def is_latitude(coord):
-    return coord.attrs.get("standard_name") == "latitude"
+    return coord.attrs.get('standard_name') == 'latitude'
 
 
 def is_longitude(coord):
-    return coord.attrs.get("standard_name") == "longitude"
+    return coord.attrs.get('standard_name') == 'longitude'
 
 
 def is_level(coord):
@@ -28,12 +28,12 @@ def is_level(coord):
 
 
 def is_time(coord):
-    return coord.attrs.get("standard_name") == "time"
+    return coord.attrs.get('standard_name') == 'time'
 
 
 def get_coord_type(coord):
-    for ctype in ("time", "latitude", "longitude"):
-        if coord.attrs.get("standard_name", None) == ctype:
+    for ctype in ('time', 'latitude', 'longitude'):
+        if coord.attrs.get('standard_name', None) == ctype:
             return ctype
 
 
@@ -51,33 +51,40 @@ def get_coords(da):
     Returns a dictionary of coordinate info.
     """
     coords = {}
-    print(f"[DEBUG] Found coords: {str(da.coords.keys())}")
-    print(f"[WARN] NOT CAPTURING scalar COORDS BOUND BY coorindates attr yet!!!")
+    print(f'[DEBUG] Found coords: {str(da.coords.keys())}')
+    print(f'[WARN] NOT CAPTURING scalar COORDS BOUND BY coorindates attr yet!!!')
 
-    for coord_id in da.coords.dims:
+    for coord_id in da.coords:
         coord = da.coords[coord_id]
 
         coord_type = get_coord_type(coord)
         name = coord_type or coord.name
         data = coord.values
+        dims = coord.dims
 
         mn, mx = data.min(), data.max()
 
-        if coord_type == "time":
+        if coord_type == 'time':
             if type(mn) == np.datetime64:
-                mn, mx = [str(_).split(".")[0] for _ in (mn, mx)]
+                mn, mx = [str(_).split('.')[0] for _ in (mn, mx)]
             else:
-                mn, mx = [_.strftime("%Y-%m-%dT%H:%M:%S") for _ in (mn, mx)]
+                mn, mx = [_.strftime('%Y-%m-%dT%H:%M:%S') for _ in (mn, mx)]
         else:
             mn, mx = [float(_) for _ in (mn, mx)]
 
-        coords[name] = {"id": name, "min": mn, "max": mx, "length": len(data)}
+        coords[name] = {
+            'id': name,
+            'dims': dims,
+            'min': mn,
+            'max': mx,
+            'length': len(data)
+        }
 
-        if coord_type == "time":
+        if coord_type == 'time':
             if type(data[0]) == np.datetime64:
-                coords[name]["calendar"] = "standard"
+                coords[name]['calendar'] = 'standard'
             else:
-                coords[name]["calendar"] = data[0].calendar
+                coords[name]['calendar'] = data[0].calendar
 
         coords[name].update(coord.attrs)
 
@@ -94,6 +101,8 @@ def _copy_dict_for_json(dct):
             value = float(value)
         elif isinstance(value, np.integer):
             value = int(value)
+        elif isinstance(value, np.ndarray):
+            value = value.tolist()
 
         d[key] = value
 
@@ -102,23 +111,24 @@ def _copy_dict_for_json(dct):
 
 def get_variable_metadata(da):
     d = _copy_dict_for_json(da.attrs)
-    d["var_id"] = da.name
+    d['var_id'] = da.name
 
     # Encode _FillValue as string because representation may be strange
-    d["_FillValue"] = str(da.encoding.get("_FillValue", "NOT_DEFINED"))
+    d['_FillValue'] = str(da.encoding.get('_FillValue', 'NOT_DEFINED'))
+
     return d
 
 
 def get_global_attrs(ds, expected_attrs=None):
     if expected_attrs:
-        print("[WARN] Not testing expected attrs yet")
+        print('[WARN] Not testing expected attrs yet')
 
     d = _copy_dict_for_json(ds.attrs)
     return d
 
 
 def get_data_info(da, mode):
-    if mode == "full":
+    if mode == 'full':
         data = da.values
         mx = float(data.max())
         mn = float(data.min())
@@ -128,24 +138,51 @@ def get_data_info(da, mode):
         mn = None
 
     return {
-        "min": mn,
-        "max": mx,
-        "shape": list(da.shape),
-        "rank": len(da.shape),
-        "coord_names": [_ for _ in da.coords.keys()],
+        'min': mn,
+        'max': mx,
+        'shape': da.shape,
+        'rank': len(da.shape),
+        'dim_names': da.dims,
+        'coord_names': [_ for _ in da.coords.keys()]
     }
 
 
+def get_grid_metadata(ds, da):
+
+    try:
+        grid_mapping = ds[da.grid_mapping].attrs
+ 
+    except AttributeError:
+        grid_mapping = None
+
+    return {
+        'grid_mapping': grid_mapping,
+    }
+
+
+def get_bounds(ds):
+    bounds = {}
+
+    variables = ds.variables
+
+    for variable in variables:
+        if [string for string in ["bnd", "bound", "vertice"] if(string in variable)]:
+            bounds[variable] = (ds[variable].attrs)
+
+    return bounds
+
+    
 def get_scan_metadata(mode, location):
 
     return {
-        "mode": mode,
-        "last_scanned": datetime.now().isoformat(),
-        "location": location,
+        'mode': mode,
+        'last_scanned': datetime.now().isoformat(),
+        'location': location,
     }
 
 
 class CharacterExtractor(object):
+
     def __init__(self, files, location, var_id, mode, expected_attrs=None):
         """
         Open files as an Xarray MultiFile Dataset and extract character as a dictionary.
@@ -162,25 +199,23 @@ class CharacterExtractor(object):
         self._extract()
 
     def _extract(self):
-        ds = xr.open_mfdataset(self._files, use_cftime=True, combine="by_coords")
-        print("[WARN] NEED TO CHECK NUMBER OF VARS/DOMAINS RETURNED HERE")
-        print(
-            "[WARN] DOES NOT CHECK YET WHETHER WE MIGHT GET 2 DOMAINS/VARIABLES BACK FROM MULTI-FILE OPEN"
-        )
+        ds = xr.open_mfdataset(self._files, use_cftime=True, combine='by_coords')
+        print('[WARN] NEED TO CHECK NUMBER OF VARS/DOMAINS RETURNED HERE')
+        print('[WARN] DOES NOT CHECK YET WHETHER WE MIGHT GET 2 DOMAINS/VARIABLES BACK FROM MULTI-FILE OPEN')
         # Get content by variable
         da = ds[self._var_id]
 
         self.character = {
             "scan_metadata": get_scan_metadata(self._mode, self._location),
             "variable": get_variable_metadata(da),
+            "bounds": get_bounds(ds),
             "coordinates": get_coords(da),
             "global_attrs": get_global_attrs(ds, self._expected_attrs),
             "data": get_data_info(da, self._mode),
+            "grid_metadata": get_grid_metadata(ds, da)
         }
 
 
-def extract_character(files, location, var_id, mode="full", expected_attrs=None):
-    ce = CharacterExtractor(
-        files, location, var_id, mode, expected_attrs=expected_attrs
-    )
+def extract_character(files, location, var_id, mode='full', expected_attrs=None):
+    ce = CharacterExtractor(files, location, var_id, mode, expected_attrs=expected_attrs)
     return ce.character
