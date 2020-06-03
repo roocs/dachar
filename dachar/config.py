@@ -2,10 +2,10 @@ import os
 
 join = os.path.join
 QUEUE = "short-serial"
-WALLCLOCK = "03:00"
+WALLCLOCK = "05:00"
 DIR_GROUPING_LEVEL = 4
 CONCERN_THRESHOLD = 0.2
-_base_path = '/gws/smf/j04/cmip6_prep/c3s_34e'
+_base_path = '/gws/smf/j04/cp4cds1/c3s_34e'
 # _base_path = './outputs'
 BASE_LOG_DIR = join(_base_path, 'logs')
 BATCH_OUTPUT_PATH = join(BASE_LOG_DIR, 'batch-outputs/{grouped_ds_id}')

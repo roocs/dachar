@@ -16,7 +16,7 @@ def arg_parse():
 
 
 def convert_to_ds_id_and_scan(args):
-    project = 'c3s-cmip5'
+    project = 'c3s-cordex'
     ensemble_path = args.path
     vars = glob.glob(f'{ensemble_path}/*')
 

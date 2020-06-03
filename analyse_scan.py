@@ -2,7 +2,7 @@ import os
 join = os.path.join
 
 
-base_dir = '/gws/smf/j04/cmip6_prep/c3s_34e/'
+base_dir = '/gws/smf/j04/cp4cds1/c3s_34e/'
 
 print('cmip5')
 # how many failures, and what types of failure
