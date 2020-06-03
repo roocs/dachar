@@ -86,8 +86,8 @@
         "coord_names": [
             "lat",
             "lon",
-            "rlon",
             "rlat",
+            "rlon",
             "time"
         ],
         "dim_names": [
@@ -95,8 +95,8 @@
             "rlat",
             "rlon"
         ],
-        "max": null,
-        "min": null,
+        "max": 0.009844779968261719,
+        "min": 0.0,
         "rank": 3,
         "shape": [
             30680,
@@ -150,9 +150,9 @@
         }
     },
     "scan_metadata": {
-        "last_scanned": "2020-06-03T12:52:11.664469",
+        "last_scanned": "2020-06-03T15:48:39.249151",
         "location": "ceda",
-        "mode": "quick"
+        "mode": "full"
     },
     "variable": {
         "_FillValue": "1e+20",
