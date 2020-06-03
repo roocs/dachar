@@ -94,6 +94,8 @@ def _copy_dict_for_json(dct):
             value = float(value)
         elif isinstance(value, np.integer):
             value = int(value)
+        elif isinstance(value, np.ndarray):
+            value = value.tolist()
 
         d[key] = value
 
@@ -119,9 +121,8 @@ def get_global_attrs(ds, expected_attrs=None):
 
 def get_data_info(da, mode):
     if mode == "full":
-        data = da.values
-        mx = float(data.max())
-        mn = float(data.min())
+        mx = float(da.max())
+        mn = float(da.min())
 
     else:
         mx = None
