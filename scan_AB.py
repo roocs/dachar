@@ -13,7 +13,7 @@ import subprocess
 
 
 def get_institute_model_combination():
-    models = glob.glob('/group_workspaces/jasmin2/cp4cds1/vol1/data/c3s-cmip5/output1/*/*/')
+    models = glob.glob('/group_workspaces/jasmin2/cp4cds1/vol1/data/c3s-cordex/output/EUR-11/*/*/')
 
     # e.g. '/group_workspaces/jasmin2/cp4cds1/vol1/data/c3s-cmip5/output1/MOHC/HadGEM2-ES/'
     for model_path in models:
@@ -35,7 +35,7 @@ def get_ensemble(freq_path):
 
         current_directory = os.getcwd()
 
-        ds_id = switch_ds.switch_ds('c3s-cmip5', ensemble_path)
+        ds_id = switch_ds.switch_ds('c3s-cordex', ensemble_path)
         grouped_ds_id = switch_ds.get_grouped_ds_id(ds_id)
         output_base = config.BATCH_OUTPUT_PATH.format(grouped_ds_id=grouped_ds_id)
 
