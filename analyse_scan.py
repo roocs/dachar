@@ -4,7 +4,9 @@ join = os.path.join
 
 base_dir = '/gws/smf/j04/cp4cds1/c3s_34e/'
 
-print('cmip5')
+
+# c3s-cmip5
+print('c3s-cmip5')
 # how many failures, and what types of failure
 # failure_dir = join(base_dir, 'logs/failure/c3s-cmip5')
 write_error_dir = join(base_dir, 'logs/failure/write_error/c3s-cmip5')
@@ -49,9 +51,9 @@ print('Average volume of a JSON file (including those with write errors) =', rou
 
 
 
-#cordex
+#c3s-cordex
 
-print('cordex')
+print('c3s-cordex')
 # how many failures, and what types of failure
 # failure_dir = join(base_dir, 'logs/failure/c3s-cmip5')
 write_error_dir_cordex = join(base_dir, 'logs/failure/write_error/c3s-cordex')
