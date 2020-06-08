@@ -66,7 +66,7 @@ def _get_arg_parser_scan(parser):
     )
 
     parser.add_argument(
-        "-fs",
+        "-f",
         "--facets",
         type=str,
         default=None,
