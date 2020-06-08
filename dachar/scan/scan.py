@@ -284,15 +284,21 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
         try:
             # if json file exists get mode
             data = json.load(open(outputs["json"]))
-            mode = data["scan_metadata"]["mode"]
-            if mode == 'quick':
-                print(f'[INFO] Already ran for: {ds_id} in quick mode')
-                return True
+            previous_mode = data["scan_metadata"]["mode"]
+            if previous_mode == 'quick':
+                if mode == 'full-force':
+                    os.remove(outputs["json"])
+                    mode = 'full'
+                    print(f'[INFO] Already ran for {ds_id} in quick mode.'
+                          f' Overwriting with full mode ')
+                else:
+                    print(f'[INFO] Already ran for {ds_id} in quick mode')
+                    return True
 
-            if mode == 'full':
+            if previous_mode == 'full':
                 check = _check_for_min_max(outputs["json"])
                 if check:
-                    print(f'[INFO] Already ran for: {ds_id} in full mode')
+                    print(f'[INFO] Already ran for {ds_id} in full mode')
                     return True
 
         # flag that a corrupt JSON file exists
