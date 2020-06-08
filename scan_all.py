@@ -4,6 +4,7 @@ from dachar.utils import switch_ds
 import glob
 import os
 import subprocess
+import argparse
 
 # glob.glob('/group_workspaces/jasmin2/cp4cds1/vol1/data/c3s-cmip5/output1/*/*/*/*/*/*/*/*')
 
@@ -87,7 +88,7 @@ def get_ensemble(freq_path, project, resource, mode):
 
         # submit to lotus
         bsub_command = f"bsub -q {config.QUEUE} -W {wallclock} -o " \
-                       f"{output_base}.out -e {output_base}.err –R “rusage[mem={memory}] -M {memory}" \
+                       f"{output_base}.out -e {output_base}.err –R “rusage[mem={memory}] -M {memory} " \
                        f"{current_directory}/scan_vars.py -p {ensemble_path} -pr {project} -m {mode}"
 
         # bsub_command = f'{current_directory}/scan_vars.py -p {ensemble_path} -pr {project}'
