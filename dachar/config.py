@@ -1,12 +1,18 @@
 import os
 
 join = os.path.join
+
 QUEUE = "short-serial"
-WALLCLOCK = "06:00"
+WALLCLOCK_LARGE = "12:00"
+MEMORY_LARGE = 16000
+WALLCLOCK_SMALL = "04:00"
+MEMORY_SMALL = 4000
+
+
 DIR_GROUPING_LEVEL = 4
 CONCERN_THRESHOLD = 0.2
 _base_path = '/gws/smf/j04/cp4cds1/c3s_34e'
-#_base_path = './outputs'
+# _base_path = './outputs'
 BASE_LOG_DIR = join(_base_path, 'logs')
 BATCH_OUTPUT_PATH = join(BASE_LOG_DIR, 'batch-outputs/{grouped_ds_id}')
 JSON_OUTPUT_PATH = join(_base_path, 'register/{grouped_ds_id}.json')
