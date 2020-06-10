@@ -150,7 +150,7 @@ def get_grid_metadata(ds, da):
 
     try:
         grid_mapping = ds[da.grid_mapping].attrs
- 
+
     except AttributeError:
         grid_mapping = None
 
@@ -166,11 +166,16 @@ def get_bounds(ds):
 
     for variable in variables:
         if [string for string in ["bnd", "bound", "vertice"] if(string in variable)]:
-            bounds[variable] = (ds[variable].attrs)
+            bounds[variable] = ds[variable].attrs
+
+            mx = float(ds[variable].max())
+            mn = float(ds[variable].min())
+
+            bounds[variable].update({'max': mx}, {'min': mn})
 
     return bounds
 
-    
+
 def get_scan_metadata(mode, location):
 
     return {
