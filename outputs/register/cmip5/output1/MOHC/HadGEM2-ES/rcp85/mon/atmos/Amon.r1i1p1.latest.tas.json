@@ -1,0 +1,144 @@
+{
+    "bounds": {
+        "lat_bnds": {
+            "max": 90.0,
+            "min": -90.0
+        },
+        "lon_bnds": {
+            "max": 359.0625,
+            "min": -0.9375
+        },
+        "time_bnds": {
+            "max": "2300-01-01T00:00:00",
+            "min": "2005-12-01T00:00:00"
+        }
+    },
+    "coordinates": {
+        "height": {
+            "axis": "Z",
+            "dims": [],
+            "id": "height",
+            "length": 1,
+            "long_name": "height",
+            "max": 1.5,
+            "min": 1.5,
+            "positive": "up",
+            "standard_name": "height",
+            "units": "m"
+        },
+        "latitude": {
+            "axis": "Y",
+            "bounds": "lat_bnds",
+            "dims": [
+                "lat"
+            ],
+            "id": "latitude",
+            "length": 145,
+            "long_name": "latitude",
+            "max": 90.0,
+            "min": -90.0,
+            "standard_name": "latitude",
+            "units": "degrees_north"
+        },
+        "longitude": {
+            "axis": "X",
+            "bounds": "lon_bnds",
+            "dims": [
+                "lon"
+            ],
+            "id": "longitude",
+            "length": 192,
+            "long_name": "longitude",
+            "max": 358.125,
+            "min": 0.0,
+            "standard_name": "longitude",
+            "units": "degrees_east"
+        },
+        "time": {
+            "axis": "T",
+            "bounds": "time_bnds",
+            "calendar": "360_day",
+            "dims": [
+                "time"
+            ],
+            "id": "time",
+            "length": 3530,
+            "long_name": "time",
+            "max": "2299-12-16T00:00:00",
+            "min": "2005-12-16T00:00:00",
+            "standard_name": "time"
+        }
+    },
+    "data": {
+        "coord_names": [
+            "height",
+            "lon",
+            "lat",
+            "time"
+        ],
+        "dim_names": [
+            "time",
+            "lat",
+            "lon"
+        ],
+        "max": 330.06646728515625,
+        "min": 196.63232421875,
+        "rank": 3,
+        "shape": [
+            3530,
+            145,
+            192
+        ]
+    },
+    "global_attrs": {
+        "Conventions": "CF-1.4",
+        "branch_time": 52560.0,
+        "cmor_version": "2.5.0",
+        "contact": "chris.d.jones@metoffice.gov.uk, michael.sanderson@metoffice.gov.uk",
+        "creation_date": "2010-12-04T13:50:30Z",
+        "experiment": "RCP8.5",
+        "experiment_id": "rcp85",
+        "forcing": "GHG, SA, Oz, LU, Sl, Vl, BC, OC, (GHG = CO2, N2O, CH4, CFCs)",
+        "frequency": "mon",
+        "history": "MOHC pp to CMOR/NetCDF convertor (version 1.5.1) 2010-12-04T13:50:10Z CMOR rewrote data to comply with CF standards and CMIP5 requirements.",
+        "initialization_method": 1,
+        "institute_id": "MOHC",
+        "institution": "Met Office Hadley Centre, Fitzroy Road, Exeter, Devon, EX1 3PB, UK, (http://www.metoffice.gov.uk)",
+        "mo_runid": "ajnji",
+        "model_id": "HadGEM2-ES",
+        "modeling_realm": "atmos",
+        "parent_experiment": "historical",
+        "parent_experiment_id": "historical",
+        "parent_experiment_rip": "r1i1p1",
+        "physics_version": 1,
+        "product": "output",
+        "project_id": "CMIP5",
+        "realization": 1,
+        "references": "Bellouin N. et al, (2007) Improved representation of aerosols for HadGEM2. Meteorological Office Hadley Centre, Technical Note 73, March 2007; Collins W.J.  et al, (2008) Evaluation of the HadGEM2 model. Meteorological Office Hadley Centre, Technical Note 74,; Johns T.C. et al, (2006) The new Hadley Centre climate model HadGEM1: Evaluation of coupled simulations. Journal of Climate, American Meteorological Society, Vol. 19, No. 7, pages 1327-1353.; Martin G.M. et al, (2006) The physical properties of the atmosphere in the new Hadley Centre Global Environmental Model, HadGEM1 - Part 1: Model description and global climatology. Journal of Climate, American Meteorological Society, Vol. 19, No.7, pages 1274-1301.; Ringer M.A. et al, (2006) The physical properties of the atmosphere in the new Hadley Centre Global Environmental Model, HadGEM1 - Part 2: Aspects of variability and regional climate. Journal of Climate, American Meteorological Society, Vol. 19, No. 7, pages 1302-1326.",
+        "source": "HadGEM2-ES (2009) atmosphere: HadGAM2 (N96L38); ocean: HadGOM2 (lat: 1.0-0.3 lon: 1.0 L40); land-surface/vegetation: MOSES2 and TRIFFID; tropospheric chemistry: UKCA; ocean biogeochemistry: diat-HadOCC",
+        "table_id": "Table Amon (12 November 2010) 6e535ddfacb41fb7a252f4862fdc5766",
+        "title": "HadGEM2-ES model output prepared for CMIP5 RCP8.5",
+        "tracking_id": "948b8aa2-4b1f-422a-921f-4515fcf9860b"
+    },
+    "grid_metadata": {
+        "grid_mapping": null
+    },
+    "scan_metadata": {
+        "last_scanned": "2020-06-10T10:27:05.586828",
+        "location": "ceda",
+        "mode": "full"
+    },
+    "variable": {
+        "_FillValue": "1e+20",
+        "associated_files": "baseURL: http://cmip-pcmdi.llnl.gov/CMIP5/dataLocation gridspecFile: gridspec_atmos_fx_HadGEM2-ES_rcp85_r0i0p0.nc areacella: areacella_fx_HadGEM2-ES_rcp85_r0i0p0.nc",
+        "cell_measures": "area: areacella",
+        "cell_methods": "time: mean",
+        "comment": "near-surface (usually, 2 meter) air temperature.",
+        "history": "2010-12-04T13:50:30Z altered by CMOR: Treated scalar dimension: 'height'. 2010-12-04T13:50:30Z altered by CMOR: replaced missing value flag (-1.07374e+09) with standard missing value (1e+20).",
+        "long_name": "Near-Surface Air Temperature",
+        "original_name": "mo: m01s03i236",
+        "standard_name": "air_temperature",
+        "units": "K",
+        "var_id": "tas"
+    }
+}

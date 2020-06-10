@@ -1,0 +1,157 @@
+{
+    "bounds": {
+        "lat_vertices": {
+            "max": 89.0526351928711,
+            "min": -89.0526351928711,
+            "units": "degrees_north"
+        },
+        "lon_vertices": {
+            "max": 359.9952697753906,
+            "min": 7.999687134940814e-09,
+            "units": "degrees_east"
+        },
+        "time_bnds": {
+            "max": "2009-01-01T00:00:00",
+            "min": "1979-01-01T00:00:00"
+        }
+    },
+    "coordinates": {
+        "i": {
+            "dims": [
+                "i"
+            ],
+            "id": "i",
+            "length": 144,
+            "long_name": "cell index along first dimension",
+            "max": 144.0,
+            "min": 1.0,
+            "units": "1"
+        },
+        "j": {
+            "dims": [
+                "j"
+            ],
+            "id": "j",
+            "length": 96,
+            "long_name": "cell index along second dimension",
+            "max": 96.0,
+            "min": 1.0,
+            "units": "1"
+        },
+        "latitude": {
+            "bounds": "lat_vertices",
+            "dims": [
+                "j",
+                "i"
+            ],
+            "id": "latitude",
+            "length": 96,
+            "long_name": "latitude coordinate",
+            "max": 90.0,
+            "min": -90.0,
+            "standard_name": "latitude",
+            "units": "degrees_north"
+        },
+        "longitude": {
+            "bounds": "lon_vertices",
+            "dims": [
+                "j",
+                "i"
+            ],
+            "id": "longitude",
+            "length": 96,
+            "long_name": "longitude coordinate",
+            "max": 360.0,
+            "min": 2.5,
+            "standard_name": "longitude",
+            "units": "degrees_east"
+        },
+        "time": {
+            "axis": "T",
+            "bounds": "time_bnds",
+            "calendar": "noleap",
+            "dims": [
+                "time"
+            ],
+            "id": "time",
+            "length": 360,
+            "long_name": "time",
+            "max": "2008-12-16T12:00:00",
+            "min": "1979-01-16T12:00:00",
+            "standard_name": "time"
+        }
+    },
+    "data": {
+        "coord_names": [
+            "lat",
+            "lon",
+            "i",
+            "j",
+            "time"
+        ],
+        "dim_names": [
+            "time",
+            "j",
+            "i"
+        ],
+        "max": null,
+        "min": null,
+        "rank": 3,
+        "shape": [
+            360,
+            96,
+            144
+        ]
+    },
+    "global_attrs": {
+        "Conventions": "CF-1.4",
+        "branch_time": 47085.0,
+        "cmor_version": "2.7.1",
+        "contact": "Please send any requests or bug reports to noresm-ncc@met.no.",
+        "creation_date": "2011-06-30T13:42:08Z",
+        "experiment": "AMIP",
+        "experiment_id": "amip",
+        "forcing": "GHG, SA, Oz, Sl, Vl, BC, OC",
+        "frequency": "mon",
+        "history": "2011-06-30T13:42:08Z CMOR rewrote data to comply with CF standards and CMIP5 requirements.",
+        "initialization_method": 1,
+        "institute_id": "NCC",
+        "institution": "Norwegian Climate Centre",
+        "model_id": "NorESM1-M",
+        "modeling_realm": "seaIce",
+        "parent_experiment": "historical",
+        "parent_experiment_id": "historical",
+        "parent_experiment_rip": "r3i1p1",
+        "physics_version": 1,
+        "product": "output",
+        "project_id": "CMIP5",
+        "realization": 3,
+        "source": "NorESM1-M 2011  atmosphere: CAM-Oslo (CAM4-Oslo-noresm-ver1_cmip5-r112, f19L26);  ocean: MICOM (MICOM-noresm-ver1_cmip5-r112, gx1v6L53);  sea ice: CICE (CICE4-noresm-ver1_cmip5-r112);  land: CLM (CLM4-noresm-ver1_cmip5-r112)",
+        "table_id": "Table OImon (27 April 2011) f04ba250f3acd5b9e847c21d5752eb85",
+        "title": "NorESM1-M model output prepared for CMIP5 AMIP",
+        "tracking_id": "9de821f1-f48f-4f66-9f71-a9f8e4a86efe"
+    },
+    "grid": {
+        "grid_mapping": null,
+        "identified_grid": null
+    },
+    "scan_metadata": {
+        "last_scanned": "2020-06-10T12:26:09.063824",
+        "location": "ceda",
+        "mode": "quick"
+    },
+    "variable": {
+        "_FillValue": "1e+20",
+        "associated_files": "baseURL: http://cmip-pcmdi.llnl.gov/CMIP5/dataLocation gridspecFile: gridspec_seaIce_fx_NorESM1-M_amip_r0i0p0.nc areacello: areacello_fx_NorESM1-M_amip_r0i0p0.nc",
+        "cell_measures": "area: areacello",
+        "cell_methods": "time: mean (weighted by area of sea ice)",
+        "comment": "This field differs from the CMOR-definition because at every time-step, the field has been put to 271.314 K in grid-cells without sea ice. The time-mean has been calculated from these values without taking care of when a grid-cell is free of sea ice., CMIP5_table_comment: When computing the time-mean here, the time-samples, weighted by the area of sea ice in the grid cell, are accumulated and then divided by the sum of the weights.  Reported as \"\"missing\"\" in regions free of sea ice.  Note this will be the surface snow temperature in regions where snow covers the sea ice.",
+        "history": "2011-06-30T13:42:08Z altered by CMOR: Converted units from 'degC' to 'K'. 2011-06-30T13:42:08Z altered by CMOR: replaced missing value flag (1e+20) with standard missing value (1e+20). 2011-06-30T13:42:08Z altered by CMOR: Converted type from 'd' to 'f'.",
+        "long_name": "Surface Temperature of Sea Ice",
+        "original_name": "Tsfc",
+        "original_units": "degC",
+        "standard_name": "surface_temperature",
+        "units": "K",
+        "var_id": "tsice"
+    }
+}

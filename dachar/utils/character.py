@@ -72,12 +72,17 @@ def get_coords(da):
         else:
             mn, mx = [float(_) for _ in (mn, mx)]
 
+        if data.size > 1:
+            length = len(data)
+        else:
+            length = 1    
+
         coords[name] = {
             'id': name,
             'dims': dims,
             'min': mn,
             'max': mx,
-            'length': len(data)
+            'length': length
         }
 
         if coord_type == 'time':
@@ -156,6 +161,7 @@ def get_grid_metadata(ds, da):
 
     return {
         'grid_mapping': grid_mapping,
+        'identified_grid': None,
     }
 
 
@@ -168,10 +174,20 @@ def get_bounds(ds):
         if [string for string in ["bnd", "bound", "vertice"] if(string in variable)]:
             bounds[variable] = ds[variable].attrs
 
-            mx = float(ds[variable].max())
-            mn = float(ds[variable].min())
+            if 'time' in variable:
+                mn = ds[variable].values.min()
+                mx = ds[variable].values.max()
 
-            bounds[variable].update({'max': mx}, {'min': mn})
+                if type(mn) == np.datetime64:
+                    mn, mx = [str(_).split('.')[0] for _ in (mn, mx)]
+                else:
+                    mn, mx = [_.strftime('%Y-%m-%dT%H:%M:%S') for _ in (mn, mx)]
+
+            else:
+                mn, mx = [float(_) for _ in (ds[variable].min(), ds[variable].max())]
+
+            bounds[variable].update({'max': mx})
+            bounds[variable].update({'min': mn})
 
     return bounds
 
@@ -216,7 +232,7 @@ class CharacterExtractor(object):
             "coordinates": get_coords(da),
             "global_attrs": get_global_attrs(ds, self._expected_attrs),
             "data": get_data_info(da, self._mode),
-            "grid_metadata": get_grid_metadata(ds, da)
+            "grid": get_grid_metadata(ds, da)
         }
 
 
