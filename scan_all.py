@@ -87,9 +87,13 @@ def get_ensemble(freq_path, project, resource, mode):
             memory = config.MEMORY_SMALL
 
         # submit to lotus
-        bsub_command = f"bsub -q {config.QUEUE} -W {wallclock} -o " \
-                       f"{output_base}.out -e {output_base}.err –R “rusage[mem={memory}] -M {memory} " \
-                       f"{current_directory}/scan_vars.py -p {ensemble_path} -pr {project} -m {mode}"
+        # bsub_command = f'bsub -q {config.QUEUE} -W {wallclock} –R "rusage[mem={memory}]" -M {memory} -o ' \
+        #                f'{output_base}.out -e {output_base}.err ' \
+        #                f'{current_directory}/scan_vars.py -p {ensemble_path} -pr {project} -m {mode}'
+
+        bsub_command = f'bsub -q {config.QUEUE} -W {wallclock} -o ' \
+                       f'{output_base}.out -e {output_base}.err ' \
+                       f'{current_directory}/scan_vars.py -p {ensemble_path} -pr {project} -m {mode}'
 
         # bsub_command = f'{current_directory}/scan_vars.py -p {ensemble_path} -pr {project}'
         subprocess.call(bsub_command, shell=True)
