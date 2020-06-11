@@ -35,9 +35,11 @@ def get_coord_type(coord):
     for ctype in ("time", "latitude", "longitude"):
         if coord.attrs.get("standard_name", None) == ctype:
             return ctype
+        elif "since" in coord.attrs.get("units", None):
+            return ctype
 
 
-def get_coords(da):
+def get_coords(da, ds):
     """
     E.g.:  ds.['tasmax'].coords.keys()
     KeysView(Coordinates:
@@ -45,6 +47,7 @@ def get_coords(da):
     * lat      (lat) float64 -90.0 -88.75 -87.5 -86.25 ... 86.25 87.5 88.75 90.0
     * lon      (lon) float64 0.0 1.875 3.75 5.625 7.5 ... 352.5 354.4 356.2 358.1
       height   float64 1.5)
+
 
     NOTE: the '*' means it is an INDEX - which means it is a full coordinate variable in NC terms
 
@@ -55,10 +58,12 @@ def get_coords(da):
     print(f"[WARN] NOT CAPTURING scalar COORDS BOUND BY coorindates attr yet!!!")
 
     for coord_id in da.coords.dims:
-        coord = da.coords[coord_id]
+        coord = ds.coords[coord_id]
 
         coord_type = get_coord_type(coord)
         name = coord_type or coord.name
+
+        ds = xr.decode_cf(ds)
         data = coord.values
 
         mn, mx = data.min(), data.max()
@@ -164,7 +169,7 @@ class CharacterExtractor(object):
         self._extract()
 
     def _extract(self):
-        ds = xr.open_mfdataset(self._files, use_cftime=True, combine="by_coords")
+        ds = xr.open_mfdataset(self._files, use_cftime=True, combine="by_coords", decode_times=False)
         print("[WARN] NEED TO CHECK NUMBER OF VARS/DOMAINS RETURNED HERE")
         print(
             "[WARN] DOES NOT CHECK YET WHETHER WE MIGHT GET 2 DOMAINS/VARIABLES BACK FROM MULTI-FILE OPEN"
