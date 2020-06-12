@@ -1,0 +1,100 @@
+{
+    "coordinates": {
+        "latitude": {
+            "bounds": "lat_bounds",
+            "id": "latitude",
+            "length": 160,
+            "long_name": "latitude",
+            "max": 89.14152,
+            "min": -89.14152,
+            "standard_name": "latitude",
+            "units": "degrees_north"
+        },
+        "longitude": {
+            "bounds": "lon_bounds",
+            "id": "longitude",
+            "length": 320,
+            "long_name": "longitude",
+            "max": 358.875,
+            "min": 0.0,
+            "standard_name": "longitude",
+            "units": "degrees_east"
+        },
+        "time": {
+            "bounds": "time_bnds",
+            "calendar": "standard",
+            "id": "time",
+            "length": 3652,
+            "max": "1939-12-31T12:00:00",
+            "min": "1930-01-01T12:00:00"
+        }
+    },
+    "data": {
+        "coord_names": [
+            "lon",
+            "lat",
+            "time"
+        ],
+        "dim_names": [
+            "time",
+            "lat",
+            "lon"
+        ],
+        "max": null,
+        "min": null,
+        "rank": 3,
+        "shape": [
+            3652,
+            160,
+            320
+        ]
+    },
+    "global_attrs": {
+        "CDI": "Climate Data Interface version 1.4.4 (http://code.zmaw.de/projects/cdi)",
+        "CDO": "Climate Data Operators version 1.4.4 (http://code.zmaw.de/projects/cdo)",
+        "Conventions": "CF-1.4",
+        "branch_time": 2125.0,
+        "cmor_version": "2.8.0",
+        "comment": "Equilibrium reached after preindustrial spin-up after which data were output starting with nominal date of January 1850",
+        "contact": "Alastair McKinstry <alastair.mckinstry@ichec.ie>",
+        "creation_date": "2012-05-10T11:13:18Z",
+        "experiment": "historical",
+        "experiment_id": "historical",
+        "forcing": "Nat,Ant",
+        "frequency": "day",
+        "history": "Mon May 14 03:00:29 2012: cdo cat historical/day/atmos/psl/r1i1p1/psl_day_EC-EARTH_historical_r1i1p1_19400101-19401231.nc historical/day/atmos/psl/r1i1p1/psl_day_EC-EARTH_historical_r1i1p1_19410101-19411231.nc historical/day/atmos/psl/r1i1p1/psl_day_EC-EARTH_historical_r1i1p1_19420101-19421231.nc historical/day/atmos/psl/r1i1p1/psl_day_EC-EARTH_historical_r1i1p1_19430101-19431231.nc historical/day/atmos/psl/r1i1p1/psl_day_EC-EARTH_historical_r1i1p1_19440101-19441231.nc historical/day/atmos/psl/r1i1p1/psl_day_EC-EARTH_historical_r1i1p1_19450101-19451231.nc historical/day/atmos/psl/r1i1p1/psl_day_EC-EARTH_historical_r1i1p1_19460101-19461231.nc historical/day/atmos/psl/r1i1p1/psl_day_EC-EARTH_historical_r1i1p1_19470101-19471231.nc historical/day/atmos/psl/r1i1p1/psl_day_EC-EARTH_historical_r1i1p1_19480101-19481231.nc historical/day/atmos/psl/r1i1p1/psl_day_EC-EARTH_historical_r1i1p1_19490101-19491231.nc x\nOutput from archive/historical 2012-05-10T11:13:06Z CMOR rewrote data to comply with CF standards and CMIP5 requirements.",
+        "initialization_method": 1,
+        "institute_id": "ICHEC",
+        "institution": "EC-Earth (European Earth System Model)",
+        "model_id": "EC-EARTH",
+        "modeling_realm": "atmos",
+        "parent_experiment": "pre-industrial control",
+        "parent_experiment_id": "piControl",
+        "parent_experiment_rip": "r1i1p1",
+        "physics_version": 1,
+        "product": "output",
+        "project_id": "CMIP5",
+        "realization": 1,
+        "references": "Model described by Hazeleger et al. (Bull. Amer. Meteor. Soc., 2010, 91, 1357-1363). Also see http://ecearth.knmi.nl.",
+        "table_id": "Table day (26 July 2011) 0640f2bc62aad4ebefa8ecc119311890",
+        "title": "EC-EARTH model output prepared for CMIP5 historical",
+        "tracking_id": "178514a5-33a3-4c40-8407-515ae58ddbbc"
+    },
+    "scan_metadata": {
+        "last_scanned": "2020-06-11T15:58:00.177766",
+        "location": "ceda",
+        "mode": "quick"
+    },
+    "variable": {
+        "_FillValue": "1e+20",
+        "associated_files": "baseURL: http://cmip-pcmdi.llnl.gov/CMIP5/dataLocation gridspecFile: gridspec_atmos_fx_EC-EARTH_historical_r0i0p0.nc areacella: areacella_fx_EC-EARTH_historical_r0i0p0.nc",
+        "cell_methods": "time: mean (interval: 3 hours)",
+        "grid_type": "gaussian",
+        "history": "2012-05-10T11:09:02Z altered by CMOR: replaced missing value flag (1e+28) with standard missing value (1e+20). 2012-05-10T11:09:02Z altered by CMOR: Converted type from 'd' to 'f'. 2012-05-10T11:09:02Z altered by CMOR: Inverted axis: lat.",
+        "long_name": "Sea Level Pressure",
+        "original_name": "MSL",
+        "standard_name": "air_pressure_at_sea_level",
+        "units": "Pa",
+        "var_id": "psl"
+    }
+}
