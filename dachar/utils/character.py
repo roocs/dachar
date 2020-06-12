@@ -3,6 +3,8 @@ from datetime import datetime
 import numpy as np
 import xarray as xr
 
+from cfunits import Units
+
 
 # NOTE THESE ARE COMMON WITH clisops - need to merge!!!
 def get_coord_by_attr(dset, attr, value):
@@ -16,11 +18,21 @@ def get_coord_by_attr(dset, attr, value):
 
 
 def is_latitude(coord):
-    return coord.attrs.get("standard_name") == "latitude"
+    if hasattr(coord, 'units'):
+        if Units(coord.units).islatitude:
+            return True
+
+    elif coord.attrs.get("standard_name", None) == "latitude":
+        return True
 
 
 def is_longitude(coord):
-    return coord.attrs.get("standard_name") == "longitude"
+    if hasattr(coord, 'units'):
+        if Units(coord.units).islatitude:
+            return True
+
+    elif coord.attrs.get("standard_name", None) == "longitude":
+        return True
 
 
 def is_level(coord):
@@ -28,18 +40,31 @@ def is_level(coord):
 
 
 def is_time(coord):
-    return coord.attrs.get("standard_name") == "time"
+    if hasattr(coord.values[0], 'calendar'):
+        if Units(calendar=coord.values[0].calendar).isreftime:
+            return True
+
+    elif hasattr(coord, 'axis'):
+        if coord.axis == 'T':
+            return True
+
+    elif coord.attrs.get("standard_name", None) == "time":
+        return True
 
 
 def get_coord_type(coord):
-    for ctype in ("time", "latitude", "longitude"):
-        if coord.attrs.get("standard_name", None) == ctype:
-            return ctype
-        elif "since" in coord.attrs.get("units", None):
-            return ctype
+
+    if is_longitude(coord):
+        return 'longitude'
+    elif is_latitude(coord):
+        return 'latitude'
+    elif is_time(coord):
+        return 'time'
+
+    return None
 
 
-def get_coords(da, ds):
+def get_coords(da):
     """
     E.g.:  ds.['tasmax'].coords.keys()
     KeysView(Coordinates:
@@ -58,13 +83,10 @@ def get_coords(da, ds):
     print(f"[WARN] NOT CAPTURING scalar COORDS BOUND BY coorindates attr yet!!!")
 
     for coord_id in da.coords.dims:
-        coord = ds.coords[coord_id]
+        coord = da.coords[coord_id]
 
         coord_type = get_coord_type(coord)
         name = coord_type or coord.name
-
-        ds = xr.decode_cf(ds)
-        coord = ds.coords[coord_id]
         data = coord.values
 
         mn, mx = data.min(), data.max()
@@ -91,7 +113,6 @@ def get_coords(da, ds):
 
 
 def _copy_dict_for_json(dct):
-
     d = {}
 
     for key, value in dct.items():
@@ -145,7 +166,6 @@ def get_data_info(da, mode):
 
 
 def get_scan_metadata(mode, location):
-
     return {
         "mode": mode,
         "last_scanned": datetime.now().isoformat(),
@@ -170,7 +190,7 @@ class CharacterExtractor(object):
         self._extract()
 
     def _extract(self):
-        ds = xr.open_mfdataset(self._files, use_cftime=True, combine="by_coords", decode_times=False)
+        ds = xr.open_mfdataset(self._files, use_cftime=True, combine="by_coords")
         print("[WARN] NEED TO CHECK NUMBER OF VARS/DOMAINS RETURNED HERE")
         print(
             "[WARN] DOES NOT CHECK YET WHETHER WE MIGHT GET 2 DOMAINS/VARIABLES BACK FROM MULTI-FILE OPEN"
@@ -181,7 +201,7 @@ class CharacterExtractor(object):
         self.character = {
             "scan_metadata": get_scan_metadata(self._mode, self._location),
             "variable": get_variable_metadata(da),
-            "coordinates": get_coords(da, ds),
+            "coordinates": get_coords(da),
             "global_attrs": get_global_attrs(ds, self._expected_attrs),
             "data": get_data_info(da, self._mode),
         }
