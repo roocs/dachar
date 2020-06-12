@@ -28,7 +28,7 @@ def is_latitude(coord):
 
 def is_longitude(coord):
     if hasattr(coord, 'units'):
-        if Units(coord.units).islatitude:
+        if Units(coord.units).islongitude:
             return True
 
     elif coord.attrs.get("standard_name", None) == "longitude":
