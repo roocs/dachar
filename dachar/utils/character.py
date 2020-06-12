@@ -64,6 +64,7 @@ def get_coords(da, ds):
         name = coord_type or coord.name
 
         ds = xr.decode_cf(ds)
+        coord = ds.coords[coord_id]
         data = coord.values
 
         mn, mx = data.min(), data.max()
@@ -180,7 +181,7 @@ class CharacterExtractor(object):
         self.character = {
             "scan_metadata": get_scan_metadata(self._mode, self._location),
             "variable": get_variable_metadata(da),
-            "coordinates": get_coords(da),
+            "coordinates": get_coords(da, ds),
             "global_attrs": get_global_attrs(ds, self._expected_attrs),
             "data": get_data_info(da, self._mode),
         }

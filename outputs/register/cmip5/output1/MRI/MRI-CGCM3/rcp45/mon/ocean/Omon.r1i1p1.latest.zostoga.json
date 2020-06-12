@@ -3,7 +3,7 @@
         "time": {
             "axis": "T",
             "bounds": "time_bnds",
-            "calendar": "gregorian",
+            "calendar": "standard",
             "id": "time",
             "length": 1140,
             "long_name": "time",
@@ -14,6 +14,9 @@
     },
     "data": {
         "coord_names": [
+            "time"
+        ],
+        "dim_names": [
             "time"
         ],
         "max": 0.5437401533126831,
@@ -53,7 +56,7 @@
         "tracking_id": "27722f23-693d-4137-ac19-ea4978c0fe4d"
     },
     "scan_metadata": {
-        "last_scanned": "2020-04-02T15:19:21.204511",
+        "last_scanned": "2020-06-11T15:57:33.947702",
         "location": "ceda",
         "mode": "full"
     },
