@@ -18,7 +18,7 @@ def extract_var_id(fpath):
     :param fpath: The file path of the file to extract the var_id from
     :return: The variable id of the main variable in the given file
     """
-    file_name = fpath.split('/')[-2]
+    file_name = fpath.split('/')[-1]
     var_id = file_name.split('_')[0]
 
     return var_id
