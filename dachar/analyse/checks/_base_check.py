@@ -10,7 +10,6 @@ from dachar.fixes.fix_api import get_fix
 logging.basicConfig()
 log = logging.getLogger(__name__)
 
-
 # AGREED PLAN
 """
 
@@ -33,12 +32,12 @@ log = logging.getLogger(__name__)
 5. Make sure it logs to history
 """
 
-#TODO: Should we send in pre-loaded cache object of all the dc_store records
+
+# TODO: Should we send in pre-loaded cache object of all the dc_store records
 #      - then each check uses them directly.
 
 
 class _BaseCheck(object):
-
     # Required class attributes:
     # - characteristics: list of characteristics to compare
     # - associated_fix:  identifier of fix associated with this check
@@ -46,11 +45,12 @@ class _BaseCheck(object):
     #                       in order to identify "typical" (common) values
     # - atypical_threshold: fraction of data sets beneath which the found characteristics
     #                       should be treated as "atypical"; in which case a "fix" will be suggested
+
     characteristics = UNDEFINED
     associated_fix = UNDEFINED
 
-    typical_threshold = .4
-    atypical_threshold = .04
+    typical_threshold = .8
+    atypical_threshold = .2
 
     def __init__(self, sample):
         self.sample = sample
@@ -79,9 +79,10 @@ class _BaseCheck(object):
             results.setdefault(items, [])
             results[items].append(ds_id)
 
+        #print('results=', results)
         total = len(content)
 
-#       print(f'\n[INFO] Testing: {keys} - found {len(results)} varieties')
+        #       print(f'\n[INFO] Testing: {keys} - found {len(results)} varieties')
         typical_content = None
         atypical_content = []
 
@@ -93,7 +94,6 @@ class _BaseCheck(object):
 
             ds_ids = results[key]
             fraction = len(ds_ids) / total
-            print(fraction)
 
             if fraction >= self.typical_threshold:
                 typical_content = key
@@ -114,7 +114,7 @@ class _BaseCheck(object):
             #     for ds_id in results[atypical]:
             #         return ds_id, atypical, typical_content
             #         print('results=', ds_id, atypical, typical_content)
-                    #self._process_fix(ds_id, atypical, typical_content)
+            # self._process_fix(ds_id, atypical, typical_content)
 
         else:
             return False
@@ -130,7 +130,7 @@ class _BaseCheck(object):
         return content
 
     def _process_fix(self, ds_id, atypical_content, typical_content):
-        fix = self.deduce_fix(atypical_content, typical_content)
+        fix = self.deduce_fix(ds_id, atypical_content, typical_content)
         self._propose_fix(ds_id, fix)
 
     def deduce_fix(self, ds_id, atypical_content, typical_content):
@@ -140,6 +140,3 @@ class _BaseCheck(object):
 
     def _propose_fix(self, ds_id, fix):
         get_fix_prop_store().propose(ds_id, fix)
-
-
-

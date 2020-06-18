@@ -2,6 +2,7 @@ from datetime import datetime
 
 import numpy as np
 import xarray as xr
+from cfunits import Units
 
 # NOTE THESE ARE COMMON WITH clisops - need to merge!!!
 def get_coord_by_attr(dset, attr, value):
@@ -15,11 +16,21 @@ def get_coord_by_attr(dset, attr, value):
 
 
 def is_latitude(coord):
-    return coord.attrs.get('standard_name') == 'latitude'
+    if hasattr(coord, 'units'):
+        if Units(coord.units).islatitude:
+            return True
+
+    elif coord.attrs.get("standard_name", None) == "latitude":
+        return True
 
 
 def is_longitude(coord):
-    return coord.attrs.get('standard_name') == 'longitude'
+    if hasattr(coord, 'units'):
+        if Units(coord.units).islongitude:
+            return True
+
+    elif coord.attrs.get("standard_name", None) == "longitude":
+        return True
 
 
 def is_level(coord):
@@ -27,13 +38,26 @@ def is_level(coord):
 
 
 def is_time(coord):
-    return coord.attrs.get('standard_name') == 'time'
+    if coord.values.size > 1:
+        if hasattr(coord.values[0], 'calendar'):
+            if Units(calendar=coord.values[0].calendar).isreftime:
+                return True
+
+    elif hasattr(coord, 'axis'):
+        if coord.axis == 'T':
+            return True
+
+    elif coord.attrs.get("standard_name", None) == "time":
+        return True
 
 
 def get_coord_type(coord):
-    for ctype in ('time', 'latitude', 'longitude'):
-        if coord.attrs.get('standard_name', None) == ctype:
-            return ctype
+    if is_longitude(coord):
+        return 'longitude'
+    elif is_latitude(coord):
+        return 'latitude'
+    elif is_time(coord):
+        return 'time'
 
 
 def get_coords(da):
@@ -52,30 +76,43 @@ def get_coords(da):
     coords = {}
     print(f'[DEBUG] Found coords: {str(da.coords.keys())}')
     print(f'[WARN] NOT CAPTURING scalar COORDS BOUND BY coorindates attr yet!!!')
+    for coord_id in sorted(da.coords):
 
-    for coord_id in da.coords.dims:
         coord = da.coords[coord_id]
 
         coord_type = get_coord_type(coord)
         name = coord_type or coord.name
         data = coord.values
 
-        mn, mx = data.min(), data.max()
+        if data.size == 1:
+            value = data.tolist()
+            if isinstance(value, bytes):
+                value = value.decode('utf-8')
 
-        if coord_type == 'time':
-            if type(mn) == np.datetime64:
-                mn, mx = [str(_).split('.')[0] for _ in (mn, mx)]
-            else:
-                mn, mx = [_.strftime('%Y-%m-%dT%H:%M:%S') for _ in (mn, mx)]
+            coords[name] = {
+                'id': name,
+                'value': value,
+                'dtype': str(data.dtype),
+                'length': 1
+            }
+
         else:
-            mn, mx = [float(_) for _ in (mn, mx)]
+            mn, mx = data.min(), data.max()
 
-        coords[name] = {
-            'id': name,
-            'min': mn,
-            'max': mx,
-            'length': len(data)
-        }
+            if coord_type == 'time':
+                if type(mn) == np.datetime64:
+                    mn, mx = [str(_).split('.')[0] for _ in (mn, mx)]
+                else:
+                    mn, mx = [_.strftime('%Y-%m-%dT%H:%M:%S') for _ in (mn, mx)]
+            else:
+                mn, mx = [float(_) for _ in (mn, mx)]
+
+            coords[name] = {
+                'id': name,
+                'min': mn,
+                'max': mx,
+                'length': len(data)
+            }
 
         if coord_type == 'time':
             if type(data[0]) == np.datetime64:
@@ -98,6 +135,8 @@ def _copy_dict_for_json(dct):
             value = float(value)
         elif isinstance(value, np.integer):
             value = int(value)
+        elif isinstance(value, np.ndarray):
+            value = value.tolist()
 
         d[key] = value
 
@@ -137,7 +176,7 @@ def get_data_info(da, mode):
         'shape': da.shape,
         'rank': len(da.shape),
         'dim_names': da.dims,
-        'coord_names': [_ for _ in da.coords.keys()]
+        'coord_names': sorted([_ for _ in da.coords.keys()])
     }
 
 

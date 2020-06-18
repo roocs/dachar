@@ -146,7 +146,7 @@ class OneSampleAnalyser(object):
 
     def analyse(self):
         """
-        Analyse runs checks, proposes fixes proposes them to fix proposal store.
+        Analyse runs checks, proposes fixes to fix proposal store.
         Also puts a record in analysis record store.
         :return:
         """

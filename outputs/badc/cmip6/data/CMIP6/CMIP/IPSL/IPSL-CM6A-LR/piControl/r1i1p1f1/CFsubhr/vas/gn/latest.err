@@ -1,0 +1,54 @@
+Traceback (most recent call last):
+  File "/home/users/esmith88/roocs/dachar/lotus_script.py", line 36, in <module>
+    search_height(args)
+  File "/home/users/esmith88/roocs/dachar/lotus_script.py", line 19, in search_height
+    ds = xr.open_mfdataset(f'{path}/*.nc', use_cftime=True, combine='by_coords')
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/backends/api.py", line 908, in open_mfdataset
+    datasets = [open_(p, **open_kwargs) for p in paths]
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/backends/api.py", line 908, in <listcomp>
+    datasets = [open_(p, **open_kwargs) for p in paths]
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/backends/api.py", line 538, in open_dataset
+    ds = maybe_decode_store(store)
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/backends/api.py", line 453, in maybe_decode_store
+    use_cftime=use_cftime,
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/conventions.py", line 587, in decode_cf
+    ds = Dataset(vars, attrs=attrs)
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/core/dataset.py", line 540, in __init__
+    data_vars, coords, compat="broadcast_equals"
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/core/merge.py", line 467, in merge_data_and_coords
+    objects, compat, join, explicit_coords=explicit_coords, indexes=indexes
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/core/merge.py", line 552, in merge_core
+    collected = collect_variables_and_indexes(aligned)
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/core/merge.py", line 277, in collect_variables_and_indexes
+    variable = as_variable(variable, name=name)
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/core/variable.py", line 140, in as_variable
+    obj = obj.to_index_variable()
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/core/variable.py", line 463, in to_index_variable
+    self.dims, self._data, self._attrs, encoding=self._encoding, fastpath=True
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/core/variable.py", line 2092, in __init__
+    self._data = PandasIndexAdapter(self._data)
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/core/indexing.py", line 1372, in __init__
+    self.array = utils.safe_cast_to_index(array)
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/core/utils.py", line 103, in safe_cast_to_index
+    index = pd.Index(np.asarray(array), **kwargs)
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/numpy/core/_asarray.py", line 85, in asarray
+    return array(a, dtype, copy=False, order=order)
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/core/indexing.py", line 557, in __array__
+    return np.asarray(array[self.key], dtype=None)
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/numpy/core/_asarray.py", line 85, in asarray
+    return array(a, dtype, copy=False, order=order)
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/coding/variables.py", line 72, in __array__
+    return self.func(self.array)
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/coding/times.py", line 150, in decode_cf_datetime
+    num_dates = np.asarray(num_dates)
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/numpy/core/_asarray.py", line 85, in asarray
+    return array(a, dtype, copy=False, order=order)
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/core/indexing.py", line 557, in __array__
+    return np.asarray(array[self.key], dtype=None)
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/backends/netCDF4_.py", line 73, in __getitem__
+    key, self.shape, indexing.IndexingSupport.OUTER, self._getitem
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/core/indexing.py", line 837, in explicit_indexing_adapter
+    result = raw_indexing_method(raw_key.tuple)
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/backends/netCDF4_.py", line 85, in _getitem
+    array = getitem(original_array, key)
+KeyboardInterrupt

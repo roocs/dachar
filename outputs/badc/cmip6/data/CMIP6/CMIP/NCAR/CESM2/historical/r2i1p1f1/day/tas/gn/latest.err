@@ -1,0 +1,17 @@
+/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/conventions.py:494: SerializationWarning: variable 'tas' has multiple fill values {1e+20, 1e+20}, decoding all values to NaN.
+  use_cftime=use_cftime,
+Traceback (most recent call last):
+  File "/home/users/esmith88/roocs/dachar/lotus_script.py", line 21, in search_height
+    height = ds.height
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/core/common.py", line 233, in __getattr__
+    "{!r} object has no attribute {!r}".format(type(self).__name__, name)
+AttributeError: 'Dataset' object has no attribute 'height'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/users/esmith88/roocs/dachar/lotus_script.py", line 36, in <module>
+    search_height(args)
+  File "/home/users/esmith88/roocs/dachar/lotus_script.py", line 28, in search_height
+    dr = os.path.dirname(output_base)
+NameError: name 'os' is not defined

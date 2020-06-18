@@ -1,0 +1,39 @@
+Sender: LSF System <lsfadmin@host486.jc.rl.ac.uk>
+Subject: Job 3201157: </home/users/esmith88/roocs/dachar/lotus_script.py -p /badc/cmip6/data/CMIP6/CMIP/NOAA-GFDL/GFDL-CM4/amip/r1i1p1f1/Amon/tas/gr1/latest> in cluster <lotus> Done
+
+Job </home/users/esmith88/roocs/dachar/lotus_script.py -p /badc/cmip6/data/CMIP6/CMIP/NOAA-GFDL/GFDL-CM4/amip/r1i1p1f1/Amon/tas/gr1/latest> was submitted from host <jasmin-sci5-panfs.ceda.ac.uk> by user <esmith88> in cluster <lotus>.
+Job was executed on host(s) <host486.jc.rl.ac.uk>, in queue <short-serial>, as user <esmith88> in cluster <lotus>.
+</home/users/esmith88> was used as the home directory.
+</home/users/esmith88/roocs/dachar> was used as the working directory.
+Started at Results reported on 
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+/home/users/esmith88/roocs/dachar/lotus_script.py -p /badc/cmip6/data/CMIP6/CMIP/NOAA-GFDL/GFDL-CM4/amip/r1i1p1f1/Amon/tas/gr1/latest
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   4.00 sec.
+    Max Memory :                                 2 MB
+    Average Memory :                             2.00 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   38 MB
+    Max Processes :                              1
+    Max Threads :                                1
+    Run time :                                   18 sec.
+    Turnaround time :                            1036 sec.
+
+The output (if any) follows:
+
+ok
+
+
+PS:
+
+Read file <./outputs/badc/cmip6/data/CMIP6/CMIP/NOAA-GFDL/GFDL-CM4/amip/r1i1p1f1/Amon/tas/gr1/latest.err> for stderr output of this job.
+

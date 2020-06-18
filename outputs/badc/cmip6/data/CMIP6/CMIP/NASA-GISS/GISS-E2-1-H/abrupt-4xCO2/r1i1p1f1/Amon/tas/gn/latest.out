@@ -1,0 +1,39 @@
+Sender: LSF System <lsfadmin@host062.jc.rl.ac.uk>
+Subject: Job 3200913: </home/users/esmith88/roocs/dachar/lotus_script.py -p /badc/cmip6/data/CMIP6/CMIP/NASA-GISS/GISS-E2-1-H/abrupt-4xCO2/r1i1p1f1/Amon/tas/gn/latest> in cluster <lotus> Done
+
+Job </home/users/esmith88/roocs/dachar/lotus_script.py -p /badc/cmip6/data/CMIP6/CMIP/NASA-GISS/GISS-E2-1-H/abrupt-4xCO2/r1i1p1f1/Amon/tas/gn/latest> was submitted from host <jasmin-sci5-panfs.ceda.ac.uk> by user <esmith88> in cluster <lotus>.
+Job was executed on host(s) <host062.jc.rl.ac.uk>, in queue <short-serial>, as user <esmith88> in cluster <lotus>.
+</home/users/esmith88> was used as the home directory.
+</home/users/esmith88/roocs/dachar> was used as the working directory.
+Started at Results reported on 
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+/home/users/esmith88/roocs/dachar/lotus_script.py -p /badc/cmip6/data/CMIP6/CMIP/NASA-GISS/GISS-E2-1-H/abrupt-4xCO2/r1i1p1f1/Amon/tas/gn/latest
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   4.08 sec.
+    Max Memory :                                 -
+    Average Memory :                             -
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   21 sec.
+    Turnaround time :                            978 sec.
+
+The output (if any) follows:
+
+ok
+
+
+PS:
+
+Read file <./outputs/badc/cmip6/data/CMIP6/CMIP/NASA-GISS/GISS-E2-1-H/abrupt-4xCO2/r1i1p1f1/Amon/tas/gn/latest.err> for stderr output of this job.
+

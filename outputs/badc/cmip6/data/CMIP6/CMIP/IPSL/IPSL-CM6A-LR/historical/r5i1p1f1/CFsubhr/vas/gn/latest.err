@@ -1,0 +1,40 @@
+Traceback (most recent call last):
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/coding/times.py", line 77, in _decode_cf_datetime_dtype
+    result = decode_cf_datetime(example_value, units, calendar, use_cftime)
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/coding/times.py", line 181, in decode_cf_datetime
+    flat_num_dates.astype(np.float), units, calendar
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/coding/times.py", line 97, in _decode_datetime_with_cftime
+    cftime.num2date(num_dates, units, calendar, only_use_cftime_datetimes=True)
+  File "cftime/_cftime.pyx", line 396, in cftime._cftime.num2date
+  File "cftime/_cftime.pyx", line 933, in cftime._cftime.utime.num2date
+  File "cftime/_cftime.pyx", line 573, in cftime._cftime.DateFromJulianDay
+  File "cftime/_cftime.pyx", line 551, in cftime._cftime.DateFromJulianDay.getdateinfo
+  File "cftime/_cftime.pyx", line 2038, in cftime._cftime._IntJulianDayToDate
+ValueError: julian day must be a positive integer
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/users/esmith88/roocs/dachar/lotus_script.py", line 36, in <module>
+    search_height(args)
+  File "/home/users/esmith88/roocs/dachar/lotus_script.py", line 19, in search_height
+    ds = xr.open_mfdataset(f'{path}/*.nc', use_cftime=True, combine='by_coords')
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/backends/api.py", line 908, in open_mfdataset
+    datasets = [open_(p, **open_kwargs) for p in paths]
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/backends/api.py", line 908, in <listcomp>
+    datasets = [open_(p, **open_kwargs) for p in paths]
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/backends/api.py", line 538, in open_dataset
+    ds = maybe_decode_store(store)
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/backends/api.py", line 453, in maybe_decode_store
+    use_cftime=use_cftime,
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/conventions.py", line 585, in decode_cf
+    use_cftime=use_cftime,
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/conventions.py", line 494, in decode_cf_variables
+    use_cftime=use_cftime,
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/conventions.py", line 336, in decode_cf_variable
+    var = coder.decode(var, name=name)
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/coding/times.py", line 426, in decode
+    dtype = _decode_cf_datetime_dtype(data, units, calendar, self.use_cftime)
+  File "/home/users/esmith88/roocs/venv/lib/python3.7/site-packages/xarray/coding/times.py", line 86, in _decode_cf_datetime_dtype
+    raise ValueError(msg)
+ValueError: unable to decode time units 'days since 1850-01-01 00:00:00' with calendar 'gregorian'. Try opening your dataset with decode_times=False.
