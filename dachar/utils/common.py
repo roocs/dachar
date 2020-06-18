@@ -5,6 +5,7 @@ from collections import deque
 UNDEFINED = 'UNDEFINED'
 FIX_STATUS_VALUES = ['proposed', 'rejected', 'accepted', 'withdrawn']
 
+
 def is_undefined(x):
     if x and x != UNDEFINED:
         return True
@@ -17,7 +18,14 @@ def nested_lookup(key_path, item, must_exist=False):
 
     for key in key_path.split('.'):
         if type(item) == dict:
-            item = item.get(key, not_found)
+            if key == '*':
+                item = [item.get(key, not_found) for key in item]
+            else:
+                item = item.get(key, not_found)
+                
+        elif type(item) == list:
+            item = [each.get(key, not_found) for each in item]
+                
         else:
             item = not_found
 
@@ -72,6 +80,7 @@ def is_subsequence(s1, s2):
     :return: Boolean
     """
     # Convert to deque so that we can popleft() items
+    s1, s2 = sorted(s1), sorted(s2)
     s1 = deque(s1)
     for i in s2:
         if i == s1[0]:

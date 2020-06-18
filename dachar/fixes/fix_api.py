@@ -1,6 +1,6 @@
 import os
 import glob
-
+from pydoc import locate
 
 import dachar.fixes.coord_fixes as coord_fixes
 
@@ -27,8 +27,8 @@ def get_fix_dict():
 
 def get_fix(fix_id):
     if fix_id:
-        from .coord_fixes import SqueezeDimensionsFix
-        return SqueezeDimensionsFix
+        fix_cls = locate(f'dachar.fixes.coord_fixes.{fix_id}')
+        return fix_cls
 
 
 # example_fixes = {

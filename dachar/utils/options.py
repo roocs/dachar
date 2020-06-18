@@ -22,7 +22,19 @@ mappings = {
     }
 }
 
-common_checks = ['coord_checks.RankCheck']
+# if coordinates are given different names but are equivalent
+coord_mappings = {
+    'latitude': 'lat',
+    'longitude': 'lon',
+    'ni': 'i',
+    'nj': 'j',
+    'lat': 'latitude',
+    'lon': 'longitude',
+    'i': 'ni',
+    'j': 'nj'
+}
+
+common_checks = ['coord_checks.RankCheck', 'coord_checks.MissingCoordCheck']
 checks = {
     'cmip5': [],
     'cmip6': ['test'],
