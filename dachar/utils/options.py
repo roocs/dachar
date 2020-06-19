@@ -24,12 +24,8 @@ mappings = {
 
 # if coordinates are given different names but are equivalent
 coord_mappings = {
-    'latitude': 'lat',
-    'longitude': 'lon',
     'ni': 'i',
     'nj': 'j',
-    'lat': 'latitude',
-    'lon': 'longitude',
     'i': 'ni',
     'j': 'nj'
 }
