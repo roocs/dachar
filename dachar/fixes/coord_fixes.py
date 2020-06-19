@@ -51,7 +51,6 @@ For example:
     - {'id': 'height',
        'value': '2.0',
        'dtype': 'float64',
-       'length': 1,
        'attrs': {'units': 'm'
                 'standard_name': 'height'}}
 
@@ -60,5 +59,5 @@ Attributes will be set by: ds.test.attrs['units'] = 'm'
     """
 
     category = 'coord_fixes'
-    required_operands = ['dtype', 'id', 'length', 'value', 'attrs']
-    ref_implementation = 'daops.post_processors.add_cord'
+    required_operands = ['dtype', 'id', 'value', 'length', 'attrs']
+    ref_implementation = 'daops.post_processors.add_scalar_coord'

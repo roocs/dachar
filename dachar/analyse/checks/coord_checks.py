@@ -52,6 +52,7 @@ class MissingCoordCheck(_BaseCheck):
         atypical = atypical_content['coordinates.*.id']
         typical = typical_content['coordinates.*.id']
 
+        # use mappings to get equivalent coords
         for coord in atypical:
             if coord not in typical:
                 equivalent_coord = options.coord_mappings[coord]
@@ -69,11 +70,7 @@ class MissingCoordCheck(_BaseCheck):
                 fix_cls = get_fix(self.associated_fix)
 
                 for coord in missing_coords:
-                    fix_characteristics = [f'coordinates.{coord}.length', f'coordinates.{coord}.length', f'coordinates.{coord}.length']
 
-
-
-                    typical_lengths = []
                     typical_coord_attrs = []
                     typical_ds_ids = self.sample.copy()
                     typical_ds_ids.remove(ds_id[0])
@@ -84,10 +81,6 @@ class MissingCoordCheck(_BaseCheck):
                         coord_attrs = namedtuple('coord_attrs', coord_attrs.keys())(**coord_attrs)
 
                         typical_coord_attrs.append(coord_attrs)
-
-                    #     length = coord_attrs['length']
-                    #     typical_lengths.append(length)
-                    # typical_length = mode(typical_lengths)[0]
                     
                     frequency = Counter(d for d in typical_coord_attrs)
                     typical_coord = frequency.most_common(1)[0][0]
@@ -95,12 +88,15 @@ class MissingCoordCheck(_BaseCheck):
 
                     # check missing coord is scalar
                     if typical_length == 1:
-                        #operands = dict(typical_coord._asdict())
-                        operands = {'dtype': typical_coord.dtype,
-                                    'id': typical_coord.id,
-                                    'length': typical_coord.length,
-                                    'value': typical_coord.value,
-                                    'attrs': ''}
+                        operands = {}
+
+                        operand_dict = dict(typical_coord._asdict())
+                        for k in ['dtype', 'value', 'id', 'length']:
+                            v = operand_dict.pop(k)
+
+                            operands[k] = v
+
+                        operands['attrs'] = operand_dict
 
                         fix = fix_cls(ds_id, **operands)
                         d = fix.to_dict()

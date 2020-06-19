@@ -15,6 +15,8 @@ prop_store = None
 
 options.project_base_dirs['cmip6'] = \
      'tests/mini-esgf-data/test_data/badc/cmip6/data'
+options.project_base_dirs['cmip5'] = \
+     'tests/mini-esgf-data/test_data/badc/cmip5/data'
 
 ds_ids_cmip6 = ['CMIP6.CMIP.NCAR.CESM2.historical.r1i1p1f1.SImon.siconc.gn.latest',
                 'CMIP6.CMIP.SNU.SAM0-UNICON.historical.r1i1p1f1.SImon.siconc.gn.latest',
@@ -51,7 +53,7 @@ def populate_dc_store(ds_ids, project):
 
 
 def setup_module():
-    #clear_stores()
+    clear_stores()
     global char_store
     global prop_store
 
@@ -86,9 +88,13 @@ def test_MissingCoordCheck_deduce_fix_cmip6():
     assert (d['fix']['category']) == 'coord_fixes'
     assert (d['fix']['operands']) == {'dtype': '|S7',
                                       'id': 'type',
-                                      'length': 1,
                                       'value': 'sea_ice',
-                                      'attrs': ''}
+                                      'length': 1,
+                                      'attrs':
+                                          {'long_name': 'Sea Ice area type',
+                                           'standard_name': 'area_type'}}
+
+
 
 
 def test_MissingCoordCheck_cmip5():
@@ -108,11 +114,17 @@ def test_MissingCoordCheck_deduce_fix_cmip5():
             ['cmip5.output1.ICHEC.EC-EARTH.historical.mon.atmos.Amon.r1i1p1.latest.tas'])
     assert (d['fix']['fix_id']) == 'AddScalarCoordFix'
     assert (d['fix']['category']) == 'coord_fixes'
-    assert (d['fix']['operands']) == {'dtype': 'float64',
-                                      'id': 'height',
-                                      'length': 1,
-                                      'attrs': '',
-                                      'value': 2.0}
+    assert (d['fix']['operands']) == {'dtype': 'float64', 
+                                      'value': 2.0, 
+                                      'id': 'height', 
+                                      'length': 1, 
+                                      'attrs': 
+                                          {'axis': 'Z', 
+                                           'long_name': 'height', 
+                                           'positive': 'up', 
+                                           'standard_name': 'height', 
+                                           'units': 'm'}
+                                      }
 
 
 class _TestMissingCoordCheck1(MissingCoordCheck):
