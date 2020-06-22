@@ -59,6 +59,8 @@ def get_coord_type(coord):
     elif is_time(coord):
         return 'time'
 
+    return None
+
 
 def get_coords(da):
     """
@@ -162,9 +164,8 @@ def get_global_attrs(ds, expected_attrs=None):
 
 def get_data_info(da, mode):
     if mode == 'full':
-        data = da.values
-        mx = float(data.max())
-        mn = float(data.min())
+        mx = float(da.max())
+        mn = float(da.min())
 
     else:
         mx = None
@@ -176,7 +177,6 @@ def get_data_info(da, mode):
         'shape': da.shape,
         'rank': len(da.shape),
         'dim_names': da.dims,
-        'coord_names': sorted([_ for _ in da.coords.keys()])
     }
 
 

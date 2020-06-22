@@ -81,16 +81,17 @@ def test_MissingCoordCheck_deduce_fix_cmip6():
     _base_check.get_dc_store = Mock(return_value=char_store)
     x = _TestMissingCoordCheck(ds_ids_cmip6)
     results, atypical_content, typical_content = x.run()
+    print(results, atypical_content, typical_content)
     d = x.deduce_fix(results[atypical_content[0]], atypical_content[0], typical_content)
-    assert (d['dataset_id']['ds_id'] ==
+    assert (d[0]['dataset_id']['ds_id'] ==
             ['CMIP6.CMIP.NCAR.CESM2.historical.r1i1p1f1.SImon.siconc.gn.latest'])
-    assert (d['fix']['fix_id']) == 'AddScalarCoordFix'
-    assert (d['fix']['category']) == 'coord_fixes'
-    assert (d['fix']['operands']) == {'dtype': '|S7',
-                                      'id': 'type',
-                                      'value': 'sea_ice',
-                                      'length': 1,
-                                      'attrs':
+    assert (d[0]['fix']['fix_id']) == 'AddScalarCoordFix'
+    assert (d[0]['fix']['category']) == 'coord_fixes'
+    assert (d[0]['fix']['operands']) == {'dtype': '|S7',
+                                         'id': 'type',
+                                         'value': 'sea_ice',
+                                         'length': 1,
+                                         'attrs':
                                           {'long_name': 'Sea Ice area type',
                                            'standard_name': 'area_type'}}
 
@@ -110,11 +111,11 @@ def test_MissingCoordCheck_deduce_fix_cmip5():
     x = _TestMissingCoordCheck(ds_ids_cmip5)
     results, atypical_content, typical_content = x.run()
     d = x.deduce_fix(results[atypical_content[0]], atypical_content[0], typical_content)
-    assert (d['dataset_id']['ds_id'] ==
+    assert (d[0]['dataset_id']['ds_id'] ==
             ['cmip5.output1.ICHEC.EC-EARTH.historical.mon.atmos.Amon.r1i1p1.latest.tas'])
-    assert (d['fix']['fix_id']) == 'AddScalarCoordFix'
-    assert (d['fix']['category']) == 'coord_fixes'
-    assert (d['fix']['operands']) == {'dtype': 'float64', 
+    assert (d[0]['fix']['fix_id']) == 'AddScalarCoordFix'
+    assert (d[0]['fix']['category']) == 'coord_fixes'
+    assert (d[0]['fix']['operands']) == {'dtype': 'float64',
                                       'value': 2.0, 
                                       'id': 'height', 
                                       'length': 1, 
@@ -149,3 +150,6 @@ def test_with_different_thresholds_cmip5():
 def teardown_module():
     # clear_stores()
     pass
+
+
+# need a test that checks when there are 2 scalar coordinates missing
