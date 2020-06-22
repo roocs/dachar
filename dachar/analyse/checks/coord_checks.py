@@ -14,13 +14,17 @@ class RankCheck(_BaseCheck):
     associated_fix = 'SqueezeDimensionsFix'
 
     def deduce_fix(self, ds_id, atypical_content, typical_content):
+        dicts = []
 
         atypical = atypical_content['data.dim_names']
         typical = typical_content['data.dim_names']
-        if len(atypical) > len(typical):
-            extra_coords = get_extra_items_in_larger_sequence(typical, atypical)
-        else:
-            extra_coords = get_extra_items_in_larger_sequence(atypical, typical)
+
+        # length of atypical should be longer if extra coord
+        # Will this always be the case?
+        if len(atypical) <= len(typical):
+            return None
+
+        extra_coords = get_extra_items_in_larger_sequence(typical, atypical)
 
         if extra_coords:
 
@@ -33,11 +37,12 @@ class RankCheck(_BaseCheck):
                     if atypical_content['data.shape'][index] != 1:
                         extra_coords.remove(coord)
 
-                operands = {'dims': extra_coords}
+                    operands = {'dims': extra_coords}
 
-                fix = fix_cls(ds_id, **operands)
-                d = fix.to_dict()
-                return d
+                    fix = fix_cls(ds_id, **operands)
+                    d = fix.to_dict()
+                    dicts.append(d)
+                return dicts
 
         # fix isn't suitable - no extra coords
         else:
@@ -49,8 +54,15 @@ class MissingCoordCheck(_BaseCheck):
     associated_fix = 'AddScalarCoordFix'
 
     def deduce_fix(self, ds_id, atypical_content, typical_content):
+        dicts = []
+
         atypical = atypical_content['coordinates.*.id']
         typical = typical_content['coordinates.*.id']
+
+        # length of atypical should be shorter if missing coord
+        # Will this always be the case?
+        if len(atypical) >= len(typical):
+            return None
 
         # use mappings to get equivalent coords
         for coord in atypical:
@@ -58,11 +70,7 @@ class MissingCoordCheck(_BaseCheck):
                 equivalent_coord = options.coord_mappings[coord]
                 atypical = [equivalent_coord if i == coord else i for i in atypical]
 
-        if len(atypical) < len(typical):
-            missing_coords = get_extra_items_in_larger_sequence(atypical, typical)
-
-        else:
-            missing_coords = None
+        missing_coords = get_extra_items_in_larger_sequence(atypical, typical)
 
         if missing_coords:
 
@@ -100,11 +108,14 @@ class MissingCoordCheck(_BaseCheck):
 
                         fix = fix_cls(ds_id, **operands)
                         d = fix.to_dict()
-                        return d
 
                     # coordinate isn't scalar - fix isn't suitable
                     else:
-                        return None
+                        d = None
+
+                    dicts.append(d)
+
+            return dicts
 
         # fix isn't suitable - no missing coords
         else:

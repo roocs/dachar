@@ -74,11 +74,13 @@ def test_RankCheck_deduce_fix():
     x = _TestRankCheck(ds_ids)
     results, atypical_content, typical_content = x.run()
     d = x.deduce_fix(results[atypical_content[0]], atypical_content[0], typical_content)
-    assert (d['dataset_id']['ds_id'] ==
+    assert (d[0]['dataset_id']['ds_id'] ==
             ['cmip5.output1.INM.inmcm4.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga'])
-    assert (d['fix']['fix_id']) == 'SqueezeDimensionsFix'
-    assert (d['fix']['category']) == 'coord_fixes'
-    assert (d['fix']['operands']) == {'dims': ['lev']}
+    assert (d[0]['fix']['fix_id']) == 'SqueezeDimensionsFix'
+    assert (d[0]['fix']['category']) == 'coord_fixes'
+    assert (d[0]['fix']['operands']) == {'dims': ['lev']}
+
+    # need a test that checks when there are 2 extra coordinates
 
 
 class _TestRankCheck1(RankCheck):

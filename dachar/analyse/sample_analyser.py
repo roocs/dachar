@@ -139,7 +139,8 @@ class OneSampleAnalyser(object):
                 for ds_id in results[atypical]:
                     d = check.deduce_fix(ds_id, atypical, typical_content)
                     if d:
-                        dict_list.append(d)
+                        for fix_dict in d:
+                            dict_list.append(fix_dict)
             return dict_list
         else:
             return False
