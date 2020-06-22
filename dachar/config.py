@@ -3,8 +3,8 @@ import os
 join = os.path.join
 
 QUEUE = "short-serial"
-WALLCLOCK_LARGE = "06:00"
-MEMORY_LARGE = 16000
+WALLCLOCK_LARGE = "23:59"
+MEMORY_LARGE = 32000
 
 WALLCLOCK_SMALL = "04:00"
 MEMORY_SMALL = 4000
