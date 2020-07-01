@@ -49,8 +49,8 @@ class _BaseCheck(object):
     characteristics = UNDEFINED
     associated_fix = UNDEFINED
 
-    typical_threshold = .4
-    atypical_threshold = .04
+    typical_threshold = .6
+    atypical_threshold = .4
 
     def __init__(self, sample):
         self.sample = sample
