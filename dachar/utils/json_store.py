@@ -1,5 +1,5 @@
-import os
 import json
+<<<<<<< HEAD
 import hashlib
 
 from .common import nested_lookup
@@ -7,7 +7,6 @@ from elasticsearch import Elasticsearch, helpers
 from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
 
 es = CEDAElasticsearchClient(headers={'x-api-key': ''})
-
 
 class _BaseJsonStore(object):
 
@@ -27,11 +26,13 @@ class _BaseJsonStore(object):
         # Checks all class attributes to make sure they are all valid
         cls = self.__class__
 
-        required = {'store_name': str,
-                    'config': dict,
-                    'id_mappers': dict,
-                    'required_fields': list,
-                    'search_defaults': list}
+        required = {
+            "store_name": str,
+            "config": dict,
+            "id_mappers": dict,
+            "required_fields": list,
+            "search_defaults": list,
+        }
 
         for key, dtype in required.items():
             if not hasattr(cls, key) or not type(getattr(cls, key)) is dtype:
@@ -42,13 +43,14 @@ class _BaseJsonStore(object):
         m.update(id.encode('utf-8'))
         return m.hexdigest()
 
+
     def get(self, id):
         if not self.exists(id):
             return None
 
-        stype = self.config.get('store_type')
+        stype = self.config.get("store_type")
 
-        if stype == 'local':
+        if stype == "local":
             return self._get_local(id)
 
         if stype == 'elasticsearch':
@@ -66,9 +68,9 @@ class _BaseJsonStore(object):
         return res['_source']
 
     def exists(self, id):
-        stype = self.config.get('store_type')
+        stype = self.config.get("store_type")
 
-        if stype == 'local':
+        if stype == "local":
             return self._exists_local(id)
 
         if stype == 'elasticsearch':
@@ -84,23 +86,25 @@ class _BaseJsonStore(object):
         return res
 
     def delete(self, id):
+
         if not self.exists(id):
             raise Exception(f'Record with ID {id} does not exist')
 
         stype = self.config.get('store_type')
 
-        if stype == 'local':
+        if stype == "local":
             return self._delete_local(id)
 
         if stype == 'elasticsearch':
             return self._delete_elasticsearch(id)
+
 
     def _delete_local(self, id):
         json_path = self._id_to_path(id)
         os.remove(json_path)
         dr = os.path.dirname(json_path)
 
-        while len(dr) > len(self.config['local.base_dir']):
+        while len(dr) > len(self.config["local.base_dir"]):
             if not os.listdir(dr):
                 os.rmdir(dr)
 
@@ -120,9 +124,9 @@ class _BaseJsonStore(object):
     def _validate(self, content):
         try:
             s = json.dumps(content)
-            assert(s.startswith('{') and s.endswith('}'))
+            assert s.startswith("{") and s.endswith("}")
         except Exception as exc:
-            raise ValueError('Cannot serialise content to valid JSON.')
+            raise ValueError("Cannot serialise content to valid JSON.")
 
         self._validate_fields(content)
 
@@ -135,12 +139,12 @@ class _BaseJsonStore(object):
                 errors.append(str(exc))
 
         if errors:
-            raise ValueError(f'Validation errors:\n{[err for err in errors]}')
+            raise ValueError(f"Validation errors:\n{[err for err in errors]}")
 
     def _save(self, id, content):
-        stype = self.config.get('store_type')
+        stype = self.config.get("store_type")
 
-        if stype == 'local':
+        if stype == "local":
             return self._save_local(id, content)
 
         if stype == 'elasticsearch':
@@ -154,10 +158,10 @@ class _BaseJsonStore(object):
             os.makedirs(dr)
 
         try:
-            with open(json_path, 'w') as writer:
+            with open(json_path, "w") as writer:
                 json.dump(content, writer, indent=4, sort_keys=True)
         except Exception as exc:
-            raise IOError(f'Cannot write content for: {id} to path {json_path}')
+            raise IOError(f"Cannot write content for: {id} to path {json_path}")
 
     def _save_elasticsearch(self, id, content):
         id = self.convert_id(id)
@@ -214,6 +218,8 @@ class _BaseJsonStore(object):
         for _id, record in self.get_all():
             if (match_ids and self._match_id(term, _id, exact=exact)) or \
                     self._match(record, term, exact=exact, fields=fields, ignore_defaults=ignore_defaults):
+
+
                 results.append(record)
 
         return results
@@ -223,7 +229,7 @@ class _BaseJsonStore(object):
         mapper = self.id_mappers
 
         if reverse:
-            mapper = dict([(v, k) for k, v in self.id_mappers.items()])
+            mapper = {v: k for k, v in self.id_mappers.items()}
 
         for find_s, replace_s in mapper.items():
             x = x.replace(find_s, replace_s)
@@ -233,8 +239,8 @@ class _BaseJsonStore(object):
     def _id_to_path(self, id):
         # Define a "grouped" ds_id that splits facets across directories and then groups
         # the final set into a file path, based on config.DIR_GROUPING_LEVEL value
-        gl = self.config['local.dir_grouping_level']
-        parts = id.split('.')
+        gl = self.config["local.dir_grouping_level"]
+        parts = id.split(".")
 
         if len(parts) <= gl:
             raise KeyError(f'Identifier name cannot be safely translated to file path: {id}')
@@ -246,11 +252,12 @@ class _BaseJsonStore(object):
 
     def _path_to_id(self, fpath):
         # Opposite of self._id_to_path()
-        s = fpath.replace(self.config['local.base_dir'], '').strip('/')
+        s = fpath.replace(self.config["local.base_dir"], "").strip("/")
         s = os.path.splitext(s)[0]
 
-        s = s.replace('/', '.')
+        s = s.replace("/", ".")
         return self._map(s, reverse=True)
+
 
     # def _get_all_ids(self):
     #     stype = self.config['store_type']
@@ -258,8 +265,9 @@ class _BaseJsonStore(object):
     #     if stype == 'local':
     #         return self._get_all_ids_local()
 
+
     def _get_all_ids_local(self):
-        bdir = self.config['local.base_dir']
+        bdir = self.config["local.base_dir"]
 
         for dr, _, files in os.walk(bdir):
             for fpath in files:
@@ -267,6 +275,7 @@ class _BaseJsonStore(object):
 
     def _lookup(self, key_path, item, must_exist=False):
         return nested_lookup(key_path, item, must_exist=must_exist)
+
 
     def _match(self, record, term, exact=False, fields=None, ignore_defaults=False):
         search_fields = set()
