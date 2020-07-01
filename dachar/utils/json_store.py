@@ -1,6 +1,6 @@
 import json
-<<<<<<< HEAD
 import hashlib
+import os
 
 from .common import nested_lookup
 from elasticsearch import Elasticsearch, helpers
@@ -37,6 +37,7 @@ class _BaseJsonStore(object):
         for key, dtype in required.items():
             if not hasattr(cls, key) or not type(getattr(cls, key)) is dtype:
                 raise Exception(f'Invalid store definition: check class attr: {key}')
+            
             
     def convert_id(self, id):
         m = hashlib.md5()
