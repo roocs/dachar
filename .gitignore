@@ -101,5 +101,8 @@ ENV/
 # mypy
 .mypy_cache/
 
-#PyCharm
+# macos
+default.profraw
+
+# PyCharm
 .idea
