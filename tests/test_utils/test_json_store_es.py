@@ -37,6 +37,7 @@ def clear_store():
 
 
 def setup_module():
+    # check elasticsearch connection - if fails - fail all tests
     global store
     store = _TestStore()
     clear_store()
