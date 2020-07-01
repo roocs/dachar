@@ -2,6 +2,7 @@ from datetime import datetime
 
 import numpy as np
 import xarray as xr
+from cfunits import Units
 
 from cfunits import Units
 
@@ -40,10 +41,18 @@ def is_level(coord):
 
 
 def is_time(coord):
+  
+    if coord.values.size > 1:
+        if hasattr(coord.values[0], 'calendar'):
+            if Units(calendar=coord.values[0].calendar).isreftime:
+                return True
+
+        
     if hasattr(coord.values[0], 'calendar'):
         if Units(calendar=coord.values[0].calendar).isreftime:
             return True
 
+        
     elif hasattr(coord, 'axis'):
         if coord.axis == 'T':
             return True
@@ -79,27 +88,47 @@ def get_coords(da):
     Returns a dictionary of coordinate info.
     """
     coords = {}
-    print(f"[DEBUG] Found coords: {str(da.coords.keys())}")
-    print(f"[WARN] NOT CAPTURING scalar COORDS BOUND BY coorindates attr yet!!!")
-
-    for coord_id in da.coords.dims:
+    print(f'[DEBUG] Found coords: {str(da.coords.keys())}')
+    print(f'[WARN] NOT CAPTURING scalar COORDS BOUND BY coorindates attr yet!!!')
+    
+    for coord_id in sorted(da.coords):
+      
         coord = da.coords[coord_id]
 
         coord_type = get_coord_type(coord)
         name = coord_type or coord.name
         data = coord.values
 
-        mn, mx = data.min(), data.max()
+        if data.size == 1:
+            value = data.tolist()
+            if isinstance(value, bytes):
+                value = value.decode('utf-8')
 
-        if coord_type == "time":
-            if type(mn) == np.datetime64:
-                mn, mx = [str(_).split(".")[0] for _ in (mn, mx)]
-            else:
-                mn, mx = [_.strftime("%Y-%m-%dT%H:%M:%S") for _ in (mn, mx)]
+            coords[name] = {
+                'id': name,
+                'value': value,
+                'dtype': str(data.dtype),
+                'length': 1
+            }
+
         else:
-            mn, mx = [float(_) for _ in (mn, mx)]
+            mn, mx = data.min(), data.max()
 
-        coords[name] = {"id": name, "min": mn, "max": mx, "length": len(data)}
+            if coord_type == 'time':
+                if type(mn) == np.datetime64:
+                    mn, mx = [str(_).split('.')[0] for _ in (mn, mx)]
+                else:
+                    mn, mx = [_.strftime('%Y-%m-%dT%H:%M:%S') for _ in (mn, mx)]
+            else:
+                mn, mx = [float(_) for _ in (mn, mx)]
+
+            coords[name] = {
+                'id': name,
+                'min': mn,
+                'max': mx,
+                'length': len(data)
+            }
+
 
         if coord_type == "time":
             if type(data[0]) == np.datetime64:
@@ -147,7 +176,9 @@ def get_global_attrs(ds, expected_attrs=None):
 
 
 def get_data_info(da, mode):
-    if mode == "full":
+
+    if mode == 'full':
+
         mx = float(da.max())
         mn = float(da.min())
 
@@ -162,8 +193,6 @@ def get_data_info(da, mode):
         'shape': da.shape,
         'rank': len(da.shape),
         'dim_names': da.dims,
-        'coord_names': [_ for _ in da.coords.keys()]
-
     }
 
 
