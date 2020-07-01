@@ -89,6 +89,5 @@ def test_analyse():
 
 
 def teardown_module():
-    pass
     # clear_stores()
-
+    pass
