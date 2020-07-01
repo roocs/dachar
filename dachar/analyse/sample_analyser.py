@@ -125,7 +125,7 @@ class OneSampleAnalyser(object):
             print(f'Overwriting existing analysis for {self.sample_id}.')
         elif get_ar_store().exists(self.sample_id) and self.force is False:
             raise Exception(f'Analysis already run for {self.sample_id}. '
-                            f'Use force=True to overwrite.')
+                            f'Use -f FORCE argument to overwrite.')
 
     def run_check(self, check):
         """ runs each check and returns any proposed fixes"""
@@ -169,8 +169,6 @@ class OneSampleAnalyser(object):
             if result:
                 for d in result:
                     results[check] = d
-            else:
-                pass
 
         for check in results:
             fix_dict = results.get(check)
