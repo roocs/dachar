@@ -1,22 +1,22 @@
-import os
-import json
 import datetime
+import json
+import os
 
 import SETTINGS
 from lib import utils
 
 
 example_fixes = {
-    'cmip5.output1.INM.inmcm4.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga': {
-        'pre_processor': {
-             'func': 'daops.pre_processors.do_nothing',
-             'args': None,
-             'kwargs': None,
+    "cmip5.output1.INM.inmcm4.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga": {
+        "pre_processor": {
+            "func": "daops.pre_processors.do_nothing",
+            "args": None,
+            "kwargs": None,
         },
-        'post_processor': {
-             'func': 'daops.post_processors.squeeze_dims',
-             'args': [1],
-             'kwargs': None,
+        "post_processor": {
+            "func": "daops.post_processors.squeeze_dims",
+            "args": [1],
+            "kwargs": None,
         },
     }
 }
@@ -24,32 +24,32 @@ example_fixes = {
 
 def write_fixes():
 
-   ds_ids = ['cmip5.output1.INM.inmcm4.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga']
+    ds_ids = ["cmip5.output1.INM.inmcm4.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga"]
 
-   for ds_id in ds_ids:
+    for ds_id in ds_ids:
 
-       grouped_ds_id = utils.get_grouped_ds_id(ds_id)
-       json_path = SETTINGS.FIX_PATH.format(**vars())
+        grouped_ds_id = utils.get_grouped_ds_id(ds_id)
+        json_path = SETTINGS.FIX_PATH.format(**vars())
 
-       dr = os.path.dirname(json_path)
-       if not os.path.isdir(dr):
-           os.makedirs(dr)
+        dr = os.path.dirname(json_path)
+        if not os.path.isdir(dr):
+            os.makedirs(dr)
 
-       content = example_fixes
+        content = example_fixes
 
-       with open(json_path, 'w') as writer:
-           json.dump(content, writer, indent=4, sort_keys=True)
+        with open(json_path, "w") as writer:
+            json.dump(content, writer, indent=4, sort_keys=True)
 
-       print(f'[INFO] Wrote: {json_path}')
+        print(f"[INFO] Wrote: {json_path}")
 
 
 class _BaseFix(object):
 
-    FIX_NAME = 'UNDEFINED'
-    CATEGORY = 'UNDEFINED'
-    DESCRIPTION = 'UNDEFINED'
+    FIX_NAME = "UNDEFINED"
+    CATEGORY = "UNDEFINED"
+    DESCRIPTION = "UNDEFINED"
 
-    ALLOWED_STATUSES = 'unset', 'suggested', 'rejected', 'accepted'
+    ALLOWED_STATUSES = "unset", "suggested", "rejected", "accepted"
 
     NCML_TEMPLATE = """E.g. ...
 <variable name="temperature">
@@ -68,7 +68,7 @@ class _BaseFix(object):
 
     def _load(self):
 
-        self.update('unset')
+        self.update("unset")
 
     def __repr__(self):
         return f"""<Fix: {self.FIX_NAME} (category: {self.CATEGORY})>
@@ -95,7 +95,9 @@ Keyword arguments: {self.kwargs}
     @status.setter
     def status(self, value):
         if value not in self.ALLOWED_STATUSES:
-            raise ValueError(f'Invalid status: must be set to one of: {self.ALLOWED_STATUSES}')
+            raise ValueError(
+                f"Invalid status: must be set to one of: {self.ALLOWED_STATUSES}"
+            )
 
         self.__status = value
         self.__last_updated = datetime.datetime.now()
@@ -110,6 +112,6 @@ def main():
     write_fixes()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     main()
