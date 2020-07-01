@@ -156,8 +156,7 @@ def _get_arg_parser_analyse(parser):
     parser.add_argument(
         "-f",
         "--force",
-        type=str,
-        default=False,
+        action='store_true',
         help=f'If True then analysis records will be overwritten if they already exist.'
     )
 
@@ -209,7 +208,7 @@ def parse_args_process_fixes(args):
 
 
 def process_fixes_main(args):
-    action, ds_ids = parse_args_process_fixes(args)
+    ds_ids, action = parse_args_process_fixes(args)
     process_all_fixes(action, ds_ids)
 
 
