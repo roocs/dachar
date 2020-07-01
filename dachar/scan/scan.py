@@ -10,10 +10,12 @@ import glob
 import json
 import os
 
+
 from dachar import config
 from dachar.utils import options
 from dachar.utils import switch_ds
 from dachar.utils.character import extract_character
+from dachar.utils.get_stores import get_dc_store
 
 
 def to_json(character, output_path):
@@ -136,6 +138,8 @@ def get_dataset_paths(project, ds_ids=None, paths=None, facets=None, exclude=Non
             'Code currently breaks if not using "ds_ids" argument.'
         )
 
+
+
     return ds_paths
 
 
@@ -176,7 +180,11 @@ def scan_datasets(
         project, ds_ids=ds_ids, paths=paths, facets=facets, exclude=exclude
     )
 
+    if not ds_paths:
+        raise Exception(f'No datasets were found')
+
     for ds_id, ds_path in ds_paths.items():
+
         scanner = scan_dataset(project, ds_id, ds_path, mode, location)
 
         count += 1
@@ -320,11 +328,8 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
 
     # Open files with Xarray and get character
     expected_facets = options.facet_rules[project]
-    var_id = options.get_facet("variable", facets, project)
 
-    character = extract_character(
-        nc_files, location, var_id=var_id, mode=mode, expected_attrs=expected_facets
-    )
+    var_id = options.get_facet('variable', facets, project)
 
     try:
         character = extract_character(
@@ -341,13 +346,28 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
 
         return False
 
-    # Output to JSON file
+    # return character, ds_id
+
+    # output to JSON character store
     try:
-        output = to_json(character, outputs["json"])
+        get_dc_store().put(ds_id, character)
+        print('name=', get_dc_store().store_name)
     except Exception as exc:
-        print(f'[ERROR] Could not write JSON output: {outputs["json"]}')
+        print(f'[ERROR] Exception: {exc}')
         # Create error file if can't output file
         open(outputs["write_error"], "w")
         return False
 
-    print(f'[INFO] Wrote JSON file: {outputs["json"]}')
+    print(f'[INFO] Written to character store') # add file path to json file ?
+
+    # Output to JSON file
+    # try:
+    #     output = to_json(character, outputs['json'])
+    # except Exception as exc:
+    #     print(f'[ERROR] Could not write JSON output: {outputs["json"]}')
+    #     # Create error file if can't output file
+    #     open(outputs['write_error'], 'w')
+    #     return False
+    #
+    # print(f'[INFO] Wrote JSON file: {outputs["json"]}')
+
