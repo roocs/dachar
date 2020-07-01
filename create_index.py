@@ -6,7 +6,7 @@ import json
 from elasticsearch import Elasticsearch
 from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
 
-es = CEDAElasticsearchClient(headers={'x-api-key': '***REMOVED***'})
+es = CEDAElasticsearchClient(headers={'x-api-key': ''})
 
 
 #print(es.indices.exists("char-store-test"))
