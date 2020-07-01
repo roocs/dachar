@@ -3,6 +3,8 @@ from datetime import datetime
 import numpy as np
 import xarray as xr
 
+from cfunits import Units
+
 
 # NOTE THESE ARE COMMON WITH clisops - need to merge!!!
 def get_coord_by_attr(dset, attr, value):
@@ -16,11 +18,21 @@ def get_coord_by_attr(dset, attr, value):
 
 
 def is_latitude(coord):
-    return coord.attrs.get("standard_name") == "latitude"
+    if hasattr(coord, 'units'):
+        if Units(coord.units).islatitude:
+            return True
+
+    elif coord.attrs.get("standard_name", None) == "latitude":
+        return True
 
 
 def is_longitude(coord):
-    return coord.attrs.get("standard_name") == "longitude"
+    if hasattr(coord, 'units'):
+        if Units(coord.units).islongitude:
+            return True
+
+    elif coord.attrs.get("standard_name", None) == "longitude":
+        return True
 
 
 def is_level(coord):
@@ -28,13 +40,28 @@ def is_level(coord):
 
 
 def is_time(coord):
-    return coord.attrs.get("standard_name") == "time"
+    if hasattr(coord.values[0], 'calendar'):
+        if Units(calendar=coord.values[0].calendar).isreftime:
+            return True
+
+    elif hasattr(coord, 'axis'):
+        if coord.axis == 'T':
+            return True
+
+    elif coord.attrs.get("standard_name", None) == "time":
+        return True
 
 
 def get_coord_type(coord):
-    for ctype in ("time", "latitude", "longitude"):
-        if coord.attrs.get("standard_name", None) == ctype:
-            return ctype
+
+    if is_longitude(coord):
+        return 'longitude'
+    elif is_latitude(coord):
+        return 'latitude'
+    elif is_time(coord):
+        return 'time'
+
+    return None
 
 
 def get_coords(da):
@@ -45,6 +72,7 @@ def get_coords(da):
     * lat      (lat) float64 -90.0 -88.75 -87.5 -86.25 ... 86.25 87.5 88.75 90.0
     * lon      (lon) float64 0.0 1.875 3.75 5.625 7.5 ... 352.5 354.4 356.2 358.1
       height   float64 1.5)
+
 
     NOTE: the '*' means it is an INDEX - which means it is a full coordinate variable in NC terms
 
@@ -85,7 +113,6 @@ def get_coords(da):
 
 
 def _copy_dict_for_json(dct):
-
     d = {}
 
     for key, value in dct.items():
@@ -94,6 +121,8 @@ def _copy_dict_for_json(dct):
             value = float(value)
         elif isinstance(value, np.integer):
             value = int(value)
+        elif isinstance(value, np.ndarray):
+            value = value.tolist()
 
         d[key] = value
 
@@ -119,9 +148,8 @@ def get_global_attrs(ds, expected_attrs=None):
 
 def get_data_info(da, mode):
     if mode == "full":
-        data = da.values
-        mx = float(data.max())
-        mn = float(data.min())
+        mx = float(da.max())
+        mn = float(da.min())
 
     else:
         mx = None
@@ -140,7 +168,6 @@ def get_data_info(da, mode):
 
 
 def get_scan_metadata(mode, location):
-
     return {
         "mode": mode,
         "last_scanned": datetime.now().isoformat(),
