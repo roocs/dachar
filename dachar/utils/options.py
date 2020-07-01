@@ -2,9 +2,9 @@ project_base_dirs = {
     "cmip5": "/badc/cmip5/data",
     "cmip6": "/badc/cmip6/data",
     "cordex": "/badc/cordex/data",
-    "c3s-cmip5": "/group_workspaces/jasmin2/cp4cds1/data",
+    "c3s-cmip5": "/group_workspaces/jasmin2/cp4cds1/vol1/data",
     "c3s-cmip6": "NOT DEFINED YET",
-    "c3s-cordex": "/group_workspaces/jasmin2/cp4cds1/data",
+    "c3s-cordex": "/group_workspaces/jasmin2/cp4cds1/vol1/data",
 }
 known_projects = project_base_dirs.keys()
 locations = ["ceda", "dkrz", "other"]
@@ -22,11 +22,20 @@ mappings = {
     }
 }
 
-common_checks = ['coord_checks.RankCheck']
+# if coordinates are given different names but are equivalent
+coord_mappings = {
+    'ni': 'i',
+    'nj': 'j',
+    'i': 'ni',
+    'j': 'nj'
+}
+
+common_checks = ['coord_checks.RankCheck', 'coord_checks.MissingCoordCheck']
 checks = {
     'cmip5': [],
     'cmip6': ['test'],
     'cordex': []
+
 }
 
 
