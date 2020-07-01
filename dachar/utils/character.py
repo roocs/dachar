@@ -128,11 +128,14 @@ def get_data_info(da, mode):
         mn = None
 
     return {
-        "min": mn,
-        "max": mx,
-        "shape": list(da.shape),
-        "rank": len(da.shape),
-        "coord_names": [_ for _ in da.coords.keys()],
+
+        'min': mn,
+        'max': mx,
+        'shape': da.shape,
+        'rank': len(da.shape),
+        'dim_names': da.dims,
+        'coord_names': [_ for _ in da.coords.keys()]
+
     }
 
 
