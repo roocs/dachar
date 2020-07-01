@@ -82,14 +82,22 @@ def get_ensemble(freq_path, project, resource, mode):
         if resource == 'large':
             wallclock = config.WALLCLOCK_LARGE
             memory_limit = f'-R"rusage[mem={config.MEMORY_LARGE}]" -M {config.MEMORY_LARGE}'
+            memory_limit_slurm = f'--mem={config.MEMORY_LARGE}'
+
         else:
             wallclock = config.WALLCLOCK_SMALL
             memory_limit = f'-R"rusage[mem={config.MEMORY_SMALL}]" -M {config.MEMORY_SMALL}'
+            memory_limit_slurm = f'--mem={config.MEMORY_SMALL}'
 
-        # submit to lotus
+        # submit to lotus (LSF)
         bsub_command = f'bsub -q {config.QUEUE} -W {wallclock} -o ' \
                        f'{output_base}.out -e {output_base}.err {memory_limit} ' \
                        f'{current_directory}/scan_vars.py -p {ensemble_path} -pr {project} -m {mode}'
+
+        # to use with slurm:
+        # sbatch_cmd = f'sbatch -p {config.QUEUE} -t {wallclock} -o ' \
+        #              f'{output_base}.out -e {output_base}.err {memory_limit_slurm} ' \
+        #              f'{current_directory}/scan_vars.py -p {ensemble_path} -pr {project} -m {mode}'
 
         # bsub_command = f'{current_directory}/scan_vars.py -p {ensemble_path} -pr {project}'
         subprocess.call(bsub_command, shell=True)
