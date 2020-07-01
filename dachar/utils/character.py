@@ -4,6 +4,9 @@ import numpy as np
 import xarray as xr
 from cfunits import Units
 
+from cfunits import Units
+
+
 # NOTE THESE ARE COMMON WITH clisops - need to merge!!!
 def get_coord_by_attr(dset, attr, value):
     coords = dset.coords
@@ -38,11 +41,18 @@ def is_level(coord):
 
 
 def is_time(coord):
+  
     if coord.values.size > 1:
         if hasattr(coord.values[0], 'calendar'):
             if Units(calendar=coord.values[0].calendar).isreftime:
                 return True
 
+        
+    if hasattr(coord.values[0], 'calendar'):
+        if Units(calendar=coord.values[0].calendar).isreftime:
+            return True
+
+        
     elif hasattr(coord, 'axis'):
         if coord.axis == 'T':
             return True
@@ -52,6 +62,7 @@ def is_time(coord):
 
 
 def get_coord_type(coord):
+
     if is_longitude(coord):
         return 'longitude'
     elif is_latitude(coord):
@@ -71,6 +82,7 @@ def get_coords(da):
     * lon      (lon) float64 0.0 1.875 3.75 5.625 7.5 ... 352.5 354.4 356.2 358.1
       height   float64 1.5)
 
+
     NOTE: the '*' means it is an INDEX - which means it is a full coordinate variable in NC terms
 
     Returns a dictionary of coordinate info.
@@ -78,8 +90,9 @@ def get_coords(da):
     coords = {}
     print(f'[DEBUG] Found coords: {str(da.coords.keys())}')
     print(f'[WARN] NOT CAPTURING scalar COORDS BOUND BY coorindates attr yet!!!')
+    
     for coord_id in sorted(da.coords):
-
+      
         coord = da.coords[coord_id]
 
         coord_type = get_coord_type(coord)
@@ -116,11 +129,12 @@ def get_coords(da):
                 'length': len(data)
             }
 
-        if coord_type == 'time':
+
+        if coord_type == "time":
             if type(data[0]) == np.datetime64:
-                coords[name]['calendar'] = 'standard'
+                coords[name]["calendar"] = "standard"
             else:
-                coords[name]['calendar'] = data[0].calendar
+                coords[name]["calendar"] = data[0].calendar
 
         coords[name].update(coord.attrs)
 
@@ -128,7 +142,6 @@ def get_coords(da):
 
 
 def _copy_dict_for_json(dct):
-
     d = {}
 
     for key, value in dct.items():
@@ -147,23 +160,25 @@ def _copy_dict_for_json(dct):
 
 def get_variable_metadata(da):
     d = _copy_dict_for_json(da.attrs)
-    d['var_id'] = da.name
+    d["var_id"] = da.name
 
     # Encode _FillValue as string because representation may be strange
-    d['_FillValue'] = str(da.encoding.get('_FillValue', 'NOT_DEFINED'))
+    d["_FillValue"] = str(da.encoding.get("_FillValue", "NOT_DEFINED"))
     return d
 
 
 def get_global_attrs(ds, expected_attrs=None):
     if expected_attrs:
-        print('[WARN] Not testing expected attrs yet')
+        print("[WARN] Not testing expected attrs yet")
 
     d = _copy_dict_for_json(ds.attrs)
     return d
 
 
 def get_data_info(da, mode):
+
     if mode == 'full':
+
         mx = float(da.max())
         mn = float(da.min())
 
@@ -172,6 +187,7 @@ def get_data_info(da, mode):
         mn = None
 
     return {
+
         'min': mn,
         'max': mx,
         'shape': da.shape,
@@ -181,16 +197,14 @@ def get_data_info(da, mode):
 
 
 def get_scan_metadata(mode, location):
-
     return {
-        'mode': mode,
-        'last_scanned': datetime.now().isoformat(),
-        'location': location,
+        "mode": mode,
+        "last_scanned": datetime.now().isoformat(),
+        "location": location,
     }
 
 
 class CharacterExtractor(object):
-
     def __init__(self, files, location, var_id, mode, expected_attrs=None):
         """
         Open files as an Xarray MultiFile Dataset and extract character as a dictionary.
@@ -207,9 +221,11 @@ class CharacterExtractor(object):
         self._extract()
 
     def _extract(self):
-        ds = xr.open_mfdataset(self._files, use_cftime=True, combine='by_coords')
-        print('[WARN] NEED TO CHECK NUMBER OF VARS/DOMAINS RETURNED HERE')
-        print('[WARN] DOES NOT CHECK YET WHETHER WE MIGHT GET 2 DOMAINS/VARIABLES BACK FROM MULTI-FILE OPEN')
+        ds = xr.open_mfdataset(self._files, use_cftime=True, combine="by_coords")
+        print("[WARN] NEED TO CHECK NUMBER OF VARS/DOMAINS RETURNED HERE")
+        print(
+            "[WARN] DOES NOT CHECK YET WHETHER WE MIGHT GET 2 DOMAINS/VARIABLES BACK FROM MULTI-FILE OPEN"
+        )
         # Get content by variable
         da = ds[self._var_id]
 
@@ -218,10 +234,12 @@ class CharacterExtractor(object):
             "variable": get_variable_metadata(da),
             "coordinates": get_coords(da),
             "global_attrs": get_global_attrs(ds, self._expected_attrs),
-            "data": get_data_info(da, self._mode)
+            "data": get_data_info(da, self._mode),
         }
 
 
-def extract_character(files, location, var_id, mode='full', expected_attrs=None):
-    ce = CharacterExtractor(files, location, var_id, mode, expected_attrs=expected_attrs)
+def extract_character(files, location, var_id, mode="full", expected_attrs=None):
+    ce = CharacterExtractor(
+        files, location, var_id, mode, expected_attrs=expected_attrs
+    )
     return ce.character

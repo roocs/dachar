@@ -1,20 +1,19 @@
 #!/usr/bin/env python
-
 """
 Takes arguemnts from the command line and scans each dataset to extract the characteristics.
 Outputs the characteristics to JSON files.
 
 Can be re-run if errors are fixed and will only run those which failed.
 """
-
-import json
 import collections
-import os
 import glob
+import json
+import os
 
 
 from dachar import config
-from dachar.utils import options, switch_ds
+from dachar.utils import options
+from dachar.utils import switch_ds
 from dachar.utils.character import extract_character
 from dachar.utils.get_stores import get_dc_store
 
@@ -29,7 +28,7 @@ def to_json(character, output_path):
     :return : None
     """
     # Output to JSON file
-    with open(output_path, 'w') as writer:
+    with open(output_path, "w") as writer:
         json.dump(character, writer, indent=4, sort_keys=True)
 
 
@@ -52,16 +51,15 @@ def _get_ds_paths_from_paths(paths, project):
             bad_paths.append(pth)
 
     if bad_paths:
-        raise Exception(f'Invalid paths provided: {bad_paths}')
-
+        raise Exception(f"Invalid paths provided: {bad_paths}")
 
     ds_paths = collections.OrderedDict()
 
     for pth in paths:
 
-        print(f'[INFO] Searching for datasets under: {pth}')
+        print(f"[INFO] Searching for datasets under: {pth}")
         facet_order = options.facet_rules[project]
-        facets_in_path = pth.replace(base_dir, '').strip('/').split('/')
+        facets_in_path = pth.replace(base_dir, "").strip("/").split("/")
 
         facets = {}
 
@@ -72,19 +70,19 @@ def _get_ds_paths_from_paths(paths, project):
             facets[facet_name] = facets_in_path[i]
 
         # Fix facet version if not set
-        if not facets.get('version'):
-            facets['version'] = 'latest'
+        if not facets.get("version"):
+            facets["version"] = "latest"
 
-        facets_as_path = '/'.join([facets.get(_, '*') for _ in facet_order])
+        facets_as_path = "/".join([facets.get(_, "*") for _ in facet_order])
 
         # Remove anything matching "files"
-        if '/files' in facets_as_path:
+        if "/files" in facets_as_path:
             continue
 
-        #TODO: This is repet code of below. Suggest we create a module/class
+        # TODO: This is repet code of below. Suggest we create a module/class
         #      to manage all mapping of different args to resolve to ds_paths dictionary, later.
         pattern = os.path.join(base_dir, facets_as_path)
-        print(f'[INFO] Finding dataset paths for pattern: {pattern}')
+        print(f"[INFO] Finding dataset paths for pattern: {pattern}")
 
         for ds_path in glob.glob(pattern):
             dsid = switch_ds.switch_ds(project, ds_path)
@@ -112,7 +110,8 @@ def get_dataset_paths(project, ds_ids=None, paths=None, facets=None, exclude=Non
     if ds_ids:
 
         for dsid in ds_ids:
-            if not dsid: continue
+            if not dsid:
+                continue
 
             ds_path = switch_ds.switch_ds(project, dsid)
             ds_paths[dsid] = ds_path
@@ -121,10 +120,10 @@ def get_dataset_paths(project, ds_ids=None, paths=None, facets=None, exclude=Non
     elif facets:
 
         facet_order = options.facet_rules[project]
-        facets_as_path = '/'.join([facets.get(_, '*') for _ in facet_order])
+        facets_as_path = "/".join([facets.get(_, "*") for _ in facet_order])
 
         pattern = os.path.join(base_dir, facets_as_path)
-        print(f'[INFO] Finding dataset paths for pattern: {pattern}')
+        print(f"[INFO] Finding dataset paths for pattern: {pattern}")
 
         for ds_path in glob.glob(pattern):
             dsid = switch_ds.switch_ds(project, ds_path)
@@ -135,14 +134,18 @@ def get_dataset_paths(project, ds_ids=None, paths=None, facets=None, exclude=Non
         ds_paths = _get_ds_paths_from_paths(paths, project)
 
     else:
-        raise NotImplementedError('Code currently breaks if not using "ds_ids" argument.')
+        raise NotImplementedError(
+            'Code currently breaks if not using "ds_ids" argument.'
+        )
 
 
 
     return ds_paths
 
 
-def scan_datasets(project, mode, location, ds_ids=None, paths=None, facets=None, exclude=None):
+def scan_datasets(
+    project, mode, location, ds_ids=None, paths=None, facets=None, exclude=None
+):
     """
     Loops over ESGF data sets and scans them for character.
 
@@ -173,7 +176,9 @@ def scan_datasets(project, mode, location, ds_ids=None, paths=None, facets=None,
     failure_count = 0
 
     # Filter arguments to get a set of file paths to DSIDs
-    ds_paths = get_dataset_paths(project, ds_ids=ds_ids, paths=paths, facets=facets, exclude=exclude)
+    ds_paths = get_dataset_paths(
+        project, ds_ids=ds_ids, paths=paths, facets=facets, exclude=exclude
+    )
 
     if not ds_paths:
         raise Exception(f'No datasets were found')
@@ -188,9 +193,11 @@ def scan_datasets(project, mode, location, ds_ids=None, paths=None, facets=None,
 
     percentage_failed = (failure_count / float(count)) * 100
 
-    print(f'[INFO] COMPLETED. Total count: {count}'
-          f', Failure count = {failure_count}. Percentage failed'
-          f' = {percentage_failed:.2f}%')
+    print(
+        f"[INFO] COMPLETED. Total count: {count}"
+        f", Failure count = {failure_count}. Percentage failed"
+        f" = {percentage_failed:.2f}%"
+    )
 
 
 def _get_output_paths(project, ds_id):
@@ -206,11 +213,11 @@ def _get_output_paths(project, ds_id):
     grouped_ds_id = switch_ds.get_grouped_ds_id(ds_id)
 
     paths = {
-        'json': config.JSON_OUTPUT_PATH.format(**vars()),
-        'no_files_error': config.NO_FILES_PATH.format(**vars()),
-        'extract_error': config.EXTRACT_ERROR_PATH.format(**vars()),
-        'write_error': config.WRITE_ERROR_PATH.format(**vars()),
-        'batch': config.BATCH_OUTPUT_PATH.format(**vars())
+        "json": config.JSON_OUTPUT_PATH.format(**vars()),
+        "no_files_error": config.NO_FILES_PATH.format(**vars()),
+        "extract_error": config.EXTRACT_ERROR_PATH.format(**vars()),
+        "write_error": config.WRITE_ERROR_PATH.format(**vars()),
+        "batch": config.BATCH_OUTPUT_PATH.format(**vars()),
     }
 
     # Make directories if not already there
@@ -231,7 +238,7 @@ def analyse_facets(project, ds_id):
     :return:
     """
     facet_names = options.facet_rules[project]
-    facet_values = ds_id.split('.')
+    facet_values = ds_id.split(".")
 
     return dict(zip(facet_names, facet_values))
 
@@ -272,9 +279,11 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
     """
 
     if project not in options.known_projects:
-        raise Exception(f'Project must be one of known projects: {options.known_projects}')
+        raise Exception(
+            f"Project must be one of known projects: {options.known_projects}"
+        )
 
-    print(f'[INFO] Scanning dataset: {ds_id}\n\t\t{ds_path} in {mode} mode ')
+    print(f"[INFO] Scanning dataset: {ds_id}\n\t\t{ds_path} in {mode} mode ")
     facets = analyse_facets(project, ds_id)
 
     # Generate output file paths
@@ -287,50 +296,52 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
             # if json file exists get mode
             data = json.load(open(outputs["json"]))
             mode = data["scan_metadata"]["mode"]
-            if mode == 'quick':
-                print(f'[INFO] Already ran for: {ds_id} in quick mode')
+            if mode == "quick":
+                print(f"[INFO] Already ran for: {ds_id} in quick mode")
                 return True
 
-            if mode == 'full':
+            if mode == "full":
                 check = _check_for_min_max(outputs["json"])
                 if check:
-                    print(f'[INFO] Already ran for: {ds_id} in full mode')
+                    print(f"[INFO] Already ran for: {ds_id} in full mode")
                     return True
 
         # flag that a corrupt JSON file exists
         except json.decoder.JSONDecodeError as exc:
             os.remove(outputs["json"])
-            print(f'[INFO] Corrupt JSON file. Deleting and re-running.')
+            print(f"[INFO] Corrupt JSON file. Deleting and re-running.")
 
     # Delete previous failure files and log files
-    for file_key in ('no_files_error', 'extract_error', 'write_error'):
+    for file_key in ("no_files_error", "extract_error", "write_error"):
 
         err_file = outputs[file_key]
         if os.path.exists(err_file):
             os.remove(err_file)
 
     # Get data files
-    nc_files = glob.glob(f'{ds_path}/*.nc')
+    nc_files = glob.glob(f"{ds_path}/*.nc")
 
     if not nc_files:
-        print(f'[ERROR] No data files found for: {ds_path}/*.nc')
-        open(outputs['no_files_error'], 'w')
+        print(f"[ERROR] No data files found for: {ds_path}/*.nc")
+        open(outputs["no_files_error"], "w")
         return False
 
     # Open files with Xarray and get character
     expected_facets = options.facet_rules[project]
+
     var_id = options.get_facet('variable', facets, project)
 
     try:
-        character = extract_character(nc_files, location, var_id=var_id,
-                                      mode=mode, expected_attrs=expected_facets)
+        character = extract_character(
+            nc_files, location, var_id=var_id, mode=mode, expected_attrs=expected_facets
+        )
     except Exception as exc:
-        print(f'[ERROR] Could not load Xarray Dataset for: {ds_path}')
-        print(f'[ERROR] Files: {nc_files}')
-        print(f'[ERROR] Exception was: {exc}')
+        print(f"[ERROR] Could not load Xarray Dataset for: {ds_path}")
+        print(f"[ERROR] Files: {nc_files}")
+        print(f"[ERROR] Exception was: {exc}")
 
         # Create error file if can't open dataset
-        with open(outputs['extract_error'], 'w') as writer:
+        with open(outputs["extract_error"], "w") as writer:
             writer.write(str(exc))
 
         return False
@@ -344,7 +355,7 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
     except Exception as exc:
         print(f'[ERROR] Exception: {exc}')
         # Create error file if can't output file
-        open(outputs['write_error'], 'w')
+        open(outputs["write_error"], "w")
         return False
 
     print(f'[INFO] Written to character store') # add file path to json file ?

@@ -3,6 +3,7 @@ import os
 import shutil
 
 from dachar.utils._stores_for_tests import _TestFixProposalStore
+
 """Console script for dachar."""
 
 __author__ = """Elle Smith"""
@@ -21,6 +22,7 @@ from unittest.mock import Mock
 
 
 def _to_list(item):
+
     if not item: return item
     return item.split(',')
 
@@ -28,6 +30,7 @@ def _to_list(item):
 def _to_dict(item):
     if not item: return item
     return dict([_.split('=') for _ in item.split(',')])
+
 
 
 def _get_arg_parser_scan(parser):
@@ -44,7 +47,7 @@ def _get_arg_parser_scan(parser):
         "project",
         type=str,
         choices=project_options,
-        help=f'Project ID, must be one of: {project_options}'
+        help=f"Project ID, must be one of: {project_options}",
     )
 
     parser.add_argument(
@@ -53,7 +56,7 @@ def _get_arg_parser_scan(parser):
         type=str,
         default=None,
         required=False,
-        help='List of comma-separated dataset identifiers'
+        help="List of comma-separated dataset identifiers",
     )
 
     parser.add_argument(
@@ -62,7 +65,7 @@ def _get_arg_parser_scan(parser):
         type=str,
         default=None,
         required=False,
-        help='List of comma-separated directories to search'
+        help="List of comma-separated directories to search",
     )
 
     parser.add_argument(
@@ -71,7 +74,7 @@ def _get_arg_parser_scan(parser):
         type=str,
         default=None,
         required=False,
-        help='Set of facets to use, formatted as: x=hello,y=2,z=bye'
+        help="Set of facets to use, formatted as: x=hello,y=2,z=bye",
     )
 
     parser.add_argument(
@@ -80,7 +83,7 @@ def _get_arg_parser_scan(parser):
         type=str,
         default=None,
         required=False,
-        help='Regular expressions for excluding paths from being scanned'
+        help="Regular expressions for excluding paths from being scanned",
     )
 
     parser.add_argument(
@@ -89,8 +92,8 @@ def _get_arg_parser_scan(parser):
         type=str,
         default="quick",
         required=False,
-        help='Scanning mode: can be either quick or full. A full scan returns '
-             'max and min values while a quick scan excludes them. Defaults to quick.'
+        help="Scanning mode: can be either quick or full. A full scan returns "
+        "max and min values while a quick scan excludes them. Defaults to quick.",
     )
 
     parser.add_argument(
@@ -100,7 +103,7 @@ def _get_arg_parser_scan(parser):
         default="ceda",
         required=True,
         choices=location_options,
-        help=f'Location of scan, must be one of: {location_options}'
+        help=f"Location of scan, must be one of: {location_options}",
     )
 
     return parser
@@ -131,7 +134,7 @@ def _get_arg_parser_analyse(parser):
         "project",
         type=str,
         choices=project_options,
-        help=f'Project ID, must be one of: {project_options}'
+        help=f"Project ID, must be one of: {project_options}",
     )
 
     parser.add_argument(
@@ -158,6 +161,7 @@ def _get_arg_parser_analyse(parser):
         "--force",
         action='store_true',
         help=f'If True then analysis records will be overwritten if they already exist.'
+
     )
 
     return parser
@@ -217,17 +221,19 @@ def main():
     main_parser = argparse.ArgumentParser()
     subparsers = main_parser.add_subparsers()
 
-    scan_parser = subparsers.add_parser('scan')
+    scan_parser = subparsers.add_parser("scan")
     _get_arg_parser_scan(scan_parser)
     scan_parser.set_defaults(func=scan_main)
 
-    analyse_parser = subparsers.add_parser('analyse')
+    analyse_parser = subparsers.add_parser("analyse")
     _get_arg_parser_analyse(analyse_parser)
     analyse_parser.set_defaults(func=analyse_main)
+
 
     fix_parser = subparsers.add_parser('process-fixes')
     _get_arg_parser_process_fixes(fix_parser)
     fix_parser.set_defaults(func=process_fixes_main)
+
 
     args = main_parser.parse_args()
     args.func(args)
