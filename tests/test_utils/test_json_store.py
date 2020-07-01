@@ -116,7 +116,7 @@ def test_put_fail_validate():
 def test_get_all_ids():
     store.put(*recs[0])
     store.put(*recs[2])
-    all_ids = [_ for _ in store._get_all_ids()]
+    all_ids = [_ for _ in store._get_all_ids_local()]
     assert(all_ids == [recs[0][0], recs[2][0]])
 
 
