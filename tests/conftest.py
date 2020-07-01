@@ -1,9 +1,13 @@
+import os
+from datetime import datetime
+from datetime import timedelta
+
+import numpy as np
 import pytest
 from netCDF4 import Dataset
-import os
-import numpy as np
-from datetime import datetime, timedelta
-from netCDF4 import num2date, date2num
+from netCDF4 import date2num
+from netCDF4 import num2date
+
 
 @pytest.fixture
 def create_netcdf_file():
@@ -44,8 +48,8 @@ def create_netcdf_file_2():
         lat = test_file_2.createVariable("lat", "f4", ("lat",))
         test_file_2.createDimension("lon", 192)
         lon = test_file_2.createVariable("lon", "f4", ("lon",))
-        lats = (np.arange(-90, 91, 1.25) + 1)
-        lons = (np.arange(0, 360, 1.875) + 1)
+        lats = np.arange(-90, 91, 1.25) + 1
+        lons = np.arange(0, 360, 1.875) + 1
         lat[:] = lats
         lon[:] = lons
         test_file_2.createDimension("time", 876)
@@ -57,6 +61,4 @@ def create_netcdf_file_2():
         temp = test_file_2.createVariable("temp", "f4", ("time", "lat", "lon",))
         temp.units = "K"
 
-
     return "test/data/test_file_2.nc"
-

@@ -117,12 +117,15 @@ class FixProposalStore(_BaseJsonStore):
                 for this_fix in content['fixes']:
                     if this_fix['status'] == 'proposed':
                         proposed_fixes.append(content)
-                        # proposed_fixes.append(this_fix['fix'])
 
         return proposed_fixes
 
-    # def get_proposed_fixes_2(self):
-    #     proposed_fixes = self.search('proposed')
+    # Don't think search can be usd as dict contains []
+    # just searching for 'proposed' returns fixes that have since had other actions taken on them as well - don't
+    # want this
+    # def get_proposed_fixes_using_search(self):
+    #     proposed_fixes = self.search('proposed', exact=False, fields=['fixes.fix.fix_id'], ignore_defaults=True)
+    #     print('proposed_fixes=', proposed_fixes)
     #     return proposed_fixes
 
 
