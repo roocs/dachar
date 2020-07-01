@@ -2,6 +2,7 @@ import os
 import shutil
 import glob
 
+
 from tests._stores_for_tests import _TestFixProposalStore, _TestAnalysisStore, _TestDatasetCharacterStore
 from dachar.utils import options
 from dachar.analyse.checks import _base_check

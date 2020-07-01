@@ -10,7 +10,6 @@ from dachar.utils.json_store import _BaseJsonStore
 # Create a new dummy store to run tests on
 class _TestStore(_BaseJsonStore):
 
-<<<<<<< HEAD
     store_name = 'TestStore'
     config = {'store_type': 'local',
               'local.base_dir': '/tmp/test-store',
@@ -18,17 +17,6 @@ class _TestStore(_BaseJsonStore):
     id_mappers = {'*': '__ALL__'}
     required_fields = ['data']
     search_defaults = ['id', 'data']
-=======
-    store_name = "TestStore"
-    config = {
-        "store_type": "local",
-        "local.base_dir": "/tmp/test-store",
-        "local.dir_grouping_level": 4,
-    }
-    id_mappers = {"*": "__all__"}
-    required_fields = ["data"]
-    search_defaults = ["id", "data"]
->>>>>>> master
 
 
 recs = [
@@ -90,15 +78,10 @@ def test_put_maps_asterisk():
     store.put(_id, {"data": "test"})
     fpath = store._id_to_path(_id)
 
-<<<<<<< HEAD
     bdir = store.config['local.base_dir']
     assert(fpath == os.path.join(bdir, '1/1/__ALL__/1.__ALL__.__ALL__.1.json'))
     assert(os.path.isfile(fpath))
-=======
-    bdir = store.config["local.base_dir"]
-    assert fpath == os.path.join(bdir, "1/1/__all__/1.__all__.__all__.1.json")
-    assert os.path.isfile(fpath)
->>>>>>> master
+
     store.delete(_id)
 
 
@@ -137,13 +120,8 @@ def test_put_fail_validate():
 def test_get_all_ids():
     store.put(*recs[0])
     store.put(*recs[2])
-<<<<<<< HEAD
     all_ids = [_ for _ in store._get_all_ids_local()]
     assert(all_ids == [recs[0][0], recs[2][0]])
-=======
-    all_ids = [_ for _ in store._get_all_ids()]
-    assert all_ids == [recs[0][0], recs[2][0]]
->>>>>>> master
 
 
 @pytest.mark.xfail(reason="tox test fails")
@@ -207,10 +185,4 @@ def test_search_by_id():
 
 
 def teardown_module():
-<<<<<<< HEAD
     _clear_store()
-=======
-    dr = _TestStore.config["local.base_dir"]
-    if os.path.isdir(dr):
-        shutil.rmtree(dr)
->>>>>>> master
