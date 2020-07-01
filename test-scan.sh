@@ -18,4 +18,4 @@ facets="activity=cmip5,product=output1,experiment=rcp45,frequency=mon,realm=ocea
 
 #python scan.py -l ceda -d c3s-cordex.output.EUR-11.CNRM.CNRM-CERFACS-CNRM-CM5.rcp45.r1i1p1.CNRM-ALADIN53.v1.day.tas.v20150127 -m quick c3s-cordex
 
-dachar scan -l ceda -d c3s-cordex.output.EUR-11.IPSL.MOHC-HadGEM2-ES.rcp85.r1i1p1.IPSL-WRF381P.v1.day.tas.v20190212 -m quick c3s-cordex
+#dachar scan -l ceda -d c3s-cordex.output.EUR-11.IPSL.MOHC-HadGEM2-ES.rcp85.r1i1p1.IPSL-WRF381P.v1.day.tas.v20190212 -m quick c3s-cordex

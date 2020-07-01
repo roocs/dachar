@@ -1,0 +1,72 @@
+{
+    "coordinates": {
+        "time": {
+            "axis": "T",
+            "bounds": "time_bnds",
+            "calendar": "noleap",
+            "id": "time",
+            "length": 1140,
+            "long_name": "time",
+            "max": "2100-12-16T12:00:00",
+            "min": "2006-01-16T12:00:00",
+            "standard_name": "time"
+        }
+    },
+    "data": {
+        "coord_names": [
+            "time"
+        ],
+        "max": null,
+        "min": null,
+        "rank": 1,
+        "shape": [
+            1140
+        ]
+    },
+    "global_attrs": {
+        "Conventions": "CF-1.4",
+        "branch_time": 56940.0,
+        "cmor_version": "2.7.1",
+        "contact": "Masahiro Watanabe (hiro@aori.u-tokyo.ac.jp), Seita Emori (emori@nies.go.jp), Masayoshi Ishii (ism@jamstec.go.jp), Masahide Kimoto (kimoto@aori.u-tokyo.ac.jp)",
+        "creation_date": "2011-07-20T07:25:09Z",
+        "experiment": "RCP4.5",
+        "experiment_id": "rcp45",
+        "forcing": "GHG, SA, Oz, LU, Sl, Vl, SS, Ds, BC, MD, OC (GHG includes CO2, N2O, methane, and fluorocarbons; Oz includes OH and H2O2; LU excludes change in lake fraction)",
+        "frequency": "mon",
+        "history": "2011-07-20T07:25:09Z CMOR rewrote data to comply with CF standards and CMIP5 requirements.",
+        "initialization_method": 1,
+        "institute_id": "MIROC",
+        "institution": "AORI (Atmosphere and Ocean Research Institute, The University of Tokyo, Chiba, Japan), NIES (National Institute for Environmental Studies, Ibaraki, Japan), JAMSTEC (Japan Agency for Marine-Earth Science and Technology, Kanagawa, Japan)",
+        "model_id": "MIROC5",
+        "modeling_realm": "ocean",
+        "parent_experiment": "historical",
+        "parent_experiment_id": "historical",
+        "parent_experiment_rip": "r1i1p1",
+        "physics_version": 1,
+        "product": "output",
+        "project_id": "CMIP5",
+        "realization": 1,
+        "references": "Watanabe et al., 2010: Improved climate simulation by MIROC5: Mean states, variability, and climate sensitivity. J. Climate, 23, 6312-6335",
+        "source": "MIROC5 2010 atmosphere: MIROC-AGCM6 (T85L40); ocean: COCO (COCO4.5, 256x224 L50); sea ice: COCO (COCO4.5); land: MATSIRO (MATSIRO, L6); aerosols: SPRINTARS (SPRINTARS 5.00, T85L40)",
+        "table_id": "Table Omon (27 April 2011) 340eddd4fd838d90fa9ffe1345ecbd73",
+        "title": "MIROC5 model output prepared for CMIP5 RCP4.5",
+        "tracking_id": "3def62b0-e741-4396-ac46-9c33f40751ae"
+    },
+    "scan_metadata": {
+        "last_scanned": "2020-04-02T15:23:26.180400",
+        "location": "ceda",
+        "mode": "quick"
+    },
+    "variable": {
+        "_FillValue": "1e+20",
+        "associated_files": "baseURL: http://cmip-pcmdi.llnl.gov/CMIP5/dataLocation gridspecFile: gridspec_ocean_fx_MIROC5_rcp45_r0i0p0.nc",
+        "cell_methods": "time: mean area: mean where sea",
+        "history": "2011-07-20T07:25:09Z altered by CMOR: Converted units from 'cm' to 'm'. 2011-07-20T07:25:09Z altered by CMOR: replaced missing value flag (-999) with standard missing value (1e+20).",
+        "long_name": "Global Average Thermosteric Sea Level Change",
+        "original_name": "shgtst",
+        "original_units": "cm",
+        "standard_name": "global_average_thermosteric_sea_level_change",
+        "units": "m",
+        "var_id": "zostoga"
+    }
+}
