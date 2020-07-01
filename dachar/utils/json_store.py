@@ -6,7 +6,7 @@ from .common import nested_lookup
 from elasticsearch import Elasticsearch, helpers
 from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
 
-es = CEDAElasticsearchClient(headers={'x-api-key': 'cdad90eaf6f889732fd691e38df2f6456e9f73029b3a49f0a871d5f64a553c44'})
+es = CEDAElasticsearchClient(headers={'x-api-key': ''})
 
 
 class _BaseJsonStore(object):
