@@ -1,1 +1,1 @@
-from .scan import *
+from .char_store import DatasetCharacterStore

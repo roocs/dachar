@@ -10,6 +10,15 @@ from dachar.utils.json_store import _BaseJsonStore
 # Create a new dummy store to run tests on
 class _TestStore(_BaseJsonStore):
 
+<<<<<<< HEAD
+    store_name = 'TestStore'
+    config = {'store_type': 'local',
+              'local.base_dir': '/tmp/test-store',
+              'local.dir_grouping_level': 4}
+    id_mappers = {'*': '__ALL__'}
+    required_fields = ['data']
+    search_defaults = ['id', 'data']
+=======
     store_name = "TestStore"
     config = {
         "store_type": "local",
@@ -19,6 +28,7 @@ class _TestStore(_BaseJsonStore):
     id_mappers = {"*": "__all__"}
     required_fields = ["data"]
     search_defaults = ["id", "data"]
+>>>>>>> master
 
 
 recs = [
@@ -30,11 +40,14 @@ recs = [
 store = None
 
 
-def _get_store():
-    return _TestStore()
+def _clear_store():
+    dr = _TestStore.config['local.base_dir']
+    if os.path.isdir(dr):
+        shutil.rmtree(dr)
 
 
 def setup_module():
+    _clear_store()
     global store
     store = _TestStore()
 
@@ -44,6 +57,13 @@ def test_verify_store():
     pass
 
 
+def test_put_fails_if_id_causes_unsafe_path():
+    try:
+        store.put('unsafe', recs[0][1])
+    except KeyError as exc:
+        assert(str(exc) == "'Identifier name cannot be safely translated to file path: unsafe'")
+
+
 def test_put():
     _id, content = recs[0]
     store.put(_id, content)
@@ -51,14 +71,34 @@ def test_put():
     os.path.isfile(fpath)
 
 
+def test_put_force_parameter():
+    _id, content = recs[0]
+    if not store.exists(_id):
+        store.put(_id, content)
+
+    try:
+        store.put(_id, content)
+    except FileExistsError as exc:
+        assert(str(exc) == f'Record already exists: {_id}. Use "force=False" to overwrite.')
+
+    store.put(_id, content, force=True)
+
+
+
 def test_put_maps_asterisk():
     _id = "1.1.*.1.*.*.1"
     store.put(_id, {"data": "test"})
     fpath = store._id_to_path(_id)
 
+<<<<<<< HEAD
+    bdir = store.config['local.base_dir']
+    assert(fpath == os.path.join(bdir, '1/1/__ALL__/1.__ALL__.__ALL__.1.json'))
+    assert(os.path.isfile(fpath))
+=======
     bdir = store.config["local.base_dir"]
     assert fpath == os.path.join(bdir, "1/1/__all__/1.__all__.__all__.1.json")
     assert os.path.isfile(fpath)
+>>>>>>> master
     store.delete(_id)
 
 
@@ -97,8 +137,13 @@ def test_put_fail_validate():
 def test_get_all_ids():
     store.put(*recs[0])
     store.put(*recs[2])
+<<<<<<< HEAD
+    all_ids = [_ for _ in store._get_all_ids_local()]
+    assert(all_ids == [recs[0][0], recs[2][0]])
+=======
     all_ids = [_ for _ in store._get_all_ids()]
     assert all_ids == [recs[0][0], recs[2][0]]
+>>>>>>> master
 
 
 @pytest.mark.xfail(reason="tox test fails")
@@ -137,6 +182,10 @@ def test_search_by_term():
     )
     assert resp == [recs[0][1], recs[2][1]]
 
+    # Search everything if no fields and ignore defaults point to search nothing
+    resp = store.search('e', exact=False, fields=None, ignore_defaults=True)
+    assert(resp == [recs[0][1], recs[2][1]])
+
     # Search wih failed match
     resp = store.search("zzz", exact=False, fields=None, ignore_defaults=False)
     assert resp == []
@@ -158,6 +207,10 @@ def test_search_by_id():
 
 
 def teardown_module():
+<<<<<<< HEAD
+    _clear_store()
+=======
     dr = _TestStore.config["local.base_dir"]
     if os.path.isdir(dr):
         shutil.rmtree(dr)
+>>>>>>> master
