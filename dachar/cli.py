@@ -92,8 +92,10 @@ def _get_arg_parser_scan(parser):
         type=str,
         default="quick",
         required=False,
-        help="Scanning mode: can be either quick or full. A full scan returns "
-        "max and min values while a quick scan excludes them. Defaults to quick.",
+        help='Scanning mode: can be either quick or full. A full scan returns '
+             'max and min values while a quick scan excludes them. Defaults to quick.'
+             'Setting mode=full-force will overwrite any scans already completed in '
+             'quick mode.'
     )
 
     parser.add_argument(

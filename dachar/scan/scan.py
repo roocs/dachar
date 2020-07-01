@@ -140,8 +140,6 @@ def get_dataset_paths(project, ds_ids=None, paths=None, facets=None, exclude=Non
             'Code currently breaks if not using "ds_ids" argument.'
         )
 
-
-
     return ds_paths
 
 
@@ -221,7 +219,7 @@ def _get_output_paths(project, ds_id):
         'pre_extract_error': config.PRE_EXTRACT_ERROR_PATH.format(**vars()),
         'extract_error': config.EXTRACT_ERROR_PATH.format(**vars()),
         'write_error': config.WRITE_ERROR_PATH.format(**vars()),
-        'batch': config.BATCH_OUTPUT_PATH.format(**vars())
+        # 'batch': config.BATCH_OUTPUT_PATH.format(**vars())
 
     }
 
@@ -299,17 +297,24 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
     if registration:
         try:
             # if json file exists get mode
-            data = json.load(open(outputs['json']))
-            mode = data['scan_metadata']['mode']
-            if mode == 'quick':
-                print(f'[INFO] Already ran for: {ds_id} in quick mode')
 
-                return True
+            data = json.load(open(outputs["json"]))
+            previous_mode = data["scan_metadata"]["mode"]
+            if previous_mode == 'quick':
+                if mode == 'full-force':
+                    os.remove(outputs["json"])
+                    mode = 'full'
+                    print(f'[INFO] Already ran for {ds_id} in quick mode.'
+                          f' Overwriting with full mode ')
+                else:
+                    print(f'[INFO] Already ran for {ds_id} in quick mode')
+                    return True
 
-            if mode == "full":
+            if previous_mode == 'full':
                 check = _check_for_min_max(outputs["json"])
                 if check:
-                    print(f"[INFO] Already ran for: {ds_id} in full mode")
+                    print(f'[INFO] Already ran for {ds_id} in full mode')
+
                     return True
 
         # flag that a corrupt JSON file exists
@@ -365,28 +370,24 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
 
         return False
 
-    # return character, ds_id
-
-    # output to JSON character store
-    try:
-        get_dc_store().put(ds_id, character)
-        print('name=', get_dc_store().store_name)
-    except Exception as exc:
-        print(f'[ERROR] Exception: {exc}')
-        # Create error file if can't output file
-        open(outputs["write_error"], "w")
-        return False
-
-    print(f'[INFO] Written to character store') # add file path to json file ?
-
-    # Output to JSON file
     # try:
-    #     output = to_json(character, outputs['json'])
+    #     get_dc_store().put(ds_id, character)
     # except Exception as exc:
-    #     print(f'[ERROR] Could not write JSON output: {outputs["json"]}')
+    #     print(f'[ERROR] Exception: {exc}')
     #     # Create error file if can't output file
     #     open(outputs['write_error'], 'w')
     #     return False
     #
-    # print(f'[INFO] Wrote JSON file: {outputs["json"]}')
+    # print(f'[INFO] Written to character store') # add file path to json file ?
+
+    # Output to JSON file
+    try:
+        output = to_json(character, outputs['json'])
+    except Exception as exc:
+        print(f'[ERROR] Could not write JSON output: {outputs["json"]}')
+        # Create error file if can't output file
+        open(outputs['write_error'], 'w')
+        return False
+
+    print(f'[INFO] Wrote JSON file: {outputs["json"]}')
 

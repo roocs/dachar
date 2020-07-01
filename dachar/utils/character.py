@@ -163,7 +163,9 @@ def get_variable_metadata(da):
     d["var_id"] = da.name
 
     # Encode _FillValue as string because representation may be strange
-    d["_FillValue"] = str(da.encoding.get("_FillValue", "NOT_DEFINED"))
+
+    d['_FillValue'] = str(da.encoding.get('_FillValue', 'NOT_DEFINED'))
+
     return d
 
 
@@ -178,7 +180,7 @@ def get_global_attrs(ds, expected_attrs=None):
 def get_data_info(da, mode):
 
     if mode == 'full':
-
+      
         mx = float(da.max())
         mn = float(da.min())
 
