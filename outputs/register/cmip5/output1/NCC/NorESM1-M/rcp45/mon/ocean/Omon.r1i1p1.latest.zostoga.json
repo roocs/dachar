@@ -1,0 +1,70 @@
+{
+    "coordinates": {
+        "time": {
+            "axis": "T",
+            "bounds": "time_bnds",
+            "calendar": "noleap",
+            "id": "time",
+            "length": 3540,
+            "long_name": "time",
+            "max": "2300-12-16T12:00:00",
+            "min": "2006-01-16T12:00:00",
+            "standard_name": "time"
+        }
+    },
+    "data": {
+        "coord_names": [
+            "time"
+        ],
+        "max": null,
+        "min": null,
+        "rank": 1,
+        "shape": [
+            3540
+        ]
+    },
+    "global_attrs": {
+        "Conventions": "CF-1.4",
+        "branch_time": 56940.0,
+        "cmor_version": "2.6.0",
+        "contact": "Please send any requests or bug reports to noresm-ncc@met.no.",
+        "creation_date": "2011-05-28T23:14:22Z",
+        "experiment": "RCP4.5",
+        "experiment_id": "rcp45",
+        "forcing": "GHG, SA, Oz, Sl, BC, OC",
+        "frequency": "mon",
+        "history": "2011-05-28T23:14:22Z CMOR rewrote data to comply with CF standards and CMIP5 requirements.",
+        "initialization_method": 1,
+        "institute_id": "NCC",
+        "institution": "Norwegian Climate Centre",
+        "model_id": "NorESM1-M",
+        "modeling_realm": "ocean",
+        "parent_experiment": "historical",
+        "parent_experiment_id": "historical",
+        "parent_experiment_rip": "r1i1p1",
+        "physics_version": 1,
+        "product": "output",
+        "project_id": "CMIP5",
+        "realization": 1,
+        "source": "NorESM1-M 2011  atmosphere: CAM-Oslo (CAM4-Oslo-noresm-ver1_cmip5-r112, f19L26);  ocean: MICOM (MICOM-noresm-ver1_cmip5-r112, gx1v6L53);  sea ice: CICE (CICE4-noresm-ver1_cmip5-r112);  land: CLM (CLM4-noresm-ver1_cmip5-r112)",
+        "table_id": "Table Omon (27 April 2011) 340eddd4fd838d90fa9ffe1345ecbd73",
+        "title": "NorESM1-M model output prepared for CMIP5 RCP4.5",
+        "tracking_id": "c8b34b96-4d2f-4a97-8ea5-908125a99d07"
+    },
+    "scan_metadata": {
+        "last_scanned": "2020-04-02T15:24:04.274465",
+        "location": "ceda",
+        "mode": "quick"
+    },
+    "variable": {
+        "_FillValue": "1e+20",
+        "associated_files": "baseURL: http://cmip-pcmdi.llnl.gov/CMIP5/dataLocation gridspecFile: gridspec_ocean_fx_NorESM1-M_rcp45_r0i0p0.nc",
+        "cell_methods": "time: mean area: mean where sea",
+        "history": "2011-05-28T23:14:21Z altered by CMOR: replaced missing value flag (1e+20) with standard missing value (1e+20). 2011-05-28T23:14:22Z altered by CMOR: Converted type from 'd' to 'f'.",
+        "long_name": "Global Average Thermosteric Sea Level Change",
+        "original_name": "temp",
+        "standard_name": "global_average_thermosteric_sea_level_change",
+        "units": "m",
+        "var_id": "zostoga"
+    }
+}

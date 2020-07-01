@@ -1,0 +1,101 @@
+{
+    "coordinates": {
+        "latitude": {
+            "axis": "Y",
+            "bounds": "lat_bnds",
+            "id": "latitude",
+            "length": 145,
+            "long_name": "latitude",
+            "max": 90.0,
+            "min": -90.0,
+            "standard_name": "latitude",
+            "units": "degrees_north"
+        },
+        "longitude": {
+            "axis": "X",
+            "bounds": "lon_bnds",
+            "id": "longitude",
+            "length": 192,
+            "long_name": "longitude",
+            "max": 358.125,
+            "min": 0.0,
+            "standard_name": "longitude",
+            "units": "degrees_east"
+        },
+        "time": {
+            "axis": "T",
+            "bounds": "time_bnds",
+            "calendar": "360_day",
+            "id": "time",
+            "length": 3530,
+            "long_name": "time",
+            "max": "2299-12-16T00:00:00",
+            "min": "2005-12-16T00:00:00",
+            "standard_name": "time"
+        }
+    },
+    "data": {
+        "coord_names": [
+            "height",
+            "lat",
+            "lon",
+            "time"
+        ],
+        "max": null,
+        "min": null,
+        "rank": 3,
+        "shape": [
+            3530,
+            145,
+            192
+        ]
+    },
+    "global_attrs": {
+        "Conventions": "CF-1.4",
+        "branch_time": 52560.0,
+        "cmor_version": "2.7.1",
+        "contact": "chris.d.jones@metoffice.gov.uk, michael.sanderson@metoffice.gov.uk",
+        "creation_date": "2011-11-24T09:57:42Z",
+        "experiment": "RCP8.5",
+        "experiment_id": "rcp85",
+        "forcing": "GHG, Oz, SA, LU, Sl, Vl, BC, OC, (GHG = CO2, N2O, CH4, CFCs)",
+        "frequency": "mon",
+        "history": "MOHC pp to CMOR/NetCDF convertor (version 1.10.3) 2011-11-24T09:56:50Z CMOR rewrote data to comply with CF standards and CMIP5 requirements.",
+        "initialization_method": 1,
+        "institute_id": "MOHC",
+        "institution": "Met Office Hadley Centre, Fitzroy Road, Exeter, Devon, EX1 3PB, UK, (http://www.metoffice.gov.uk)",
+        "mo_runid": "ajnjp",
+        "model_id": "HadGEM2-ES",
+        "modeling_realm": "atmos",
+        "parent_experiment": "historical",
+        "parent_experiment_id": "historical",
+        "parent_experiment_rip": "r1i1p1",
+        "physics_version": 1,
+        "product": "output",
+        "project_id": "CMIP5",
+        "realization": 1,
+        "references": "Collins, W. J., Bellouin, N., Doutriaux-Boucher, M., Gedney, N., Halloran, P., Hinton, T., Hughes, J., Jones, C. D., Joshi, M., Liddicoat, S., Martin, G., O'Connor, F., Rae, J., Senior, C., Sitch, S., Totterdell, I., Wiltshire, A., and Woodward, S (2011) Development and evaluation of an Earth-system model - HadGEM2. Geosci. Model Dev. Discuss., 4, 997-1062, 2011; Jones, C.D. et al. (2011) The HadGEM2-ES implementation of CMIP5 centennial simulations. Geosci. Model Dev., 4, 543-570, 2011; Martin G.M. et al. (2011) The HadGEM2 family of Met Office Unified Model climate configurations. Geosci. Model Dev., 4, 723-757, 2011",
+        "source": "HadGEM2-ES (2009) atmosphere: HadGAM2 (N96L38); ocean: HadGOM2 (lat: 1.0-0.3 lon: 1.0 L40); land-surface/vegetation: MOSES2 and TRIFFID; tropospheric chemistry: UKCA; ocean biogeochemistry: diat-HadOCC",
+        "table_id": "Table Amon (26 July 2011) 976b7fd1d9e1be31dddd28f5dc79b7a1",
+        "title": "HadGEM2-ES model output prepared for CMIP5 RCP8.5",
+        "tracking_id": "2935cea3-9554-4306-b680-ae919315c568"
+    },
+    "scan_metadata": {
+        "last_scanned": "2020-04-02T15:32:16.139021",
+        "location": "ceda",
+        "mode": "quick"
+    },
+    "variable": {
+        "_FillValue": "1e+20",
+        "associated_files": "baseURL: http://cmip-pcmdi.llnl.gov/CMIP5/dataLocation gridspecFile: gridspec_atmos_fx_HadGEM2-ES_rcp85_r0i0p0.nc areacella: areacella_fx_HadGEM2-ES_rcp85_r0i0p0.nc",
+        "cell_measures": "area: areacella",
+        "cell_methods": "time: mean",
+        "comment": "near-surface (usually, 2 meter) air temperature.",
+        "history": "2010-12-04T13:50:30Z altered by CMOR: Treated scalar dimension: 'height'. 2010-12-04T13:50:30Z altered by CMOR: replaced missing value flag (-1.07374e+09) with standard missing value (1e+20).",
+        "long_name": "Near-Surface Air Temperature",
+        "original_name": "mo: m01s03i236",
+        "standard_name": "air_temperature",
+        "units": "K",
+        "var_id": "tas"
+    }
+}

@@ -1,6 +1,6 @@
 # Credits
 
-## Development Lead
+## Developers
 
 * Elle Smith <eleanor.smith@stfc.ac.uk>
 
