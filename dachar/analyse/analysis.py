@@ -7,6 +7,46 @@ from dachar.utils import options
 from dachar.utils import switch_ds
 
 
+# Is the check store a superset of the fixes?
+
+def prep_dir(dr):
+    if not os.path.isdir(dr):
+        os.makedirs(dr)
+
+
+
+"""
+Class RankCheck(_BaseCheck):
+
+Init
+Run
+Save result
+Suggest fixes
+Suggest fix
+Create fixes
+Create fix
+
+Analyse all cmip5
+Identify populations cmip5
+Analyse population cmip5 slice
+
+Class CheckStore
+
+Init
+Get
+Put
+Update id check
+Search by check result - get suggested fix
+
+How to identify populations?
+Should they have an identifier with an asterisk in?
+Is that how you look up checks in the check store?
+
+Is the check store a superset of the fixes?
+
+"""
+
+
 def _lookup(item, *keys):
 
     keys = list(keys)
@@ -19,7 +59,7 @@ def _lookup(item, *keys):
     return item
 
 
-def analyse_characteristic(records, *keys):
+def OLD_analyse_characteristic(records, *keys):
 
     results = {}
     count = 0
