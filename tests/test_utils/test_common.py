@@ -48,17 +48,12 @@ def test_get_items_larger_sequence_5():
     res = get_extra_items_in_larger_sequence(small, large)
     assert (res is None)
 
-
+# expect None because small isn't a subset
 def test_get_items_larger_sequence_6():
     large = ['i', 'j', 'latitude', 'longitude', 'time', 'type']
     small = ['latitude', 'longitude', 'time', 'x', 'y']
     res = get_extra_items_in_larger_sequence(small, large)
-    assert (res == [large[-1]])
-
-
-# typical content: {'data.coord_names': ['time'], 'data.shape': [3540]}
-
-# atypical content: [{'data.coord_names': ['lev', 'time'], 'data.shape': [1, 1140]}, {'data.coord_names': ['time'], 'data.shape': [3529]}, {'data.coord_names': ['time'], 'data.shape': [360]}]
+    assert (res is None)
 
 
 def test_nested_lookup():
@@ -66,58 +61,21 @@ def test_nested_lookup():
         "coordinates": {
             "i": {
                 "id": "i",
-                "length": 9,
-                "long_name": "cell index along first dimension",
-                "max": 800.0,
-                "min": 0.0,
-                "units": "1"
             },
             "j": {
                 "id": "j",
-                "length": 5,
-                "long_name": "cell index along second dimension",
-                "max": 400.0,
-                "min": 0.0,
-                "units": "1"
             },
             "latitude": {
-                "bounds": "vertices_latitude",
                 "id": "latitude",
-                "length": 5,
-                "long_name": "latitude",
-                "max": 89.41692821142533,
-                "min": -77.54309917089314,
-                "standard_name": "latitude",
-                "units": "degrees_north"
             },
             "longitude": {
-                "bounds": "vertices_longitude",
                 "id": "longitude",
-                "length": 5,
-                "long_name": "longitude",
-                "max": 352.8538802939694,
-                "min": 7.451098374047184,
-                "standard_name": "longitude",
-                "units": "degrees_east"
             },
             "time": {
-                "axis": "T",
-                "bounds": "time_bnds",
-                "calendar": "proleptic_gregorian",
                 "id": "time",
-                "length": 1980,
-                "long_name": "time",
-                "max": "2014-12-16T12:00:00",
-                "min": "1850-01-16T12:00:00",
-                "standard_name": "time"
             },
             "type": {
-                "dtype": "|S7",
                 "id": "type",
-                "length": 1,
-                "long_name": "Sea Ice area type",
-                "standard_name": "area_type",
-                "value": "sea_ice"
             }
         }}
     lookup = nested_lookup('coordinates.*.id', item, must_exist=True)

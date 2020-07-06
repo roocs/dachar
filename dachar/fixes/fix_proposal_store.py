@@ -1,10 +1,10 @@
 from copy import deepcopy
 
 from dachar.utils.common import now_string
-from dachar.utils.json_store import _BaseJsonStore
+from dachar.utils.json_store import _LocalBaseJsonStore, _ElasticSearchBaseJsonStore
 
 
-class FixProposalStore(_BaseJsonStore):
+class FixProposalStore(_LocalBaseJsonStore):
     """
     TODO:
     Manage workflows:
@@ -42,7 +42,6 @@ class FixProposalStore(_BaseJsonStore):
               'local.dir_grouping_level': 4}
     id_mappers = {'*': '__ALL__'}
     required_fields = ['dataset_id', 'fixes']
-    search_defaults = []
 
     def _get_fix_container(self, fix, status, reason=''):
         return {'fix': fix,
@@ -129,4 +128,10 @@ class FixProposalStore(_BaseJsonStore):
     #     return proposed_fixes
 
 
+class FixProposalStoreElastic(_ElasticSearchBaseJsonStore):
 
+    store_name = 'Fix Proposal Store'
+    config = {'store_type': 'elasticsearch',
+              'index': 'roocs-fix-proposal'}
+    id_mappers = {'*': '__ALL__'}
+    required_fields = ['dataset_id', 'fixes']
