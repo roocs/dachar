@@ -9,7 +9,7 @@ def test_get_fix_categories():
     expected_fix_categories = ['coord_fixes']
     assert(get_fix_categories() == expected_fix_categories)
 
-    expected_fix_dict = {'coord_fixes': ['SqueezeDimensionsFix']}
+    expected_fix_dict = {'coord_fixes': ['SqueezeDimensionsFix', 'AddScalarCoordFix']}
     assert(get_fix_dict() == expected_fix_dict)
 
 

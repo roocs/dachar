@@ -5,7 +5,7 @@ import mock
 import pytest
 
 from tests._stores_for_tests import _TestFixProposalStore, _TestFixStore
-from dachar.fixes import process_fixes
+from dachar.fixes import fix_processor
 from dachar.utils.common import now_string
 
 
@@ -83,9 +83,9 @@ def test_get_2_proposed_fixes():
     generate_fix_proposal(ds_ids[0], fixes[0])
     generate_fix_proposal(ds_ids[1], fixes[1])
 
-    process_fixes.get_fix_prop_store = Mock(return_value=prop_store)
+    fix_processor.get_fix_prop_store = Mock(return_value=prop_store)
 
-    proposed_fixes = process_fixes.get_proposed_fixes()
+    proposed_fixes = fix_processor.get_proposed_fixes()
 
     assert len(proposed_fixes) == 2
 
@@ -122,9 +122,9 @@ def test_get_1_proposed_fixes():
 
     generate_published_fix(ds_ids[1], fixes[1])
 
-    process_fixes.get_fix_prop_store = Mock(return_value=prop_store)
+    fix_processor.get_fix_prop_store = Mock(return_value=prop_store)
 
-    proposed_fixes = process_fixes.get_proposed_fixes()
+    proposed_fixes = fix_processor.get_proposed_fixes()
 
     assert prop_store.exists(ds_ids[0])
     assert prop_store.exists(ds_ids[1])
@@ -145,42 +145,42 @@ def test_get_1_proposed_fixes():
 
 
 def test_process_proposed_fixes(monkeypatch):
-    process_fixes.get_fix_prop_store = Mock(return_value=prop_store)
-    process_fixes.get_fix_store = Mock(return_value=f_store)
+    fix_processor.get_fix_prop_store = Mock(return_value=prop_store)
+    fix_processor.get_fix_store = Mock(return_value=f_store)
     generate_fix_proposal(ds_ids[2], fixes[2])
     monkeypatch.setattr('builtins.input', lambda _: "publish")
     monkeypatch.setattr('builtins.input', lambda _: "publish")
 
-    process_fixes.process_all_fixes('process')
+    fix_processor.process_all_fixes('process')
 
 
 def test_process_proposed_fixes_with_id(monkeypatch):
-    process_fixes.get_fix_prop_store = Mock(return_value=prop_store)
-    process_fixes.get_fix_store = Mock(return_value=f_store)
+    fix_processor.get_fix_prop_store = Mock(return_value=prop_store)
+    fix_processor.get_fix_store = Mock(return_value=f_store)
     generate_fix_proposal(ds_ids[3], fixes[3])
     # process_fixes.process_all_fixes(ds_ids[2])
     monkeypatch.setattr('builtins.input', lambda _: "publish")
 
-    process_fixes.process_all_fixes('process', [ds_ids[3]])
+    fix_processor.process_all_fixes('process', [ds_ids[3]])
 
 
 
 def test_withdraw_fix(monkeypatch):
-    process_fixes.get_fix_prop_store = Mock(return_value=prop_store)
-    process_fixes.get_fix_store = Mock(return_value=f_store)
+    fix_processor.get_fix_prop_store = Mock(return_value=prop_store)
+    fix_processor.get_fix_store = Mock(return_value=f_store)
     generate_fix_proposal(ds_ids[4], fixes[4])
     generate_published_fix(ds_ids[4], fixes[4])
     f_store.publish_fix(ds_ids[4], fixes[4])
-    
+
     monkeypatch.setattr('builtins.input', lambda _: "y")
     monkeypatch.setattr('builtins.input', lambda _: 'Fix 5 by id')
 
-    process_fixes.process_all_fixes('withdraw', [ds_ids[4]])
+    fix_processor.process_all_fixes('withdraw', [ds_ids[4]])
 
 
 def test_withdraw_2_fixes(monkeypatch):
-    process_fixes.get_fix_prop_store = Mock(return_value=prop_store)
-    process_fixes.get_fix_store = Mock(return_value=f_store)
+    fix_processor.get_fix_prop_store = Mock(return_value=prop_store)
+    fix_processor.get_fix_store = Mock(return_value=f_store)
     generate_fix_proposal(ds_ids[4], fixes[4])
     generate_published_fix(ds_ids[4], fixes[4])
     f_store.publish_fix(ds_ids[4], fixes[4])
@@ -190,13 +190,13 @@ def test_withdraw_2_fixes(monkeypatch):
 
     monkeypatch.setattr('builtins.input', lambda _: "n")
 
-    process_fixes.process_all_fixes('withdraw', [ds_ids[4]])
+    fix_processor.process_all_fixes('withdraw', [ds_ids[4]])
 
 
 def test_withdraw_fix_not_found():
-    process_fixes.get_fix_prop_store = Mock(return_value=prop_store)
-    process_fixes.get_fix_store = Mock(return_value=f_store)
-    process_fixes.process_all_fixes('withdraw', [ds_ids[1]])
+    fix_processor.get_fix_prop_store = Mock(return_value=prop_store)
+    fix_processor.get_fix_store = Mock(return_value=f_store)
+    fix_processor.process_all_fixes('withdraw', [ds_ids[1]])
 
 
 def teardown_module():
