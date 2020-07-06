@@ -1,5 +1,8 @@
 import os
 import shutil
+import subprocess
+import mock
+import pytest
 
 from tests._stores_for_tests import _TestFixProposalStore, _TestFixStore
 from dachar.fixes import process_fixes
@@ -141,31 +144,41 @@ def test_get_1_proposed_fixes():
                                        'timestamp': now_string()}]}
 
 
-def test_process_proposed_fixes():
+def test_process_proposed_fixes(monkeypatch):
     process_fixes.get_fix_prop_store = Mock(return_value=prop_store)
     process_fixes.get_fix_store = Mock(return_value=f_store)
     generate_fix_proposal(ds_ids[2], fixes[2])
+    monkeypatch.setattr('builtins.input', lambda _: "publish")
+    monkeypatch.setattr('builtins.input', lambda _: "publish")
+
     process_fixes.process_all_fixes('process')
 
 
-def test_process_proposed_fixes_with_id():
+def test_process_proposed_fixes_with_id(monkeypatch):
     process_fixes.get_fix_prop_store = Mock(return_value=prop_store)
     process_fixes.get_fix_store = Mock(return_value=f_store)
     generate_fix_proposal(ds_ids[3], fixes[3])
     # process_fixes.process_all_fixes(ds_ids[2])
+    monkeypatch.setattr('builtins.input', lambda _: "publish")
+
     process_fixes.process_all_fixes('process', [ds_ids[3]])
 
 
-def test_withdraw_fix():
+
+def test_withdraw_fix(monkeypatch):
     process_fixes.get_fix_prop_store = Mock(return_value=prop_store)
     process_fixes.get_fix_store = Mock(return_value=f_store)
     generate_fix_proposal(ds_ids[4], fixes[4])
     generate_published_fix(ds_ids[4], fixes[4])
     f_store.publish_fix(ds_ids[4], fixes[4])
+    
+    monkeypatch.setattr('builtins.input', lambda _: "y")
+    monkeypatch.setattr('builtins.input', lambda _: 'Fix 5 by id')
+
     process_fixes.process_all_fixes('withdraw', [ds_ids[4]])
 
 
-def test_withdraw_2_fixes():
+def test_withdraw_2_fixes(monkeypatch):
     process_fixes.get_fix_prop_store = Mock(return_value=prop_store)
     process_fixes.get_fix_store = Mock(return_value=f_store)
     generate_fix_proposal(ds_ids[4], fixes[4])
@@ -174,6 +187,9 @@ def test_withdraw_2_fixes():
     generate_fix_proposal(ds_ids[4], fixes[3])
     generate_published_fix(ds_ids[4], fixes[3])
     f_store.publish_fix(ds_ids[4], fixes[3])
+
+    monkeypatch.setattr('builtins.input', lambda _: "n")
+
     process_fixes.process_all_fixes('withdraw', [ds_ids[4]])
 
 
@@ -181,6 +197,7 @@ def test_withdraw_fix_not_found():
     process_fixes.get_fix_prop_store = Mock(return_value=prop_store)
     process_fixes.get_fix_store = Mock(return_value=f_store)
     process_fixes.process_all_fixes('withdraw', [ds_ids[1]])
+
 
 def teardown_module():
     pass

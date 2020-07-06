@@ -1,8 +1,8 @@
 
-from dachar.utils.json_store import _BaseJsonStore
+from dachar.utils.json_store import _LocalBaseJsonStore, _ElasticSearchBaseJsonStore
 
 
-class AnalysisRecordsStore(_BaseJsonStore):
+class AnalysisRecordsStore(_LocalBaseJsonStore):
     """
     Analysis Results Json Store: A JSON store to hold the results from the analysis of
     populations of ESGF Datasets.
@@ -14,8 +14,15 @@ class AnalysisRecordsStore(_BaseJsonStore):
               'local.dir_grouping_level': 4}
     id_mappers = {'*': '__ALL__'}
     required_fields = ['sample_id', 'dataset_ids', 'checks', 'proposed_fixes', 'analysis_metadata']
-    search_defaults = []
 
+
+class AnalysisRecordsStoreElastic(_ElasticSearchBaseJsonStore):
+
+    store_name = 'Analysis Results Store'
+    config = {'store_type': 'elasticsearch',
+              'index': 'roocs-analysis'}
+    id_mappers = {'*': '__ALL__'}
+    required_fields = ['sample_id', 'dataset_ids', 'checks', 'proposed_fixes', 'analysis_metadata']
 
 
 

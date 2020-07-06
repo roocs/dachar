@@ -71,15 +71,16 @@ def test_eg_fix():
     fix = _TestFix('ds1', thing=23, other='hello')
     assert(fix.description == _TestFix.description)
 
-    expected_dict = {
-      'dataset_id': 'ds1',
-      'fix_id': _TestFix.fix_id,
-      'title': _TestFix.title,
-      'description': _TestFix.description,
-      'category': _TestFix.category,
-      'reference_implementation': _TestFix.ref_implementation,
-      'operands': {'thing': 23, 'other': 'hello'}
-    }
+    expected_dict = {'dataset_id':
+                         {'ds_id': 'ds1'},
+                     'fix': {'fix_id': _TestFix.fix_id,
+                             'title': _TestFix.title,
+                             'description': _TestFix.description,
+                             'category': _TestFix.category,
+                             'reference_implementation': _TestFix.ref_implementation,
+                             'operands': {'thing': 23, 'other': 'hello'},
+                             'source': 'dachar version 0.1.0'
+                             }}
 
     assert(fix.to_ncml() == '<JustStuff info="{thing}">{other}</JustStuff>'.format(**fix.operands))
     assert(fix.to_dict() == expected_dict)

@@ -4,19 +4,17 @@ import shutil
 
 import pytest
 
-from dachar.utils.json_store import _BaseJsonStore
+from dachar.utils.json_store import _LocalBaseJsonStore
 
 
 # Create a new dummy store to run tests on
-class _TestStore(_BaseJsonStore):
+class _TestStore(_LocalBaseJsonStore):
 
     store_name = 'TestStore'
     config = {'store_type': 'local',
               'local.base_dir': '/tmp/test-store',
               'local.dir_grouping_level': 4}
-    id_mappers = {'*': '__ALL__'}
     required_fields = ['data']
-    search_defaults = ['id', 'data']
 
 
 recs = [
@@ -67,10 +65,9 @@ def test_put_force_parameter():
     try:
         store.put(_id, content)
     except FileExistsError as exc:
-        assert(str(exc) == f'Record already exists: {_id}. Use "force=False" to overwrite.')
+        assert(str(exc) == f'Record already exists: {_id}. Use "force=True" to overwrite.')
 
     store.put(_id, content, force=True)
-
 
 
 def test_put_maps_asterisk():
@@ -116,71 +113,61 @@ def test_put_fail_validate():
         assert str(exc).find('Required content "data" not found.') > -1
 
 
-@pytest.mark.xfail(reason="tox test fails")
+# @pytest.mark.xfail(reason="tox test fails")
 def test_get_all_ids():
     store.put(*recs[0])
     store.put(*recs[2])
-    all_ids = [_ for _ in store._get_all_ids_local()]
+    all_ids = [_ for _ in store.get_all_ids()]
     assert(all_ids == [recs[0][0], recs[2][0]])
 
 
-@pytest.mark.xfail(reason="tox test fails")
+# @pytest.mark.xfail(reason="tox test fails")
 def test_search_by_term():
-    # Search with default fields + exact match
-    resp = store.search("great match", exact=True, fields=None, ignore_defaults=False)
-    assert resp == [recs[0][1]]
-
     # Search with custom fields + exact match
-    resp = store.search(
-        "great match", exact=True, fields=["data"], ignore_defaults=True
-    )
+    resp = store.search("great match", exact=True, fields=["data"])
     assert resp == [recs[0][1]]
 
-    # Search with default fields + partial match
-    resp = store.search("at MAT", exact=False, fields=None, ignore_defaults=False)
+    # Search with partial match
+    resp = store.search("at MAT", exact=False, fields=["data", "id"])
     assert resp == [recs[0][1]]
 
     # Search with custom nested fields + exact match
-    resp = store.search(
-        "123", exact=True, fields=["data.d2.test"], ignore_defaults=True
-    )
+    resp = store.search("123", exact=True, fields=["data.d2.test"])
     assert resp == [recs[2][1]]
 
-    # Search with default fields + partial match
-    resp = store.search("123", exact=False, fields=None, ignore_defaults=False)
+    # Search with partial match
+    resp = store.search("123", exact=False, fields=["data", "id"])
     assert resp == [recs[2][1]]
 
     # Search with custom nested fields + exact match as integer
-    resp = store.search(123, exact=True, fields=["data.d2.test"], ignore_defaults=True)
+    resp = store.search(123, exact=True, fields=["data.d2.test"])
     assert resp == [recs[2][1]]
 
     # Search with custom multiple fields and partial match
-    resp = store.search(
-        "e", exact=False, fields=["data", "data.d2.test"], ignore_defaults=True
-    )
+    resp = store.search("e", exact=False, fields=["data", "data.d2.test"])
     assert resp == [recs[0][1], recs[2][1]]
 
-    # Search everything if no fields and ignore defaults point to search nothing
-    resp = store.search('e', exact=False, fields=None, ignore_defaults=True)
+    # Search everything if no fields
+    resp = store.search('e', exact=False, fields=None)
     assert(resp == [recs[0][1], recs[2][1]])
 
     # Search wih failed match
-    resp = store.search("zzz", exact=False, fields=None, ignore_defaults=False)
+    resp = store.search("zzz", exact=False, fields=None)
     assert resp == []
 
 
-@pytest.mark.xfail(reason="tox test fails")
+# @pytest.mark.xfail(reason="tox test fails")
 def test_search_by_id():
     # Search for non-existent id
-    resp = store.search("zzz", exact=False, match_ids=True, ignore_defaults=True)
+    resp = store.search("zzz", exact=False, match_ids=True)
     assert resp == []
 
     # Search by partial ID
-    resp = store.search("5.6.b", exact=False, match_ids=True, ignore_defaults=True)
+    resp = store.search("5.6.b", exact=False, match_ids=True)
     assert resp == [recs[0][1]]
 
     # Search for exact ID
-    resp = store.search(recs[0][0], exact=True, match_ids=True, ignore_defaults=False)
+    resp = store.search(recs[0][0], exact=True, match_ids=True)
     assert resp == [recs[0][1]]
 
 

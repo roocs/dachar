@@ -1,0 +1,181 @@
+# Tests for default JsonStore class
+import os
+import shutil
+import pytest
+import time
+
+from dachar.utils.json_store import _ElasticSearchBaseJsonStore
+from elasticsearch import Elasticsearch, exceptions
+from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
+import pytest
+
+es = CEDAElasticsearchClient(headers={'x-api-key': '***REMOVED***'})
+
+# Create a new dummy store to run tests on
+class _TestStore(_ElasticSearchBaseJsonStore):
+
+    store_name = 'TestElasticsearchStore'
+    config = {'store_type': 'elasticsearch',
+              'index': 'char-store-test'}
+    required_fields = ['d']
+
+
+store = None
+
+recs = [
+    ('1.2.3.4.5.6.b', {'d': 'great match'}),
+    ('1.2.3.4.5.6.a', {'x': 'does not save'}),
+    ('1.2.3.4.5.6.c', {'d': 'cool', 'z': {"d2": {"test1": 123, "test2": "hi"}}})
+]
+
+
+def clear_store():
+    for id in recs[0][0], recs[1][0], recs[2][0]:
+        try:
+            store.delete(id)
+        except Exception:
+            pass
+
+
+def setup_module():
+    # check elasticsearch connection - if fails - fail all tests
+    global store
+    store = _TestStore()
+    try:
+        es.indices.exists(index=store.config.get("index"))
+    except exceptions.AuthenticationException:
+        pytest.exit("Connection to elasticsearch index failed")
+    clear_store()
+
+
+def test_verify_store():
+    # Tests that the store gets created - via setup_module()
+    pass
+
+
+def test_put():
+    store.put(recs[0][0], recs[0][1])
+    store.put(recs[2][0], recs[2][1])
+    assert store.exists(recs[0][0])
+    assert store.exists(recs[2][0])
+
+
+def test_get():
+    rec = store.get('1.2.3.4.5.6.b')
+    assert rec['ds_id'] == '1.2.3.4.5.6.b'
+
+
+def test_put_force_parameter():
+    _id, content = recs[0]
+    if not store.exists(_id):
+        store.put(_id, content)
+
+    with pytest.raises(FileExistsError) as exc:
+        store.put(_id, content)
+        assert str(exc.value) == f'Record already exists: {_id}. Use "force=True" to overwrite.'
+
+    store.put(_id, content, force=True)
+
+
+# def test_put_maps_asterisk():
+#     _id = '1.1.*.1.*.*.1'
+#     store.put(_id, {'data': 'test'})
+#     fpath = store._id_to_path(_id)
+#
+#     bdir = store.config['local.base_dir']
+#     assert(fpath == os.path.join(bdir, '1/1/__ALL__/1.__ALL__.__ALL__.1.json'))
+#     assert(os.path.isfile(fpath))
+#     store.delete(_id)
+
+
+def test_delete():
+    _id = recs[2][0]
+    assert store.exists(_id)
+
+    store.delete(_id)
+    assert store.get(_id) is None
+
+
+def test_validate_non_json():
+    with pytest.raises(Exception) as exc:
+        store._validate('rubbish')
+        assert str(exc.value) == 'Cannot serialise content to valid JSON.'
+
+
+def test_put_fail_validate():
+    with pytest.raises(ValueError) as exc:
+        store.put(*recs[1])
+        assert(str(exc.value).find('Required content "d" not found.') > -1)
+
+
+def test_get_all():
+    time.sleep(5)  # sleep to ensure index has updated
+
+    all = list(store.get_all())
+    assert len(all) == 1
+
+
+def test_get_all_ids():
+    time.sleep(5)  # sleep to ensure index has updated
+
+    all_ids = [_ for _ in store.get_all_ids()]
+    assert len(all_ids) == 1
+
+
+# @pytest.mark.xfail(reason="tox test fails")
+def test_search_by_term():
+    store.put(recs[2][0], recs[2][1])
+    store.put(recs[0][0], recs[0][1])
+    time.sleep(5)
+
+    # Search with custom fields + exact match - WORKS
+    resp = store.search("great match", exact=True, fields=["d"])
+    print(resp)
+    assert resp[0]['d'] == recs[0][1]['d']
+
+    # Search with custom fields + partial match
+    resp = store.search("at MAT", exact=False, fields=["d"])
+    assert resp == [recs[0][1]]
+
+    # Search with custom nested fields + exact match as integer - WORKS
+    resp = store.search(123, exact=True, fields=["z.d2.test1"]) # can't search for 123 with string - should i be able to?
+    print(resp)
+    assert resp[0]['d'] == recs[2][1]['d']
+    assert resp[0]['z'] == recs[2][1]['z']
+
+    # Search with partial match for string
+    resp = store.search("123", exact=False, fields=["z", "ds_id"])
+    assert resp == [recs[2][1]]
+
+    # Search with custom multiple fields and partial match
+    resp = store.search("e", exact=False, fields=["d", "z.d2.test1"])
+    assert resp == [recs[0][1], recs[2][1]]
+
+    # Search everything if no fields
+    resp = store.search('e', exact=False, fields=None)
+    assert(resp == [recs[0][1], recs[2][1]])
+
+    # Search wih failed match
+    resp = store.search("zzz", exact=False, fields=None)
+    assert resp == []
+
+
+# @pytest.mark.xfail(reason="tox test fails")
+def test_search_by_id():
+    # Search for non-existent id
+    resp = store.search("zzz", exact=False, match_ids=True)
+    assert resp == []
+
+    # Search by partial ID
+    resp = store.search("5.6.b", exact=False, match_ids=True)
+    assert resp == [recs[0][1]]
+
+    # Search for exact ID - WORKS
+    resp = store.search(recs[0][0], exact=True, match_ids=True)
+    assert resp[0]['d'] == recs[0][1]['d']
+    assert resp[0]['ds_id'] == recs[0][0]
+
+
+def teardown_module():
+    pass
+    #clear_store()

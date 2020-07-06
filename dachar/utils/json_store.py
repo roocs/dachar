@@ -6,8 +6,8 @@ from .common import nested_lookup
 from elasticsearch import Elasticsearch, helpers
 from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
 
-es = CEDAElasticsearchClient(headers={'x-api-key': ''})
 
+es = CEDAElasticsearchClient(headers={'x-api-key': '***REMOVED***'})
 
 class _BaseJsonStore(object):
 
@@ -75,7 +75,10 @@ class _BaseJsonStore(object):
 
     def get_all(self):
         raise NotImplementedError
-
+    
+    def get_all_ids(self):
+        raise NotImplementedError
+    
     def search(self, term, exact=False, match_ids=True, fields=None):
         raise NotImplementedError
 
@@ -132,7 +135,7 @@ class _LocalBaseJsonStore(_BaseJsonStore):
 
     def get_all(self):
         # Generator to return all records
-        for id in self._get_all_ids_local():
+        for id in self.get_all_ids():
                 yield id, self.get(id)
 
     def search(self, term, exact=False, match_ids=True, fields=None):
@@ -179,7 +182,7 @@ class _LocalBaseJsonStore(_BaseJsonStore):
         s = s.replace("/", ".")
         return self._map(s, reverse=True)
 
-    def _get_all_ids(self):
+    def get_all_ids(self):
         bdir = self.config["local.base_dir"]
 
         for dr, _, files in os.walk(bdir):
@@ -222,7 +225,8 @@ class _LocalBaseJsonStore(_BaseJsonStore):
 
 
 class _ElasticSearchBaseJsonStore(_BaseJsonStore):
-    config = {'store_type': 'elasticsearch'}
+    config = {'store_type': 'elasticsearch',
+              'index': 'base'}
 
     def convert_id(self, id):
         m = hashlib.md5()
@@ -250,17 +254,26 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
         es.delete(index=self.config.get('index'), id=id)
 
     def _save(self, id, content):
+        ds_id = id
         id = self.convert_id(id)
         if '.' in id:
             raise KeyError(f'Identifier name cannot be used as elasticsearch id as it contains .: {id} ')
 
         es.index(index=self.config.get('index'), body=content, id=id)
+        es.update(index=self.config.get('index'), id=id, body={"doc": {"ds_id": ds_id}})
+
+    def get_all_ids(self):
+        # Generator to return all records
+        results = helpers.scan(es, index=self.config.get('index'), query={"_source": ["ds_id"]})
+        print(self.config.get('index'))
+        for item in results:
+            yield (item['_source']['ds_id'])
 
     def get_all(self):
-        # Generator to return all records
-        results = helpers.scan(es, query={"query": {"match_all": {}}}, )
+        # Generator to return all ids
+        results = helpers.scan(es, index=self.config.get('index'), query={"query": {"match_all": {}}}, )
         for item in results:
-            yield (item['_id'], item['_source'])
+            yield (item['_source'])
 
     def search(self, term, exact=False, match_ids=True, fields=None):  # come back to this
         results = []
@@ -268,16 +281,48 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
         query_body = {
             "query": {
                 "bool": {
-                    "must": []
+                    "must": ''
                 }
             }
         }
 
-        for field in fields:
-            match = {
-                        "match": {
-                            field: term
-                        }
-                    },
-            query_body['query']['bool']['must'] = match
-            results.append(es.search(index=self.config.get('index'), body=query_body))
+        if match_ids is True:
+            if fields:
+                fields.append('ds_id')
+            else:
+                fields = ['ds_id']
+
+        if exact is False:
+            #query_body = query_body_wildcard
+            query = 'wildcard'
+            term = f'*{term}*'
+
+        else:
+            #query_body = query_body_match
+            query = 'term'
+
+        if fields is None:
+            match = {query:{"match_all": {}}}
+            query_body["query"]["bool"]["must"] = match
+            result = es.search(index=self.config.get('index'), body=query_body)
+            if result['hits']['hits'] is not None:
+                for each in result['hits']['hits']:
+                    results.append(each['_source'])
+            else:
+                results = None
+
+        else:
+            for field in fields:
+                if isinstance(term, str):
+                    field = f'{field}.keyword'
+                match = {query: {field: term}}
+                query_body["query"]["bool"]["must"] = match
+                print('query_body = ', query_body)
+                result = es.search(index=self.config.get('index'), body=query_body)
+                if result['hits']['hits'] is not None:
+                    for each in result['hits']['hits']:
+                        results.append(each['_source'])
+                else:
+                    results = None
+
+        return results

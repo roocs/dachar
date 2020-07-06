@@ -96,7 +96,7 @@ def test_arg_parser_ds_ids():
     assert parser.mode == 'full'
     assert parser.project == 'cmip5'
     assert parser.dataset_ids == 'cmip5.output1.MRI.MRI-CGCM3.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga'
-    assert _to_list(parser.dataset_ids) == 'cmip5.output1.MRI.MRI-CGCM3.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga'
+    assert _to_list(parser.dataset_ids)[0] == 'cmip5.output1.MRI.MRI-CGCM3.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga'
 
 
 def test_arg_parse_2_ds_ids():
