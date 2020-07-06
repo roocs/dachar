@@ -1,7 +1,7 @@
-from dachar.utils.json_store import _BaseJsonStore
+from dachar.utils.json_store import _LocalBaseJsonStore, _ElasticSearchBaseJsonStore
 
 
-class FixStore(_BaseJsonStore):
+class FixStore(_LocalBaseJsonStore):
 
     store_name = 'Fix Store'
     config = {'store_type': 'local',
@@ -9,7 +9,6 @@ class FixStore(_BaseJsonStore):
               'local.dir_grouping_level': 4}
     id_mappers = {'*': '__ALL__'}
     required_fields = ['dataset_id', 'fixes']
-    search_defaults = []
 
     def publish_fix(self, ds_id, fix_content):
         if self.exists(ds_id):
@@ -42,3 +41,10 @@ class FixStore(_BaseJsonStore):
                 break
 
 
+class FixStoreElastic(_ElasticSearchBaseJsonStore):
+    
+    store_name = 'Fix Store'
+    config = {'store_type': 'elasticsearch',
+              'index': 'roocs-fix'}
+    id_mappers = {'*': '__ALL__'}
+    required_fields = ['dataset_id', 'fixes']

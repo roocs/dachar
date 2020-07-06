@@ -1,7 +1,7 @@
-from dachar.utils.json_store import _BaseJsonStore
+from dachar.utils.json_store import _LocalBaseJsonStore, _ElasticSearchBaseJsonStore
 
 
-class DatasetCharacterStore(_BaseJsonStore):
+class DatasetCharacterStore(_LocalBaseJsonStore):
 
     store_name = 'Dataset Character Store'
     config = {'store_type': 'local',
@@ -10,6 +10,13 @@ class DatasetCharacterStore(_BaseJsonStore):
     id_mappers = {'*': '__ALL__'}
     required_fields = ['coordinates', 'data', 'global_attrs', 'scan_metadata', 'variable']#,
                        #'coordinates.bounds']
-    search_defaults = []
 
 
+class DatasetCharacterStoreElastic(_ElasticSearchBaseJsonStore):
+
+    store_name = 'Dataset Character Store'
+    config = {'store_type': 'elasticsearch',
+              'index': 'roocs-char'}
+    id_mappers = {'*': '__ALL__'}
+    required_fields = ['coordinates', 'data', 'global_attrs', 'scan_metadata', 'variable']#,
+                       #'coordinates.bounds']
