@@ -16,8 +16,8 @@ import sys
 from dachar.utils import options
 from dachar.scan.scan import scan_datasets
 from dachar.analyse.sample_analyser import analyse
-from dachar.fixes import process_fixes
-from dachar.fixes.process_fixes import process_all_fixes
+from dachar.fixes import fix_processor
+from dachar.fixes.fix_processor import process_all_fixes
 from unittest.mock import Mock
 
 

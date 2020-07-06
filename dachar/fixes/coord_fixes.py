@@ -39,6 +39,8 @@ For example:
       </variable>
       """
 
+    template = ''
+
 
 class AddScalarCoordFix(_BaseDatasetFix):
     fix_id = 'AddScalarCoordFix'
@@ -61,3 +63,6 @@ Attributes will be set by: ds.test.attrs['units'] = 'm'
     category = 'coord_fixes'
     required_operands = ['dtype', 'id', 'value', 'length', 'attrs']
     ref_implementation = 'daops.post_processors.add_scalar_coord'
+
+    template = ''
+    ncml_template = ''
