@@ -2,12 +2,12 @@ from dachar.utils.common import UNDEFINED
 
 from dachar.fixes._base_fix import _BaseDatasetFix
 
-__all__ = ['SqueezeDimensionsFix', 'AddScalarCoordFix']
+__all__ = ["SqueezeDimensionsFix", "AddScalarCoordFix"]
 
 
 class SqueezeDimensionsFix(_BaseDatasetFix):
-    fix_id = 'SqueezeDimensionsFix'
-    title = ' Squeeze singleton dimensions of the main variable'
+    fix_id = "SqueezeDimensionsFix"
+    title = " Squeeze singleton dimensions of the main variable"
     description = """
 Takes a sequence of identifiers that specify the dimensions to be squeezed.
 
@@ -29,9 +29,9 @@ For example:
     - rank = 1
     """
 
-    category = 'coord_fixes'
-    required_operands = ['dims']
-    ref_implementation = 'daops.post_processors.squeeze_dims'
+    category = "coord_fixes"
+    required_operands = ["dims"]
+    ref_implementation = "daops.post_processors.squeeze_dims"
 
     ncml_template = """
       <variable name="{self.variable***}">
@@ -39,12 +39,12 @@ For example:
       </variable>
       """
 
-    template = ''
+    template = ""
 
 
 class AddScalarCoordFix(_BaseDatasetFix):
-    fix_id = 'AddScalarCoordFix'
-    title = 'Add a coordinate'
+    fix_id = "AddScalarCoordFix"
+    title = "Add a coordinate"
     description = """
 Takes the coordinate to add along with its attributes - what if more than one missing scalar coord is provided?
 
@@ -60,9 +60,9 @@ Fix example: ds = ds.assign_coords(height=2.0) will add a scalar height coordina
 Attributes will be set by: ds.test.attrs['units'] = 'm'
     """
 
-    category = 'coord_fixes'
-    required_operands = ['dtype', 'id', 'value', 'length', 'attrs']
-    ref_implementation = 'daops.post_processors.add_scalar_coord'
+    category = "coord_fixes"
+    required_operands = ["dtype", "id", "value", "length", "attrs"]
+    ref_implementation = "daops.post_processors.add_scalar_coord"
 
-    template = ''
-    ncml_template = ''
+    template = ""
+    ncml_template = ""
