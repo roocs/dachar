@@ -9,7 +9,7 @@ from elasticsearch import Elasticsearch, exceptions
 from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
 import pytest
 
-es = CEDAElasticsearchClient(headers={'x-api-key': '***REMOVED***'})
+es = CEDAElasticsearchClient(headers={'x-api-key': ''})
 
 # Create a new dummy store to run tests on
 class _TestStore(_ElasticSearchBaseJsonStore):

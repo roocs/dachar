@@ -7,7 +7,7 @@ from elasticsearch import Elasticsearch, helpers
 from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
 
 
-es = CEDAElasticsearchClient(headers={'x-api-key': '***REMOVED***'})
+es = CEDAElasticsearchClient(headers={'x-api-key': ''})
 
 class _BaseJsonStore(object):
 
@@ -275,7 +275,7 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
         for item in results:
             yield (item['_source'])
 
-    def search(self, term, exact=False, match_ids=True, fields=None):  # come back to this
+    def _search_fields(self, fields, term, query_type):
         results = []
 
         query_body = {
@@ -286,24 +286,13 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
             }
         }
 
-        if match_ids is True:
-            if fields:
-                fields.append('ds_id')
-            else:
-                fields = ['ds_id']
+        for field in fields:
+            fields.append(f'{field}.keyword')
 
-        if exact is False:
-            #query_body = query_body_wildcard
-            query = 'wildcard'
-            term = f'*{term}*'
-
-        else:
-            #query_body = query_body_match
-            query = 'term'
-
-        if fields is None:
-            match = {query:{"match_all": {}}}
+        for field in fields:
+            match = {query_type: {field: term}}
             query_body["query"]["bool"]["must"] = match
+            print('query_body = ', query_body)
             result = es.search(index=self.config.get('index'), body=query_body)
             if result['hits']['hits'] is not None:
                 for each in result['hits']['hits']:
@@ -311,18 +300,54 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
             else:
                 results = None
 
+        return list(set(results))
+
+    def _search_all(self, term):
+
+        results = []
+
+        query_body = {
+            "query": {
+                "query_string": {
+                    "query": ''
+                }
+            }
+        }
+
+        query_body["query"]["query_string"]["query"] = term
+        result = es.search(index=self.config.get('index'), body=query_body)
+        if result['hits']['hits'] is not None:
+            for each in result['hits']['hits']:
+                results.append(each['_source'])
         else:
-            for field in fields:
-                if isinstance(term, str):
-                    field = f'{field}.keyword'
-                match = {query: {field: term}}
-                query_body["query"]["bool"]["must"] = match
-                print('query_body = ', query_body)
-                result = es.search(index=self.config.get('index'), body=query_body)
-                if result['hits']['hits'] is not None:
-                    for each in result['hits']['hits']:
-                        results.append(each['_source'])
-                else:
-                    results = None
+            results = None
 
         return results
+
+    def _field_requirements(self, fields, results, term, query_type):
+        if fields is not None:
+            self._search_fields(fields, term, query_type)
+        else:
+            self._search_all(term)
+
+    def search(self, term, exact=False, match_ids=True, fields=None):  # come back to this
+
+        if match_ids is True and exact is True:
+            fields.append('ds_id')
+            query_type = "term"
+            self._field_requirements(fields, results, term, query_type)
+
+        elif match_ids is False and exact is True:
+            query_type = "term"
+            self._field_requirements(fields, results, term, query_type)
+
+        elif match_ids is False and exact is False:
+            term = f'*{term}*'
+            query_type = "wildcard"
+            self._field_requirements(fields, results, term, query_type)
+
+        elif match_ids is True and exact is False:
+            fields.append('ds_id')
+            term = f'*{term}*'
+            query_type = "wildcard"
+            self._field_requirements(fields, results, term, query_type)
