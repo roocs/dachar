@@ -4,8 +4,6 @@ import numpy as np
 import xarray as xr
 from cfunits import Units
 
-from cfunits import Units
-
 
 # NOTE THESE ARE COMMON WITH clisops - need to merge!!!
 def get_coord_by_attr(dset, attr, value):
@@ -47,12 +45,6 @@ def is_time(coord):
             if Units(calendar=coord.values[0].calendar).isreftime:
                 return True
 
-        
-    if hasattr(coord.values[0], 'calendar'):
-        if Units(calendar=coord.values[0].calendar).isreftime:
-            return True
-
-        
     elif hasattr(coord, 'axis'):
         if coord.axis == 'T':
             return True
@@ -87,6 +79,7 @@ def get_coords(da):
 
     Returns a dictionary of coordinate info.
     """
+
     coords = {}
     print(f'[DEBUG] Found coords: {str(da.coords.keys())}')
     print(f'[WARN] NOT CAPTURING scalar COORDS BOUND BY coorindates attr yet!!!')
@@ -128,7 +121,6 @@ def get_coords(da):
                 'max': mx,
                 'length': len(data)
             }
-
 
         if coord_type == "time":
             if type(data[0]) == np.datetime64:
@@ -230,7 +222,6 @@ class CharacterExtractor(object):
         )
         # Get content by variable
         da = ds[self._var_id]
-
         self.character = {
             "scan_metadata": get_scan_metadata(self._mode, self._location),
             "variable": get_variable_metadata(da),
