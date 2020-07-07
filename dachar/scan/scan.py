@@ -181,7 +181,7 @@ def scan_datasets(
     )
 
     if not ds_paths:
-        raise Exception(f'No datasets were found')
+        raise Exception(f"No datasets were found")
 
     for ds_id, ds_path in ds_paths.items():
 
@@ -213,14 +213,12 @@ def _get_output_paths(project, ds_id):
     grouped_ds_id = switch_ds.get_grouped_ds_id(ds_id)
 
     paths = {
-
-        'json': config.JSON_OUTPUT_PATH.format(**vars()),
-        'no_files_error': config.NO_FILES_PATH.format(**vars()),
-        'pre_extract_error': config.PRE_EXTRACT_ERROR_PATH.format(**vars()),
-        'extract_error': config.EXTRACT_ERROR_PATH.format(**vars()),
-        'write_error': config.WRITE_ERROR_PATH.format(**vars()),
+        "json": config.JSON_OUTPUT_PATH.format(**vars()),
+        "no_files_error": config.NO_FILES_PATH.format(**vars()),
+        "pre_extract_error": config.PRE_EXTRACT_ERROR_PATH.format(**vars()),
+        "extract_error": config.EXTRACT_ERROR_PATH.format(**vars()),
+        "write_error": config.WRITE_ERROR_PATH.format(**vars()),
         # 'batch': config.BATCH_OUTPUT_PATH.format(**vars())
-
     }
 
     # Make directories if not already there
@@ -255,8 +253,8 @@ def is_registered(json_path):
 
 def _check_for_min_max(json_path):
     data = json.load(open(json_path))
-    mx = data['data']['max']
-    mn = data['data']['min']
+    mx = data["data"]["max"]
+    mn = data["data"]["min"]
     if mx and mn:
         return True
     else:
@@ -293,38 +291,44 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
     outputs = _get_output_paths(project, ds_id)
 
     # check json file exists
-    registration = is_registered(outputs['json'])
+    registration = is_registered(outputs["json"])
     if registration:
         try:
             # if json file exists get mode
 
             data = json.load(open(outputs["json"]))
             previous_mode = data["scan_metadata"]["mode"]
-            if previous_mode == 'quick':
-                if mode == 'full-force':
+            if previous_mode == "quick":
+                if mode == "full-force":
                     os.remove(outputs["json"])
-                    mode = 'full'
-                    print(f'[INFO] Already ran for {ds_id} in quick mode.'
-                          f' Overwriting with full mode ')
+                    mode = "full"
+                    print(
+                        f"[INFO] Already ran for {ds_id} in quick mode."
+                        f" Overwriting with full mode "
+                    )
                 else:
-                    print(f'[INFO] Already ran for {ds_id} in quick mode')
+                    print(f"[INFO] Already ran for {ds_id} in quick mode")
                     return True
 
-            if previous_mode == 'full':
+            if previous_mode == "full":
                 check = _check_for_min_max(outputs["json"])
                 if check:
-                    print(f'[INFO] Already ran for {ds_id} in full mode')
+                    print(f"[INFO] Already ran for {ds_id} in full mode")
 
                     return True
 
         # flag that a corrupt JSON file exists
         except json.decoder.JSONDecodeError as exc:
-            os.remove(outputs['json'])
-            print(f'[INFO] Corrupt JSON file. Deleting and re-running.')
+            os.remove(outputs["json"])
+            print(f"[INFO] Corrupt JSON file. Deleting and re-running.")
 
     # Delete previous failure files and log files
-    for file_key in ('no_files_error', 'pre_extract_error', 'extract_error', 'write_error'):
-
+    for file_key in (
+        "no_files_error",
+        "pre_extract_error",
+        "extract_error",
+        "write_error",
+    ):
 
         err_file = outputs[file_key]
         if os.path.exists(err_file):
@@ -341,7 +345,7 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
     # Open files with Xarray and get character
     expected_facets = options.facet_rules[project]
 
-    var_id = options.get_facet('variable', facets, project)
+    var_id = options.get_facet("variable", facets, project)
 
     # uncomment this to check files before opening as xarray dataset
     # try:
@@ -373,12 +377,12 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
     try:
         get_dc_store().put(ds_id, character)
     except Exception as exc:
-        print(f'[ERROR] Exception: {exc}')
+        print(f"[ERROR] Exception: {exc}")
         # Create error file if can't output file
-        open(outputs['write_error'], 'w')
+        open(outputs["write_error"], "w")
         return False
 
-    print(f'[INFO] Written to character store') # add file path to json file ?
+    print(f"[INFO] Written to character store")  # add file path to json file ?
 
     # Output to JSON file
     # try:
@@ -390,4 +394,3 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
     #     return False
     #
     # print(f'[INFO] Wrote JSON file: {outputs["json"]}')
-

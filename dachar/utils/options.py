@@ -1,44 +1,28 @@
 project_base_dirs = {
-
-    'cmip5': '/badc/cmip5/data',
-    'cmip6': '/badc/cmip6/data',
-    'cordex': '/badc/cordex/data',
-    'c3s-cmip5': '/group_workspaces/jasmin2/cp4cds1/vol1/data/',
-    'c3s-cmip6': 'NOT DEFINED YET',
-    'c3s-cordex': '/group_workspaces/jasmin2/cp4cds1/vol1/data/',
-
+    "cmip5": "/badc/cmip5/data",
+    "cmip6": "/badc/cmip6/data",
+    "cordex": "/badc/cordex/data",
+    "c3s-cmip5": "/group_workspaces/jasmin2/cp4cds1/vol1/data/",
+    "c3s-cmip6": "NOT DEFINED YET",
+    "c3s-cordex": "/group_workspaces/jasmin2/cp4cds1/vol1/data/",
 }
 known_projects = project_base_dirs.keys()
 locations = ["ceda", "dkrz", "other"]
 facet_rules = {
-    'cmip5': 'activity product institute model experiment frequency realm mip_table ensemble_member version variable'.split(),
-    'cmip6': 'mip_era activity_id institution_id source_id experiment_id member_id table_id variable_id grid_label version'.split(),
-    'cordex': 'project product domain institute driving_model experiment ensemble rcm_name rcm_version time_frequency variable'.split(),
-    'c3s-cmip5': 'activity product institute model experiment frequency realm mip_table ensemble_member variable version'.split(),
-    'c3s-cmip6': 'mip_era activity_id institution_id source_id experiment_id member_id table_id variable_id grid_label version'.split(),
-    'c3s-cordex': 'project product domain institute driving_model experiment ensemble rcm_name rcm_version time_frequency variable version'.split()
+    "cmip5": "activity product institute model experiment frequency realm mip_table ensemble_member version variable".split(),
+    "cmip6": "mip_era activity_id institution_id source_id experiment_id member_id table_id variable_id grid_label version".split(),
+    "cordex": "project product domain institute driving_model experiment ensemble rcm_name rcm_version time_frequency variable".split(),
+    "c3s-cmip5": "activity product institute model experiment frequency realm mip_table ensemble_member variable version".split(),
+    "c3s-cmip6": "mip_era activity_id institution_id source_id experiment_id member_id table_id variable_id grid_label version".split(),
+    "c3s-cordex": "project product domain institute driving_model experiment ensemble rcm_name rcm_version time_frequency variable version".split(),
 }
-mappings = {
-    'cmip6': {
-        'variable': 'variable_id'
-    }
-}
+mappings = {"cmip6": {"variable": "variable_id"}}
 
 # if coordinates are given different names but are equivalent
-coord_mappings = {
-    'ni': 'i',
-    'nj': 'j',
-    'i': 'ni',
-    'j': 'nj'
-}
+coord_mappings = {"ni": "i", "nj": "j", "i": "ni", "j": "nj"}
 
-common_checks = ['coord_checks.RankCheck', 'coord_checks.MissingCoordCheck']
-checks = {
-    'cmip5': [],
-    'cmip6': ['test'],
-    'cordex': []
-
-}
+common_checks = ["coord_checks.RankCheck", "coord_checks.MissingCoordCheck"]
+checks = {"cmip5": [], "cmip6": ["test"], "cordex": []}
 
 
 def map_facet(facet, project):
@@ -62,5 +46,3 @@ dataset_id = cordex.%(product)s.%(domain)s.%(institute)s.%(driving_model)s.%(exp
 
 directory_format = %(root)s/%(project)s/%(product)s/%(domain)s/%(institute)s/%(driving_model)s/%(experiment)s/%(ensemble)s/%(rcm_model)s/%(rcm_version)s/%(time_frequency)s/%(variable)s/%(version)s
 """
-
-

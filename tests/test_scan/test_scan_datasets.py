@@ -15,8 +15,9 @@ test_files = [
 
 F1, F2, F3 = test_files
 
-options.project_base_dirs["c3s-cordex"] = \
-    "tests/mini-esgf-data/test_data/group_workspaces/jasmin2/cp4cds1/data"
+options.project_base_dirs[
+    "c3s-cordex"
+] = "tests/mini-esgf-data/test_data/group_workspaces/jasmin2/cp4cds1/data"
 
 
 class TestCorruptJson:
@@ -51,12 +52,9 @@ class TestCorruptJson:
 
 
 class TestFileChecker:
-
     def change_fpath_of_test_file(self, fpath, new_path):
         fname = fpath.split("/")[-1]
-        ds = xr.open_mfdataset(
-            fpath, use_cftime=True, combine="by_coords"
-        )
+        ds = xr.open_mfdataset(fpath, use_cftime=True, combine="by_coords")
         if not os.path.exists(new_path):
             os.makedirs(new_path)
         ds.to_netcdf(path=os.path.join(new_path, f"{fname}"))
