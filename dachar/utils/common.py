@@ -2,8 +2,8 @@ import json
 import datetime
 from collections import deque
 
-UNDEFINED = 'UNDEFINED'
-FIX_STATUS_VALUES = ['proposed', 'rejected', 'accepted', 'withdrawn']
+UNDEFINED = "UNDEFINED"
+FIX_STATUS_VALUES = ["proposed", "rejected", "accepted", "withdrawn"]
 
 
 def is_undefined(x):
@@ -14,18 +14,18 @@ def is_undefined(x):
 
 
 def nested_lookup(key_path, item, must_exist=False):
-    not_found = '__NOT_FOUND__'
+    not_found = "__NOT_FOUND__"
 
-    for key in key_path.split('.'):
+    for key in key_path.split("."):
         if type(item) == dict:
-            if key == '*':
+            if key == "*":
                 item = [item.get(key, not_found) for key in item]
             else:
                 item = item.get(key, not_found)
-                
+
         elif type(item) == list:
             item = [each.get(key, not_found) for each in item]
-                
+
         else:
             item = not_found
 
@@ -38,11 +38,10 @@ def nested_lookup(key_path, item, must_exist=False):
 
 
 def now_string():
-    return datetime.datetime.now().isoformat().split('.')[0]
+    return datetime.datetime.now().isoformat().split(".")[0]
 
 
 class JDict(dict):
-
     def _tostring(self, obj):
         return json.dumps(obj)
 
@@ -108,4 +107,3 @@ def get_extra_items_in_larger_sequence(small, large):
         if item not in small:
             excess.append(item)
     return excess
-

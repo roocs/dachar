@@ -10,11 +10,13 @@ from dachar.utils.json_store import _LocalBaseJsonStore
 # Create a new dummy store to run tests on
 class _TestStore(_LocalBaseJsonStore):
 
-    store_name = 'TestStore'
-    config = {'store_type': 'local',
-              'local.base_dir': '/tmp/test-store',
-              'local.dir_grouping_level': 4}
-    required_fields = ['data']
+    store_name = "TestStore"
+    config = {
+        "store_type": "local",
+        "local.base_dir": "/tmp/test-store",
+        "local.dir_grouping_level": 4,
+    }
+    required_fields = ["data"]
 
 
 recs = [
@@ -27,7 +29,7 @@ store = None
 
 
 def _clear_store():
-    dr = _TestStore.config['local.base_dir']
+    dr = _TestStore.config["local.base_dir"]
     if os.path.isdir(dr):
         shutil.rmtree(dr)
 
@@ -45,9 +47,12 @@ def test_verify_store():
 
 def test_put_fails_if_id_causes_unsafe_path():
     try:
-        store.put('unsafe', recs[0][1])
+        store.put("unsafe", recs[0][1])
     except KeyError as exc:
-        assert(str(exc) == "'Identifier name cannot be safely translated to file path: unsafe'")
+        assert (
+            str(exc)
+            == "'Identifier name cannot be safely translated to file path: unsafe'"
+        )
 
 
 def test_put():
@@ -65,7 +70,9 @@ def test_put_force_parameter():
     try:
         store.put(_id, content)
     except FileExistsError as exc:
-        assert(str(exc) == f'Record already exists: {_id}. Use "force=True" to overwrite.')
+        assert (
+            str(exc) == f'Record already exists: {_id}. Use "force=True" to overwrite.'
+        )
 
     store.put(_id, content, force=True)
 
@@ -75,9 +82,9 @@ def test_put_maps_asterisk():
     store.put(_id, {"data": "test"})
     fpath = store._id_to_path(_id)
 
-    bdir = store.config['local.base_dir']
-    assert(fpath == os.path.join(bdir, '1/1/__ALL__/1.__ALL__.__ALL__.1.json'))
-    assert(os.path.isfile(fpath))
+    bdir = store.config["local.base_dir"]
+    assert fpath == os.path.join(bdir, "1/1/__ALL__/1.__ALL__.__ALL__.1.json")
+    assert os.path.isfile(fpath)
 
     store.delete(_id)
 
@@ -118,7 +125,7 @@ def test_get_all_ids():
     store.put(*recs[0])
     store.put(*recs[2])
     all_ids = [_ for _ in store.get_all_ids()]
-    assert(all_ids == [recs[0][0], recs[2][0]])
+    assert all_ids == [recs[0][0], recs[2][0]]
 
 
 # @pytest.mark.xfail(reason="tox test fails")
@@ -148,8 +155,8 @@ def test_search_by_term():
     assert resp == [recs[0][1], recs[2][1]]
 
     # Search everything if no fields
-    resp = store.search('e', exact=False, fields=None)
-    assert(resp == [recs[0][1], recs[2][1]])
+    resp = store.search("e", exact=False, fields=None)
+    assert resp == [recs[0][1], recs[2][1]]
 
     # Search wih failed match
     resp = store.search("zzz", exact=False, fields=None)

@@ -23,14 +23,15 @@ from unittest.mock import Mock
 
 def _to_list(item):
 
-    if not item: return item
-    return item.split(',')
+    if not item:
+        return item
+    return item.split(",")
 
 
 def _to_dict(item):
-    if not item: return item
-    return dict([_.split('=') for _ in item.split(',')])
-
+    if not item:
+        return item
+    return dict([_.split("=") for _ in item.split(",")])
 
 
 def _get_arg_parser_scan(parser):
@@ -92,10 +93,10 @@ def _get_arg_parser_scan(parser):
         type=str,
         default="quick",
         required=False,
-        help='Scanning mode: can be either quick or full. A full scan returns '
-             'max and min values while a quick scan excludes them. Defaults to quick.'
-             'Setting mode=full-force will overwrite any scans already completed in '
-             'quick mode.'
+        help="Scanning mode: can be either quick or full. A full scan returns "
+        "max and min values while a quick scan excludes them. Defaults to quick."
+        "Setting mode=full-force will overwrite any scans already completed in "
+        "quick mode.",
     )
 
     parser.add_argument(
@@ -145,7 +146,7 @@ def _get_arg_parser_analyse(parser):
         type=str,
         default=None,
         required=True,
-        help='Sample id with * indicating the facets that change '
+        help="Sample id with * indicating the facets that change ",
     )
 
     parser.add_argument(
@@ -155,15 +156,14 @@ def _get_arg_parser_analyse(parser):
         default="ceda",
         required=True,
         choices=location_options,
-        help=f'Location of scan, must be one of: {location_options}'
+        help=f"Location of scan, must be one of: {location_options}",
     )
 
     parser.add_argument(
         "-f",
         "--force",
-        action='store_true',
-        help=f'If True then analysis records will be overwritten if they already exist.'
-
+        action="store_true",
+        help=f"If True then analysis records will be overwritten if they already exist.",
     )
 
     return parser
@@ -191,7 +191,7 @@ def _get_arg_parser_process_fixes(parser):
         type=str,
         default=None,
         required=False,
-        help='List of comma-separated dataset identifiers'
+        help="List of comma-separated dataset identifiers",
     )
 
     parser.add_argument(
@@ -200,8 +200,8 @@ def _get_arg_parser_process_fixes(parser):
         type=str,
         default=None,
         required=True,
-        help='Action to carry out on fixes: process for proposed fixes, withdraw to withdraw'
-             'existing fixes'
+        help="Action to carry out on fixes: process for proposed fixes, withdraw to withdraw"
+        "existing fixes",
     )
 
     return parser
@@ -231,11 +231,9 @@ def main():
     _get_arg_parser_analyse(analyse_parser)
     analyse_parser.set_defaults(func=analyse_main)
 
-
-    fix_parser = subparsers.add_parser('process-fixes')
+    fix_parser = subparsers.add_parser("process-fixes")
     _get_arg_parser_process_fixes(fix_parser)
     fix_parser.set_defaults(func=process_fixes_main)
-
 
     args = main_parser.parse_args()
     args.func(args)

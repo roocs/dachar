@@ -7,13 +7,17 @@ from elasticsearch import Elasticsearch, helpers
 from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
 
 
-es = CEDAElasticsearchClient(headers={'x-api-key': ''})
+es = CEDAElasticsearchClient(
+    headers={
+        "x-api-key": "***REMOVED***"
+    }
+)
+
 
 class _BaseJsonStore(object):
-
-    store_name = '_BASE'
+    store_name = "_BASE"
     config = {}
-    id_mappers = {'*': '__ALL__'}
+    id_mappers = {"*": "__ALL__"}
     required_fields = []
 
     def __init__(self):
@@ -32,7 +36,7 @@ class _BaseJsonStore(object):
 
         for key, dtype in required.items():
             if not hasattr(cls, key) or not type(getattr(cls, key)) is dtype:
-                raise Exception(f'Invalid store definition: check class attr: {key}')
+                raise Exception(f"Invalid store definition: check class attr: {key}")
 
     def get(self, id):
         raise NotImplementedError
@@ -45,7 +49,9 @@ class _BaseJsonStore(object):
 
     def put(self, id, content, force=False):
         if self.exists(id) and not force:
-            raise FileExistsError(f'Record already exists: {id}. Use "force=True" to overwrite.')
+            raise FileExistsError(
+                f'Record already exists: {id}. Use "force=True" to overwrite.'
+            )
 
         self._validate(content)
         self._save(id, content)
@@ -75,10 +81,10 @@ class _BaseJsonStore(object):
 
     def get_all(self):
         raise NotImplementedError
-    
+
     def get_all_ids(self):
         raise NotImplementedError
-    
+
     def search(self, term, exact=False, match_ids=True, fields=None):
         raise NotImplementedError
 
@@ -87,10 +93,12 @@ class _BaseJsonStore(object):
 
 
 class _LocalBaseJsonStore(_BaseJsonStore):
-    config = {'store_type': 'local',
-              'local.base_dir': '/tmp/json-store',
-              'local.dir_grouping_level': 4,
-              'index': 'base'}
+    config = {
+        "store_type": "local",
+        "local.base_dir": "/tmp/json-store",
+        "local.dir_grouping_level": 4,
+        "index": "base",
+    }
 
     def get(self, id):
         if not self.exists(id):
@@ -108,7 +116,7 @@ class _LocalBaseJsonStore(_BaseJsonStore):
     def delete(self, id):
 
         if not self.exists(id):
-            raise Exception(f'Record with ID {id} does not exist')
+            raise Exception(f"Record with ID {id} does not exist")
 
         json_path = self._id_to_path(id)
         os.remove(json_path)
@@ -136,14 +144,15 @@ class _LocalBaseJsonStore(_BaseJsonStore):
     def get_all(self):
         # Generator to return all records
         for id in self.get_all_ids():
-                yield id, self.get(id)
+            yield id, self.get(id)
 
     def search(self, term, exact=False, match_ids=True, fields=None):
         results = []
 
         for _id, record in self.get_all():
-            if (match_ids and self._match_id(term, _id, exact=exact)) or \
-                    self._match(record, term, exact=exact, fields=fields):
+            if (match_ids and self._match_id(term, _id, exact=exact)) or self._match(
+                record, term, exact=exact, fields=fields
+            ):
                 results.append(record)
 
         return results
@@ -167,10 +176,12 @@ class _LocalBaseJsonStore(_BaseJsonStore):
         parts = id.split(".")
 
         if len(parts) <= gl:
-            raise KeyError(f'Identifier name cannot be safely translated to file path: {id}')
+            raise KeyError(
+                f"Identifier name cannot be safely translated to file path: {id}"
+            )
 
-        grouped_id = '/'.join(parts[:-gl]) + '/' + '.'.join(parts[-gl:])
-        fpath = os.path.join(self.config['local.base_dir'], grouped_id + '.json')
+        grouped_id = "/".join(parts[:-gl]) + "/" + ".".join(parts[-gl:])
+        fpath = os.path.join(self.config["local.base_dir"], grouped_id + ".json")
 
         return self._map(fpath)
 
@@ -197,7 +208,7 @@ class _LocalBaseJsonStore(_BaseJsonStore):
             search_fields = set(fields)
 
         # If no search fields defined - then search whole record as a string
-        use_entire_record = '__USE_ENTIRE_RECORD__'
+        use_entire_record = "__USE_ENTIRE_RECORD__"
         if not search_fields:
             search_fields = [use_entire_record]
 
@@ -225,12 +236,11 @@ class _LocalBaseJsonStore(_BaseJsonStore):
 
 
 class _ElasticSearchBaseJsonStore(_BaseJsonStore):
-    config = {'store_type': 'elasticsearch',
-              'index': 'base'}
+    config = {"store_type": "elasticsearch", "index": "base"}
 
     def convert_id(self, id):
         m = hashlib.md5()
-        m.update(id.encode('utf-8'))
+        m.update(id.encode("utf-8"))
         return m.hexdigest()
 
     def get(self, id):
@@ -238,116 +248,109 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
             return None
 
         id = self.convert_id(id)
-        res = es.get(index=self.config.get('index'), id=id)
-        return res['_source']
+        res = es.get(index=self.config.get("index"), id=id)
+        return res["_source"]
 
     def exists(self, id):
         id = self.convert_id(id)
-        res = es.exists(index=self.config.get('index'), id=id)
+        res = es.exists(index=self.config.get("index"), id=id)
         return res
 
     def delete(self, id):
         if not self.exists(id):
-            raise Exception(f'Record with ID {id} does not exist')
+            raise Exception(f"Record with ID {id} does not exist")
 
         id = self.convert_id(id)
-        es.delete(index=self.config.get('index'), id=id)
+        es.delete(index=self.config.get("index"), id=id)
 
     def _save(self, id, content):
         ds_id = id
         id = self.convert_id(id)
-        if '.' in id:
-            raise KeyError(f'Identifier name cannot be used as elasticsearch id as it contains .: {id} ')
+        if "." in id:
+            raise KeyError(
+                f"Identifier name cannot be used as elasticsearch id as it contains .: {id} "
+            )
 
-        es.index(index=self.config.get('index'), body=content, id=id)
-        es.update(index=self.config.get('index'), id=id, body={"doc": {"ds_id": ds_id}})
+        es.index(index=self.config.get("index"), body=content, id=id)
+        es.update(index=self.config.get("index"), id=id, body={"doc": {"ds_id": ds_id}})
 
     def get_all_ids(self):
         # Generator to return all records
-        results = helpers.scan(es, index=self.config.get('index'), query={"_source": ["ds_id"]})
-        print(self.config.get('index'))
+        results = helpers.scan(
+            es, index=self.config.get("index"), query={"_source": ["ds_id"]}
+        )
+        print(self.config.get("index"))
         for item in results:
-            yield (item['_source']['ds_id'])
+            yield (item["_source"]["ds_id"])
 
     def get_all(self):
         # Generator to return all ids
-        results = helpers.scan(es, index=self.config.get('index'), query={"query": {"match_all": {}}}, )
+        results = helpers.scan(
+            es, index=self.config.get("index"), query={"query": {"match_all": {}}},
+        )
         for item in results:
-            yield (item['_source'])
+            yield (item["_source"])
 
     def _search_fields(self, fields, term, query_type):
+
         results = []
 
-        query_body = {
-            "query": {
-                "bool": {
-                    "must": ''
-                }
-            }
-        }
+        query_body = {"query": {"bool": {"must": ""}}}
 
+        keyword_fields = []
         for field in fields:
-            fields.append(f'{field}.keyword')
+            keyword_fields.append(f"{field}.keyword")
 
-        for field in fields:
+        for field in fields + keyword_fields:
             match = {query_type: {field: term}}
             query_body["query"]["bool"]["must"] = match
-            print('query_body = ', query_body)
-            result = es.search(index=self.config.get('index'), body=query_body)
-            if result['hits']['hits'] is not None:
-                for each in result['hits']['hits']:
-                    results.append(each['_source'])
-            else:
-                results = None
+            result = es.search(index=self.config.get("index"), body=query_body)
+            if result["hits"]["hits"] is not None:
+                for each in result["hits"]["hits"]:
+                    results.append(each["_source"])
 
-        return list(set(results))
+        return results
 
     def _search_all(self, term):
 
         results = []
 
-        query_body = {
-            "query": {
-                "query_string": {
-                    "query": ''
-                }
-            }
-        }
+        query_body = {"query": {"query_string": {"query": ""}}}
 
         query_body["query"]["query_string"]["query"] = term
-        result = es.search(index=self.config.get('index'), body=query_body)
-        if result['hits']['hits'] is not None:
-            for each in result['hits']['hits']:
-                results.append(each['_source'])
-        else:
-            results = None
+        result = es.search(index=self.config.get("index"), body=query_body)
+        if result["hits"]["hits"] is not None:
+            for each in result["hits"]["hits"]:
+                results.append(each["_source"])
 
         return results
 
-    def _field_requirements(self, fields, results, term, query_type):
+    def _field_requirements(self, fields, term, query_type):
+
         if fields is not None:
-            self._search_fields(fields, term, query_type)
+            fields.append("ds_id")
+            return self._search_fields(fields, term, query_type)
         else:
-            self._search_all(term)
+            return self._search_all(term)
 
-    def search(self, term, exact=False, match_ids=True, fields=None):  # come back to this
-
+    def search(
+        self, term, exact=False, match_ids=True, fields=None
+    ):  # come back to this
+        # import pdb; pdb.set_trace()
         if match_ids is True and exact is True:
-            fields.append('ds_id')
             query_type = "term"
-            self._field_requirements(fields, results, term, query_type)
+            return self._field_requirements(fields, term, query_type)
 
         elif match_ids is False and exact is True:
             query_type = "term"
-            self._field_requirements(fields, results, term, query_type)
+            return self._field_requirements(fields, term, query_type)
 
         elif match_ids is False and exact is False:
-            term = f'*{term}*'
+            term = f'*{str(term).replace(" ","*")}*'
             query_type = "wildcard"
-            self._field_requirements(fields, results, term, query_type)
+            return self._field_requirements(fields, term, query_type)
 
         elif match_ids is True and exact is False:
-            fields.append('ds_id')
-            term = f'*{term}*'
+            term = f'*{str(term).replace(" ","*")}*'
             query_type = "wildcard"
-            self._field_requirements(fields, results, term, query_type)
+            return self._field_requirements(fields, term, query_type)
