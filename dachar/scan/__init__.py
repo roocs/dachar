@@ -1,1 +1,1 @@
-from .char_store import DatasetCharacterStore
+from .char_store import LocalDatasetCharacterStore, ElasticDatasetCharacterStore

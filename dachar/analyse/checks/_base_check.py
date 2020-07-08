@@ -48,10 +48,9 @@ class _BaseCheck(object):
 
     characteristics = UNDEFINED
     associated_fix = UNDEFINED
-    
-    typical_threshold = .41
-    atypical_threshold = .15
 
+    typical_threshold = 0.41
+    atypical_threshold = 0.15
 
     def __init__(self, sample):
         self.sample = sample
@@ -69,7 +68,7 @@ class _BaseCheck(object):
                 self._cache[ds_id] = get_dc_store().get(ds_id)
 
         if missing:
-            raise Exception(f'Some data sets not characterised for sample: {missing}')
+            raise Exception(f"Some data sets not characterised for sample: {missing}")
 
     def run(self):
         content = self._extract_content()
@@ -80,7 +79,7 @@ class _BaseCheck(object):
             results.setdefault(items, [])
             results[items].append(ds_id)
 
-        #print('results=', results)
+        # print('results=', results)
         total = len(content)
 
         #       print(f'\n[INFO] Testing: {keys} - found {len(results)} varieties')
@@ -124,8 +123,12 @@ class _BaseCheck(object):
         content = []
 
         for ds_id in self.sample:
-            items = dict([(key, nested_lookup(key, self._cache[ds_id], must_exist=True))
-                          for key in self.characteristics])
+            items = dict(
+                [
+                    (key, nested_lookup(key, self._cache[ds_id], must_exist=True))
+                    for key in self.characteristics
+                ]
+            )
             content.append((ds_id, items))
 
         return content
