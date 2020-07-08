@@ -28,3 +28,4 @@ WRITE_ERROR_PATH = join(BASE_LOG_DIR, "failure/write_error/{grouped_ds_id}.log")
 FIX_PATH = join(_base_path, "fixes/{grouped_ds_id}.json")
 
 ELASTIC_API_TOKEN = ""
+#ELASTIC_API_TOKEN = None 
