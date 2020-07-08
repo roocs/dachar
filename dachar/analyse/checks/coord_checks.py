@@ -10,14 +10,14 @@ import pprint
 
 
 class RankCheck(_BaseCheck):
-    characteristics = ['data.dim_names', 'data.shape']
-    associated_fix = 'SqueezeDimensionsFix'
+    characteristics = ["data.dim_names", "data.shape"]
+    associated_fix = "SqueezeDimensionsFix"
 
     def deduce_fix(self, ds_id, atypical_content, typical_content):
         dicts = []
 
-        atypical = atypical_content['data.dim_names']
-        typical = typical_content['data.dim_names']
+        atypical = atypical_content["data.dim_names"]
+        typical = typical_content["data.dim_names"]
 
         # length of atypical should be longer if extra coord
         # Will this always be the case?
@@ -34,10 +34,10 @@ class RankCheck(_BaseCheck):
 
                 for coord in extra_coords:
                     index = atypical.index(coord)
-                    if atypical_content['data.shape'][index] != 1:
+                    if atypical_content["data.shape"][index] != 1:
                         extra_coords.remove(coord)
 
-                    operands = {'dims': extra_coords}
+                    operands = {"dims": extra_coords}
 
                     fix = fix_cls(ds_id, **operands)
                     d = fix.to_dict()
@@ -50,14 +50,14 @@ class RankCheck(_BaseCheck):
 
 
 class MissingCoordCheck(_BaseCheck):
-    characteristics = ['coordinates.*.id']
-    associated_fix = 'AddScalarCoordFix'
+    characteristics = ["coordinates.*.id"]
+    associated_fix = "AddScalarCoordFix"
 
     def deduce_fix(self, ds_id, atypical_content, typical_content):
         dicts = []
 
-        atypical = atypical_content['coordinates.*.id']
-        typical = typical_content['coordinates.*.id']
+        atypical = atypical_content["coordinates.*.id"]
+        typical = typical_content["coordinates.*.id"]
 
         # length of atypical should be shorter if missing coord
         # Will this always be the case?
@@ -84,12 +84,16 @@ class MissingCoordCheck(_BaseCheck):
                     typical_ds_ids.remove(ds_id[0])
 
                     for ds in typical_ds_ids:
-                        
-                        coord_attrs = nested_lookup(f'coordinates.{coord}', self._cache[ds], must_exist=True)
-                        coord_attrs = namedtuple('coord_attrs', coord_attrs.keys())(**coord_attrs)
+
+                        coord_attrs = nested_lookup(
+                            f"coordinates.{coord}", self._cache[ds], must_exist=True
+                        )
+                        coord_attrs = namedtuple("coord_attrs", coord_attrs.keys())(
+                            **coord_attrs
+                        )
 
                         typical_coord_attrs.append(coord_attrs)
-                    
+
                     frequency = Counter(d for d in typical_coord_attrs)
                     typical_coord = frequency.most_common(1)[0][0]
                     typical_length = typical_coord.length
@@ -99,12 +103,12 @@ class MissingCoordCheck(_BaseCheck):
                         operands = {}
 
                         operand_dict = dict(typical_coord._asdict())
-                        for k in ['dtype', 'value', 'id', 'length']:
+                        for k in ["dtype", "value", "id", "length"]:
                             v = operand_dict.pop(k)
 
                             operands[k] = v
 
-                        operands['attrs'] = operand_dict
+                        operands["attrs"] = operand_dict
 
                         fix = fix_cls(ds_id, **operands)
                         d = fix.to_dict()

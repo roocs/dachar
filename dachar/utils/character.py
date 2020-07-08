@@ -4,8 +4,6 @@ import numpy as np
 import xarray as xr
 from cfunits import Units
 
-from cfunits import Units
-
 
 # NOTE THESE ARE COMMON WITH clisops - need to merge!!!
 def get_coord_by_attr(dset, attr, value):
@@ -19,7 +17,7 @@ def get_coord_by_attr(dset, attr, value):
 
 
 def is_latitude(coord):
-    if hasattr(coord, 'units'):
+    if hasattr(coord, "units"):
         if Units(coord.units).islatitude:
             return True
 
@@ -28,7 +26,7 @@ def is_latitude(coord):
 
 
 def is_longitude(coord):
-    if hasattr(coord, 'units'):
+    if hasattr(coord, "units"):
         if Units(coord.units).islongitude:
             return True
 
@@ -41,20 +39,14 @@ def is_level(coord):
 
 
 def is_time(coord):
-  
+
     if coord.values.size > 1:
-        if hasattr(coord.values[0], 'calendar'):
+        if hasattr(coord.values[0], "calendar"):
             if Units(calendar=coord.values[0].calendar).isreftime:
                 return True
 
-        
-    if hasattr(coord.values[0], 'calendar'):
-        if Units(calendar=coord.values[0].calendar).isreftime:
-            return True
-
-        
-    elif hasattr(coord, 'axis'):
-        if coord.axis == 'T':
+    elif hasattr(coord, "axis"):
+        if coord.axis == "T":
             return True
 
     elif coord.attrs.get("standard_name", None) == "time":
@@ -64,11 +56,11 @@ def is_time(coord):
 def get_coord_type(coord):
 
     if is_longitude(coord):
-        return 'longitude'
+        return "longitude"
     elif is_latitude(coord):
-        return 'latitude'
+        return "latitude"
     elif is_time(coord):
-        return 'time'
+        return "time"
 
     return None
 
@@ -87,12 +79,13 @@ def get_coords(da):
 
     Returns a dictionary of coordinate info.
     """
+
     coords = {}
-    print(f'[DEBUG] Found coords: {str(da.coords.keys())}')
-    print(f'[WARN] NOT CAPTURING scalar COORDS BOUND BY coorindates attr yet!!!')
-    
+    print(f"[DEBUG] Found coords: {str(da.coords.keys())}")
+    print(f"[WARN] NOT CAPTURING scalar COORDS BOUND BY coorindates attr yet!!!")
+
     for coord_id in sorted(da.coords):
-      
+
         coord = da.coords[coord_id]
 
         coord_type = get_coord_type(coord)
@@ -102,33 +95,27 @@ def get_coords(da):
         if data.size == 1:
             value = data.tolist()
             if isinstance(value, bytes):
-                value = value.decode('utf-8')
+                value = value.decode("utf-8")
 
             coords[name] = {
-                'id': name,
-                'value': value,
-                'dtype': str(data.dtype),
-                'length': 1
+                "id": name,
+                "value": value,
+                "dtype": str(data.dtype),
+                "length": 1,
             }
 
         else:
             mn, mx = data.min(), data.max()
 
-            if coord_type == 'time':
+            if coord_type == "time":
                 if type(mn) == np.datetime64:
-                    mn, mx = [str(_).split('.')[0] for _ in (mn, mx)]
+                    mn, mx = [str(_).split(".")[0] for _ in (mn, mx)]
                 else:
-                    mn, mx = [_.strftime('%Y-%m-%dT%H:%M:%S') for _ in (mn, mx)]
+                    mn, mx = [_.strftime("%Y-%m-%dT%H:%M:%S") for _ in (mn, mx)]
             else:
                 mn, mx = [float(_) for _ in (mn, mx)]
 
-            coords[name] = {
-                'id': name,
-                'min': mn,
-                'max': mx,
-                'length': len(data)
-            }
-
+            coords[name] = {"id": name, "min": mn, "max": mx, "length": len(data)}
 
         if coord_type == "time":
             if type(data[0]) == np.datetime64:
@@ -164,7 +151,7 @@ def get_variable_metadata(da):
 
     # Encode _FillValue as string because representation may be strange
 
-    d['_FillValue'] = str(da.encoding.get('_FillValue', 'NOT_DEFINED'))
+    d["_FillValue"] = str(da.encoding.get("_FillValue", "NOT_DEFINED"))
 
     return d
 
@@ -179,8 +166,8 @@ def get_global_attrs(ds, expected_attrs=None):
 
 def get_data_info(da, mode):
 
-    if mode == 'full':
-      
+    if mode == "full":
+
         mx = float(da.max())
         mn = float(da.min())
 
@@ -189,12 +176,11 @@ def get_data_info(da, mode):
         mn = None
 
     return {
-
-        'min': mn,
-        'max': mx,
-        'shape': da.shape,
-        'rank': len(da.shape),
-        'dim_names': da.dims,
+        "min": mn,
+        "max": mx,
+        "shape": da.shape,
+        "rank": len(da.shape),
+        "dim_names": da.dims,
     }
 
 
@@ -230,7 +216,6 @@ class CharacterExtractor(object):
         )
         # Get content by variable
         da = ds[self._var_id]
-
         self.character = {
             "scan_metadata": get_scan_metadata(self._mode, self._location),
             "variable": get_variable_metadata(da),

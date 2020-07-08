@@ -1,24 +1,31 @@
-
 from dachar.utils.common import UNDEFINED
 from dachar import __version__ as version
 
 
 class FixDetails(object):
-
-    def __init__(self, ds_id, fix_id, title, description, category, ref_implementation, operands, source):
+    def __init__(
+        self,
+        ds_id,
+        fix_id,
+        title,
+        description,
+        category,
+        ref_implementation,
+        operands,
+        source,
+    ):
         self.record = {
-                'dataset_id': {
-                    'ds_id': ds_id},
-                'fix': {
-                    'fix_id': fix_id,
-                    'title': title,
-                    'description': description,
-                    'category': category,
-                    'reference_implementation': ref_implementation,
-                    'operands': operands,
-                    'source': source
-                }
-            }
+            "dataset_id": {"ds_id": ds_id},
+            "fix": {
+                "fix_id": fix_id,
+                "title": title,
+                "description": description,
+                "category": category,
+                "reference_implementation": ref_implementation,
+                "operands": operands,
+                "source": source,
+            },
+        }
 
     @property
     def dict(self):
@@ -41,7 +48,7 @@ class _BaseDatasetFix(object):
     </variable>
         """
 
-    def __init__(self, ds_id, source=f'dachar version {version}', **operands):
+    def __init__(self, ds_id, source=f"dachar version {version}", **operands):
         self.ds_id = ds_id
         self.source = source
         self.operands = operands
@@ -50,11 +57,13 @@ class _BaseDatasetFix(object):
     def _validate(self):
         missing_operands = set(self.required_operands).difference(set(self.operands))
         if missing_operands:
-            raise KeyError(f'Required keyword argument(s) not provided: {missing_operands}')
+            raise KeyError(
+                f"Required keyword argument(s) not provided: {missing_operands}"
+            )
 
         invalid_operands = set(self.operands).difference(set(self.required_operands))
         if invalid_operands:
-            raise KeyError(f'Invalid keyword arguments received: {invalid_operands}')
+            raise KeyError(f"Invalid keyword arguments received: {invalid_operands}")
 
     def __repr__(self):
         return f"""<Fix: {self.fix_id} (category: {self.category})>
@@ -68,7 +77,15 @@ Operands: {self.operands}
         return self.ncml_template.format(**self.operands)
 
     def to_dict(self):
-        d = FixDetails(self.ds_id, self.fix_id, self.title, self.description, self.category,
-                       self.ref_implementation, self.operands, self.source)
+        d = FixDetails(
+            self.ds_id,
+            self.fix_id,
+            self.title,
+            self.description,
+            self.category,
+            self.ref_implementation,
+            self.operands,
+            self.source,
+        )
 
         return d.dict

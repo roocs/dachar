@@ -9,10 +9,10 @@ from dachar.utils import switch_ds
 
 # Is the check store a superset of the fixes?
 
+
 def prep_dir(dr):
     if not os.path.isdir(dr):
         os.makedirs(dr)
-
 
 
 """
