@@ -1,2 +1,2 @@
-from .fix_proposal_store import FixProposalStore, FixProposalStoreElastic
-from .fix_store import FixStore, FixStoreElastic
+from .fix_proposal_store import LocalFixProposalStore, ElasticFixProposalStore
+from .fix_store import LocalFixStore, ElasticFixStore

@@ -7,20 +7,17 @@ import time
 from dachar.utils.json_store import _ElasticSearchBaseJsonStore
 from elasticsearch import Elasticsearch, exceptions
 from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
-import pytest
-
-es = CEDAElasticsearchClient(
-    headers={
-        "x-api-key": "***REMOVED***"
-    }
-)
+from dachar.config import ELASTIC_API_TOKEN
 
 
 # Create a new dummy store to run tests on
 class _TestStore(_ElasticSearchBaseJsonStore):
 
     store_name = "TestElasticsearchStore"
-    config = {"store_type": "elasticsearch", "index": "char-store-test"}
+    config = {"store_type": "elasticsearch",
+              "index": "roocs-char-test",
+              "api_token": ELASTIC_API_TOKEN,
+              "id_type": "ds_id"}
     required_fields = ["d"]
 
 
@@ -44,9 +41,8 @@ def clear_store():
 def setup_module():
     # check elasticsearch connection - if fails - fail all tests
     global store
-    store = _TestStore()
     try:
-        es.indices.exists(index=store.config.get("index"))
+        store = _TestStore()
     except exceptions.AuthenticationException:
         pytest.exit("Connection to elasticsearch index failed")
     clear_store()
@@ -130,6 +126,12 @@ def test_get_all_ids():
 
 
 # @pytest.mark.xfail(reason="tox test fails")
+
+# can not search for case insensitive wildcards for phrases but can for one word,
+# cannot search exact=False for number fields (will change to exact=True if search term is a number)
+# need to specify exact fields to search or search all (doesn't search nested
+# field if only top level field is specified)
+
 def test_search_by_term():
     store.put(recs[2][0], recs[2][1], force=True)
     store.put(recs[0][0], recs[0][1], force=True)
@@ -143,39 +145,40 @@ def test_search_by_term():
     resp = store.search("at mat", exact=False, fields=["d"])
     assert resp[0]["d"] == recs[0][1]["d"]
 
-    # Search with custom fields + partial match - FAILS - can't do wildcard with a space and case insensitivity- figure out exactly what this is
-    # resp = store.search("at MAT", exact=False, fields=["d"])
-    # assert resp[0]['d'] == recs[0][1]['d']
+    # Search with custom fields + partial match
+    resp = store.search("at MAT", exact=False, fields=["d"])
+    assert resp == [] # wildcard matching is case sensitive by default
 
     # Search with custom nested fields + exact match as integer
     resp = store.search(123, exact=True, fields=["z.d2.test1"])
     assert resp[0]["d"] == recs[2][1]["d"]
     assert resp[0]["z"] == recs[2][1]["z"]
 
-    # Search with custom nested fields + inexact match as integer - FAILS - can't do wildcard on long field
-    # resp = store.search(123, exact=False, fields=["z.d2.test1"])
-    # assert resp[0]['d'] == recs[2][1]['d']
-    # assert resp[0]['z'] == recs[2][1]['z']
+    # Search with custom nested fields + inexact match as integer
+    resp = store.search(123, exact=False, fields=["z.d2.test1"])
+    assert resp[0]["d"] == recs[2][1]["d"]
+    assert resp[0]["z"] == recs[2][1]["z"]
 
     # Search with exact match for string
     resp = store.search("123", exact=True, fields=["z.d2.test1"])
     assert resp[0]["d"] == recs[2][1]["d"]
     assert resp[0]["z"] == recs[2][1]["z"]
 
-    # Search with partial match for string - FAILS - fields aren't searched if nested
-    # resp = store.search("123", exact=False, fields=["z", "ds_id"])
-    # assert resp[0]['d'] == recs[2][1]['d']
-    # assert resp[0]['z'] == recs[2][1]['z']
+    # Search with partial match for string
+    resp = store.search("123", exact=False, fields=["z", "ds_id"])
+    assert resp == [] # elasticsearch doesn't search nested fields
 
-    # Search with custom multiple fields and partial match - FAILS - can't use wildcard on long fields
-    # resp = store.search("e", exact=False, fields=["d", "z.d2.test1"])
-    # assert resp == [recs[0][1], recs[2][1]]
+    # Search with custom multiple fields and partial match
+    with pytest.raises(exceptions.RequestError) as exc:
+        store.search("e", exact=False, fields=["d", "z.d2.test1"])
+        assert str(exc.value).find('Can only use wildcard queries on keyword and text fields - '
+                                   'not on [z.d2.test1] which is of type [long]')
 
     # Search everything if no fields
     resp = store.search("e", exact=False, fields=None)
     assert resp[0]["d"] == recs[0][1]["d"]
 
-    # Search wih failed match
+    # Search with failed match
     resp = store.search("zzz", exact=False, fields=None)
     assert resp == []
 

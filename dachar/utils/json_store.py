@@ -2,16 +2,10 @@ import json
 import hashlib
 import os
 
+
 from .common import nested_lookup
 from elasticsearch import Elasticsearch, helpers
 from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
-
-
-es = CEDAElasticsearchClient(
-    headers={
-        "x-api-key": "***REMOVED***"
-    }
-)
 
 
 class _BaseJsonStore(object):
@@ -93,6 +87,7 @@ class _BaseJsonStore(object):
 
 
 class _LocalBaseJsonStore(_BaseJsonStore):
+
     config = {
         "store_type": "local",
         "local.base_dir": "/tmp/json-store",
@@ -236,9 +231,22 @@ class _LocalBaseJsonStore(_BaseJsonStore):
 
 
 class _ElasticSearchBaseJsonStore(_BaseJsonStore):
-    config = {"store_type": "elasticsearch", "index": "base"}
+    config = {"store_type": "elasticsearch",
+              "index": "",
+              "api_token": None,
+              "id_type": "id"}
 
-    def convert_id(self, id):
+    def __init__(self):
+        super().__init__()
+        api_token = self.config.get("api_token")
+        if api_token is not None:
+            self.es = CEDAElasticsearchClient(headers={
+            "x-api-key": api_token
+            })
+        else:
+            self.es = CEDAElasticsearchClient()
+
+    def _convert_id(self, id):
         m = hashlib.md5()
         m.update(id.encode("utf-8"))
         return m.hexdigest()
@@ -247,37 +255,38 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
         if not self.exists(id):
             return None
 
-        id = self.convert_id(id)
-        res = es.get(index=self.config.get("index"), id=id)
+        id = self._convert_id(id)
+        res = self.es.get(index=self.config.get("index"), id=id)
         return res["_source"]
 
     def exists(self, id):
-        id = self.convert_id(id)
-        res = es.exists(index=self.config.get("index"), id=id)
+        id = self._convert_id(id)
+        res = self.es.exists(index=self.config.get("index"), id=id)
         return res
 
     def delete(self, id):
         if not self.exists(id):
             raise Exception(f"Record with ID {id} does not exist")
 
-        id = self.convert_id(id)
-        es.delete(index=self.config.get("index"), id=id)
+        id = self._convert_id(id)
+        self.es.delete(index=self.config.get("index"), id=id)
 
     def _save(self, id, content):
-        ds_id = id
-        id = self.convert_id(id)
+        drs_id = id
+        id = self._convert_id(id)
         if "." in id:
             raise KeyError(
                 f"Identifier name cannot be used as elasticsearch id as it contains .: {id} "
             )
 
-        es.index(index=self.config.get("index"), body=content, id=id)
-        es.update(index=self.config.get("index"), id=id, body={"doc": {"ds_id": ds_id}})
+        self.es.index(index=self.config.get("index"), body=content, id=id)
+        self.es.update(index=self.config.get("index"),
+                       id=id, body={"doc": {self.config.get("id_type"): drs_id}})
 
     def get_all_ids(self):
         # Generator to return all records
         results = helpers.scan(
-            es, index=self.config.get("index"), query={"_source": ["ds_id"]}
+            self.es, index=self.config.get("index"), query={"_source": ["ds_id"]}
         )
         print(self.config.get("index"))
         for item in results:
@@ -286,7 +295,7 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
     def get_all(self):
         # Generator to return all ids
         results = helpers.scan(
-            es, index=self.config.get("index"), query={"query": {"match_all": {}}},
+            self.es, index=self.config.get("index"), query={"query": {"match_all": {}}},
         )
         for item in results:
             yield (item["_source"])
@@ -304,7 +313,7 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
         for field in fields + keyword_fields:
             match = {query_type: {field: term}}
             query_body["query"]["bool"]["must"] = match
-            result = es.search(index=self.config.get("index"), body=query_body)
+            result = self.es.search(index=self.config.get("index"), body=query_body)
             if result["hits"]["hits"] is not None:
                 for each in result["hits"]["hits"]:
                     results.append(each["_source"])
@@ -318,7 +327,7 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
         query_body = {"query": {"query_string": {"query": ""}}}
 
         query_body["query"]["query_string"]["query"] = term
-        result = es.search(index=self.config.get("index"), body=query_body)
+        result = self.es.search(index=self.config.get("index"), body=query_body)
         if result["hits"]["hits"] is not None:
             for each in result["hits"]["hits"]:
                 results.append(each["_source"])
@@ -335,8 +344,18 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
 
     def search(
         self, term, exact=False, match_ids=True, fields=None
-    ):  # come back to this
-        # import pdb; pdb.set_trace()
+    ):
+
+        if isinstance(term, float) or isinstance(term, int):
+            exact = True
+            print("[INFO]: Must search for exact value when the search term is a number,"
+                  " Changing search to exact=True")
+
+        if isinstance(term, str) and ' ' in term and exact is False:
+            print("[INFO]: Ensure the case of your search term is correct as this type of,"
+                  "search is case sensitive. If you are not sure of the correct case change "
+                  "your search term to a one word search or use exact=True.")
+
         if match_ids is True and exact is True:
             query_type = "term"
             return self._field_requirements(fields, term, query_type)
@@ -346,11 +365,11 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
             return self._field_requirements(fields, term, query_type)
 
         elif match_ids is False and exact is False:
-            term = f'*{str(term).replace(" ","*")}*'
+            term = f'*{term.replace(" ","*")}*'
             query_type = "wildcard"
             return self._field_requirements(fields, term, query_type)
 
         elif match_ids is True and exact is False:
-            term = f'*{str(term).replace(" ","*")}*'
+            term = f'*{term.replace(" ","*")}*'
             query_type = "wildcard"
             return self._field_requirements(fields, term, query_type)
