@@ -230,5 +230,5 @@ def test_withdraw_fix_not_found():
 
 
 def teardown_module():
-    pass
-    # clear_stores()
+    #pass
+    clear_stores()
