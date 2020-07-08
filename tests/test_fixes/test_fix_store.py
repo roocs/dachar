@@ -11,18 +11,22 @@ from tests._stores_for_tests import _TestFixStore
 
 
 recs = [
-    {'fix_id': 'Fix1',
-     'title': 'Apply Fix 1',
-     'description': 'Applies fix 1',
-     'category': 'test_fixes',
-     'reference_implementation': 'daops.test.test_fix1',
-     'operands': {'arg1': '1'}},
-    {'fix_id': 'Fix2',
-     'title': 'Apply Fix 2',
-     'description': 'Applies fix 2',
-     'category': 'test_fixes',
-     'reference_implementation': 'daops.test.test_fix2',
-     'operands': {'arg2': '2'}}
+    {
+        "fix_id": "Fix1",
+        "title": "Apply Fix 1",
+        "description": "Applies fix 1",
+        "category": "test_fixes",
+        "reference_implementation": "daops.test.test_fix1",
+        "operands": {"arg1": "1"},
+    },
+    {
+        "fix_id": "Fix2",
+        "title": "Apply Fix 2",
+        "description": "Applies fix 2",
+        "category": "test_fixes",
+        "reference_implementation": "daops.test.test_fix2",
+        "operands": {"arg2": "2"},
+    },
 ]
 
 
@@ -30,7 +34,7 @@ store = None
 
 
 def _clear_store():
-    dr = _TestFixStore.config['local.base_dir']
+    dr = _TestFixStore.config["local.base_dir"]
     if os.path.isdir(dr):
         shutil.rmtree(dr)
 
@@ -42,29 +46,29 @@ def setup_module():
 
 
 def test_publish_fix_1():
-    _id = 'ds.1.1.1.1.1.1'
+    _id = "ds.1.1.1.1.1.1"
     store.publish_fix(_id, recs[0])
 
-    assert(store.get(_id)['fixes'] == [recs[0]])
+    assert store.get(_id)["fixes"] == [recs[0]]
 
 
 def test_publish_fix_2():
-    _id = 'ds.1.1.1.1.1.2'
+    _id = "ds.1.1.1.1.1.2"
     store.publish_fix(_id, recs[1])
-    assert(store.get(_id)['fixes'] == [recs[1]])
+    assert store.get(_id)["fixes"] == [recs[1]]
 
-    _id = 'ds.1.1.1.1.1.1'
+    _id = "ds.1.1.1.1.1.1"
     store.publish_fix(_id, recs[1])
-    assert(store.get(_id)['fixes'] == [recs[0], recs[1]])
+    assert store.get(_id)["fixes"] == [recs[0], recs[1]]
 
 
 def test_withdraw_fix_1():
-    _id = 'ds.1.1.1.1.1.1'
-    store.withdraw_fix(_id, 'Fix1')
-    assert(store.get(_id)['fixes'] == [recs[1]])
+    _id = "ds.1.1.1.1.1.1"
+    store.withdraw_fix(_id, "Fix1")
+    assert store.get(_id)["fixes"] == [recs[1]]
 
-    store.withdraw_fix(_id, 'Fix2')
-    assert(store.exists(_id) is False)
+    store.withdraw_fix(_id, "Fix2")
+    assert store.exists(_id) is False
 
 
 def teardown_module():
