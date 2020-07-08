@@ -1,5 +1,5 @@
 from dachar.utils.json_store import _LocalBaseJsonStore, _ElasticSearchBaseJsonStore
-
+from dachar.config import ELASTIC_API_TOKEN
 
 class BaseFixStore(object):
 
@@ -47,4 +47,7 @@ class LocalFixStore(_LocalBaseJsonStore, BaseFixStore):
 
 class ElasticFixStore(_ElasticSearchBaseJsonStore, BaseFixStore):
 
-    config = {"store_type": "elasticsearch", "index": "roocs-fix"}
+    config = {"store_type": "elasticsearch",
+              "index": "roocs-fix",
+              "api_token": ELASTIC_API_TOKEN,
+              "id_type": "ds_id"}

@@ -1,5 +1,5 @@
 from dachar.utils.json_store import _LocalBaseJsonStore, _ElasticSearchBaseJsonStore
-
+from dachar.config import ELASTIC_API_TOKEN
 
 class LocalDatasetCharacterStore(_LocalBaseJsonStore):
 
@@ -23,7 +23,10 @@ class LocalDatasetCharacterStore(_LocalBaseJsonStore):
 class ElasticDatasetCharacterStore(_ElasticSearchBaseJsonStore):
 
     store_name = "Dataset Character Store"
-    config = {"store_type": "elasticsearch", "index": "roocs-char"}
+    config = {"store_type": "elasticsearch",
+              "index": "roocs-char",
+              "api_token": ELASTIC_API_TOKEN,
+              "id_type": "ds_id"}
     id_mappers = {"*": "__ALL__"}
     required_fields = [
         "coordinates",
