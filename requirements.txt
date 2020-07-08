@@ -3,6 +3,7 @@ xarray>=0.15
 Cython
 netcdftime
 git+https://github.com/cedadev/time-checks.git#egg=time-checks
+git+https://github.com/cedadev/ceda-elasticsearch-tools.git#ceda-elasticsearch-tools
 pandas>=1.0.3
 cftime>=1.0.4
 netCDF4>=1.4
