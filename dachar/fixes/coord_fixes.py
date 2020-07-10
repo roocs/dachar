@@ -31,15 +31,14 @@ For example:
 
     category = "coord_fixes"
     required_operands = ["dims"]
-    ref_implementation = "daops.post_processors.squeeze_dims"
+    ref_implementation = "daops.data_utils.coord_utils.squeeze_dims"
+    process_type = "post_processor"
 
     ncml_template = """
       <variable name="{self.variable***}">
         <logicalReduce dimNames="{' '.join(self.kwargs['dims'])}" />
       </variable>
       """
-
-    template = ""
 
 
 class AddScalarCoordFix(_BaseDatasetFix):
@@ -62,7 +61,6 @@ Attributes will be set by: ds.test.attrs['units'] = 'm'
 
     category = "coord_fixes"
     required_operands = ["dtype", "id", "value", "length", "attrs"]
-    ref_implementation = "daops.post_processors.add_scalar_coord"
+    ref_implementation = "daops.data_utils.coord_utils.add_scalar_coord"
+    process_type = "post_processor"
 
-    template = ""
-    ncml_template = ""

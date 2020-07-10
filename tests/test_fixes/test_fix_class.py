@@ -24,8 +24,8 @@ def test_fix_definitions():
         "title",
         "description",
         "required_operands",
-        "template",
-        "ncml_template",
+        # "template",
+        # "ncml_template",
     ]
     errors = ""
 
@@ -60,6 +60,7 @@ class _TestFix(_BaseDatasetFix):
     category = "test_fixes"
     required_operands = ["thing", "other"]
     ref_implementation = "daops.test.test"
+    process_type = "post_processor"
 
     ncml_template = '<JustStuff info="{thing}">{other}</JustStuff>'
 
@@ -86,6 +87,7 @@ def test_eg_fix():
             "description": _TestFix.description,
             "category": _TestFix.category,
             "reference_implementation": _TestFix.ref_implementation,
+            "process_type": _TestFix.process_type,
             "operands": {"thing": 23, "other": "hello"},
             "source": "dachar version 0.1.0",
         },

@@ -25,6 +25,7 @@ class BaseFixProposalStore(object):
                             'description': 'description',
                             'category': 'category',
                             'reference_implementation': 'ref_implementation',
+                            'process_type': 'process_type',
                             'operands': 'operands'},
                     'history': [],
                     'reason': '',

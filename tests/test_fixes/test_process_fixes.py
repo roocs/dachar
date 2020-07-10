@@ -90,6 +90,13 @@ def generate_published_fix(id, fix):
     prop_store.publish(id, fix)
 
 
+def id_to_fix_path(ds_id):
+    parts = ds_id.split(".")
+    grouped_id = "/".join(parts[:-4]) + "/" + ".".join(parts[-4:])
+    fpath = os.path.join("/tmp/test-fix-store", grouped_id + ".json")
+    return fpath
+
+
 # tests 2 proposed fixes returned
 def test_get_2_proposed_fixes():
     generate_fix_proposal(ds_ids[0], fixes[0])
@@ -180,19 +187,19 @@ def test_process_proposed_fixes(monkeypatch):
     fix_processor.get_fix_store = Mock(return_value=f_store)
     generate_fix_proposal(ds_ids[2], fixes[2])
     monkeypatch.setattr("builtins.input", lambda _: "publish")
-    monkeypatch.setattr("builtins.input", lambda _: "publish")
 
     fix_processor.process_all_fixes("process")
+    assert os.path.exists(id_to_fix_path(ds_ids[2]))
 
 
 def test_process_proposed_fixes_with_id(monkeypatch):
     fix_processor.get_fix_prop_store = Mock(return_value=prop_store)
     fix_processor.get_fix_store = Mock(return_value=f_store)
     generate_fix_proposal(ds_ids[3], fixes[3])
-    # process_fixes.process_all_fixes(ds_ids[2])
     monkeypatch.setattr("builtins.input", lambda _: "publish")
 
     fix_processor.process_all_fixes("process", [ds_ids[3]])
+    assert os.path.exists(id_to_fix_path(ds_ids[3]))
 
 
 def test_withdraw_fix(monkeypatch):
@@ -202,13 +209,15 @@ def test_withdraw_fix(monkeypatch):
     generate_published_fix(ds_ids[4], fixes[4])
     f_store.publish_fix(ds_ids[4], fixes[4])
 
-    monkeypatch.setattr("builtins.input", lambda _: "y")
-    monkeypatch.setattr("builtins.input", lambda _: "Fix 5 by id")
-
+    responses = iter(["y", "Fix 5 by id", "test"])
+    monkeypatch.setattr("builtins.input", lambda _: next(responses))
+    
     fix_processor.process_all_fixes("withdraw", [ds_ids[4]])
 
+    assert os.path.exists(id_to_fix_path(ds_ids[4])) is False
 
-def test_withdraw_2_fixes(monkeypatch):
+
+def test_withdraw_with_2_fixes(monkeypatch):
     fix_processor.get_fix_prop_store = Mock(return_value=prop_store)
     fix_processor.get_fix_store = Mock(return_value=f_store)
     generate_fix_proposal(ds_ids[4], fixes[4])
@@ -222,13 +231,17 @@ def test_withdraw_2_fixes(monkeypatch):
 
     fix_processor.process_all_fixes("withdraw", [ds_ids[4]])
 
+    assert os.path.exists(id_to_fix_path(ds_ids[4]))
+
 
 def test_withdraw_fix_not_found():
     fix_processor.get_fix_prop_store = Mock(return_value=prop_store)
     fix_processor.get_fix_store = Mock(return_value=f_store)
-    fix_processor.process_all_fixes("withdraw", [ds_ids[1]])
+    with pytest.raises(Exception) as exc:
+        fix_processor.process_all_fixes("withdraw", [ds_ids[1]])
+        assert exc.value == "A fix could not be found."
 
 
 def teardown_module():
-    #pass
+    # pass
     clear_stores()
