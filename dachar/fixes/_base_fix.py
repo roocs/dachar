@@ -11,6 +11,7 @@ class FixDetails(object):
         description,
         category,
         ref_implementation,
+        process_type,
         operands,
         source,
     ):
@@ -22,6 +23,7 @@ class FixDetails(object):
                 "description": description,
                 "category": category,
                 "reference_implementation": ref_implementation,
+                "process_type": process_type,
                 "operands": operands,
                 "source": source,
             },
@@ -41,6 +43,7 @@ class _BaseDatasetFix(object):
     category = UNDEFINED
     required_operands = UNDEFINED
     ref_implementation = UNDEFINED
+    process_type = UNDEFINED
 
     ncml_template = """E.g. ...
     <variable name="temperature">
@@ -84,6 +87,7 @@ Operands: {self.operands}
             self.description,
             self.category,
             self.ref_implementation,
+            self.process_type,
             self.operands,
             self.source,
         )
