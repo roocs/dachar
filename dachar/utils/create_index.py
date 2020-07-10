@@ -59,13 +59,14 @@ def populate_store(local_store, index, id_type):
         for file in files:
             fpath = os.path.join(path, file)
             drs = '.'.join(fpath.split('/')[3:])
+            drs = '.'.join(drs.split('.')[:-1])
+            print(drs)
             m = hashlib.md5()
             m.update(drs.encode("utf-8"))
             id = m.hexdigest()
             doc = json.load(open(fpath))
             es.index(index=index, id=id, body=doc)
-            es.update(index=index,
-                           id=id, body={"doc": {id_type: drs}})
+            es.update(index=index, id=id, body={"doc": {id_type: drs}})
 
 
 def main():
