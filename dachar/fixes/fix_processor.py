@@ -44,7 +44,7 @@ def process_proposed_fixes(proposed_fixes):
                 pass
 
     else:
-        print("[INFO] No proposed fixes found.")
+        raise Exception("No proposed fixes found.")
 
 
 def get_fixes_to_withdraw(ds_ids):
@@ -99,8 +99,8 @@ def process_withdraw_fixes(existing_fixes):
                 pass
 
     else:
-        print(
-            "[INFO] A fix could not be found."
+        raise Exception(
+            "A fix could not be found."
         )  # include ds_id in this statement so user knows which one if many entered
 
 
