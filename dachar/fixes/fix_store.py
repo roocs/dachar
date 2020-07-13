@@ -50,4 +50,4 @@ class ElasticFixStore(_ElasticSearchBaseJsonStore, BaseFixStore):
     config = {"store_type": "elasticsearch",
               "index": "roocs-fix",
               "api_token": ELASTIC_API_TOKEN,
-              "id_type": "ds_id"}
+              "id_type": None}
