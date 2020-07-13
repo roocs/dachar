@@ -80,7 +80,9 @@ setup(
     # in this case early Python 2 and 3 releases
     python_requires=">=3.6.0",
     entry_points={"console_scripts": ["dachar=dachar.cli:main",],},
-    install_requires=requirements,
+    install_requires=[requirements,
+                      'time_checks@git+https://github.com/cedadev/time-checks.git',
+                      'ceda-elasticsearch-tools@git+https://github.com/cedadev/ceda-elasticsearch-tools.git'],
     long_description=_long_description,
     long_description_content_type="text/markdown",
     include_package_data=True,
