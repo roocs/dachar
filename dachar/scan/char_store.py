@@ -26,7 +26,7 @@ class ElasticDatasetCharacterStore(_ElasticSearchBaseJsonStore):
     config = {"store_type": "elasticsearch",
               "index": "roocs-char",
               "api_token": ELASTIC_API_TOKEN,
-              "id_type": "ds_id"}
+              "id_type": "dataset_id"}
     id_mappers = {"*": "__ALL__"}
     required_fields = [
         "coordinates",
