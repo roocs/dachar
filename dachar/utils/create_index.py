@@ -60,20 +60,28 @@ def populate_store(local_store, index, id_type):
             fpath = os.path.join(path, file)
             drs = '.'.join(fpath.split('/')[3:])
             drs = '.'.join(drs.split('.')[:-1])
+
+            mapper = {'__ALL__': '*'}
+            for find_s, replace_s in mapper.items():
+                drs = drs.replace(find_s, replace_s)
+
             print(drs)
             m = hashlib.md5()
             m.update(drs.encode("utf-8"))
             id = m.hexdigest()
             doc = json.load(open(fpath))
+            #es.delete(index=index, id=id)
+
             es.index(index=index, id=id, body=doc)
-            es.update(index=index, id=id, body={"doc": {id_type: drs}})
+            if id_type is not None:
+                es.update(index=index, id=id, body={"doc": {id_type: drs}})
 
 
 def main():
     # for store in [char_name, a_name, fix_name, fix_prop_name]:
     #     create_index_and_alias(store)
 
-    populate_store(_TestAnalysisStore(), 'roocs-analysis-2020-07-08', 'sample_id')
+    populate_store(_TestDatasetCharacterStore(), 'roocs-char-2020-07-08', 'dataset_id')
 
 
 if __name__ == '__main__':
