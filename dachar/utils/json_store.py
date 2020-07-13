@@ -70,6 +70,18 @@ class _BaseJsonStore(object):
         if errors:
             raise ValueError(f"Validation errors:\n{[err for err in errors]}")
 
+    def _map(self, x, reverse=False):
+        # Applies name mappers to/from ID/path
+        mapper = self.id_mappers
+
+        if reverse:
+            mapper = {v: k for k, v in self.id_mappers.items()}
+
+        for find_s, replace_s in mapper.items():
+            x = x.replace(find_s, replace_s)
+
+        return x
+
     def _save(self, id, content):
         raise NotImplementedError
 
@@ -152,17 +164,7 @@ class _LocalBaseJsonStore(_BaseJsonStore):
 
         return results
 
-    def _map(self, x, reverse=False):
-        # Applies name mappers to/from ID/path
-        mapper = self.id_mappers
 
-        if reverse:
-            mapper = {v: k for k, v in self.id_mappers.items()}
-
-        for find_s, replace_s in mapper.items():
-            x = x.replace(find_s, replace_s)
-
-        return x
 
     def _id_to_path(self, id):
         # Define a "grouped" ds_id that splits facets across directories and then groups
@@ -280,8 +282,11 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
             )
 
         self.es.index(index=self.config.get("index"), body=content, id=id)
-        self.es.update(index=self.config.get("index"),
-                       id=id, body={"doc": {self.config.get("id_type"): drs_id}})
+
+        if self.config.get("id_type") is not None:
+            self._map(drs_id, reverse=True)
+            self.es.update(index=self.config.get("index"),
+                           id=id, body={"doc": {self.config.get("id_type"): drs_id}})
 
     def get_all_ids(self):
         # Generator to return all records
