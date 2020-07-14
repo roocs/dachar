@@ -283,19 +283,17 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
 
         self.es.index(index=self.config.get("index"), body=content, id=id)
 
-        if self.config.get("id_type") is not None:
-            self._map(drs_id, reverse=True)
-            self.es.update(index=self.config.get("index"),
-                           id=id, body={"doc": {self.config.get("id_type"): drs_id}})
+        self._map(drs_id, reverse=True)#
+        self.es.update(index=self.config.get("index"),
+                       id=id, body={"doc": {self.config.get("id_type"): drs_id}})
 
     def get_all_ids(self):
         # Generator to return all records
         results = helpers.scan(
-            self.es, index=self.config.get("index"), query={"_source": ["ds_id"]}
+            self.es, index=self.config.get("index"), query={"_source": [self.config.get("id_type")]}
         )
-        print(self.config.get("index"))
         for item in results:
-            yield (item["_source"]["ds_id"])
+            yield (item["_source"][self.config.get("id_type")])
 
     def get_all(self):
         # Generator to return all ids
@@ -323,7 +321,8 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
                 for each in result["hits"]["hits"]:
                     results.append(each["_source"])
 
-        return results
+        # ensure there are no duplicates of the same result
+        return dict((v[self.config.get("id_type")], v) for v in results).values()
 
     def _search_all(self, term):
 
@@ -337,7 +336,8 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
             for each in result["hits"]["hits"]:
                 results.append(each["_source"])
 
-        return results
+        # ensure there are no duplicates of the same result
+        return dict((v[self.config.get("id_type")], v) for v in results).values()
 
     def _field_requirements(self, fields, term, query_type):
 
@@ -357,7 +357,7 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
                   " Changing search to exact=True")
 
         if isinstance(term, str) and ' ' in term and exact is False:
-            print("[INFO]: Ensure the case of your search term is correct as this type of,"
+            print("[INFO]: Ensure the case of your search term is correct as this type of"
                   "search is case sensitive. If you are not sure of the correct case change "
                   "your search term to a one word search or use exact=True.")
 
