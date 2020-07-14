@@ -357,7 +357,7 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
                   " Changing search to exact=True")
 
         if isinstance(term, str) and ' ' in term and exact is False:
-            print("[INFO]: Ensure the case of your search term is correct as this type of"
+            print("[INFO]: Ensure the case of your search term is correct as this type of "
                   "search is case sensitive. If you are not sure of the correct case change "
                   "your search term to a one word search or use exact=True.")
 
