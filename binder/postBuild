@@ -1,3 +1,1 @@
 python setup.py install
-pip install git+https://github.com/cedadev/time-checks.git#egg=time-checks
-pip install git+https://github.com/cedadev/ceda-elasticsearch-tools.git#egg=ceda-elasticsearch-tools
