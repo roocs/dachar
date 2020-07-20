@@ -118,6 +118,7 @@ jobs:
             - libspatialindex-dev
             - libudunits2-dev
   allow_failures:
+      - env: TOXENV=black
       - env: TOXENV=py38-anaconda
       - env: TOXENV=py38-macOS
       - env:
