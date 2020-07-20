@@ -59,6 +59,7 @@ def setup_module():
     clear_store()
 
 
+@pytest.mark.online
 def test_verify_store():
     # Tests that the store gets created - via setup_module()
     pass
