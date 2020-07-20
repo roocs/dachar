@@ -79,7 +79,7 @@ jobs:
         - conda create -n dachar -c conda-forge python=$DESIRED_PYTHON
         - source activate dachar
         - conda env update -f environment.yml
-        - conda install pytest coveralls pytest-cov xarray
+        - conda install pytest coveralls pytest-cov xarray mock
       install:
         - conda install pip
         - pip install -e .
