@@ -18,8 +18,8 @@ class _TestStore(_ElasticSearchBaseJsonStore):
               "index": "roocs-char-test",
               "api_token": ELASTIC_API_TOKEN,
               "id_type": "ds_id"}
-    
-    
+
+
 # Create dummy stores to run tests on - one with write access and one with read only
 class _TestReadStore(_ElasticSearchBaseJsonStore):
 
@@ -59,11 +59,13 @@ def setup_module():
     clear_store()
 
 
+@pytest.mark.online
 def test_verify_store():
     # Tests that the store gets created - via setup_module()
     pass
 
 
+@pytest.mark.online
 def test_put():
     store.put(recs[0][0], recs[0][1])
     store.put(recs[2][0], recs[2][1])
@@ -71,6 +73,7 @@ def test_put():
     assert store.exists(recs[2][0])
 
 
+@pytest.mark.online
 def test_read():
     rec = read_store.get("1.2.3.4.5.6.b")
     assert rec["ds_id"] == "1.2.3.4.5.6.b"
