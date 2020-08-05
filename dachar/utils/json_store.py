@@ -246,7 +246,7 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
             "x-api-key": api_token
             })
         else:
-            self.es = CEDAElasticsearchClient()
+            self.es = Elasticsearch("elasticsearch.ceda.ac.uk")
 
     def _convert_id(self, id):
         m = hashlib.md5()
