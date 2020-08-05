@@ -2,7 +2,6 @@ from datetime import datetime
 
 import numpy as np
 import xarray as xr
-from cfunits import Units
 from roocs_utils import xarary_utils
 
 
