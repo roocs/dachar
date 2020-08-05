@@ -193,7 +193,6 @@ def test_search_by_term():
     assert resp == []
 
 
-# @pytest.mark.xfail(reason="tox test fails")
 @pytest.mark.online
 def test_search_by_id():
     store.put(recs[2][0], recs[2][1], force=True)
