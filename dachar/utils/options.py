@@ -1,11 +1,15 @@
-project_base_dirs = {
-    "cmip5": "/badc/cmip5/data",
-    "cmip6": "/badc/cmip6/data",
-    "cordex": "/badc/cordex/data",
-    "c3s-cmip5": "/group_workspaces/jasmin2/cp4cds1/vol1/data/",
-    "c3s-cmip6": "NOT DEFINED YET",
-    "c3s-cordex": "/group_workspaces/jasmin2/cp4cds1/vol1/data/",
-}
+import os
+import sys
+
+if 'ROOCS_CONFIG' in os.environ:
+    config_path = os.environ['ROOCS_CONFIG']
+    sys.path.insert(1, config_path)
+    import config_local as config
+
+else:
+    import roocs_utils.config as config
+
+project_base_dirs = config.project_base_dirs
 known_projects = project_base_dirs.keys()
 locations = ["ceda", "dkrz", "other"]
 facet_rules = {
