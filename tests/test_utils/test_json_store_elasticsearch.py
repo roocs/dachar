@@ -14,10 +14,12 @@ from dachar.config import ELASTIC_API_TOKEN
 class _TestStore(_ElasticSearchBaseJsonStore):
 
     store_name = "TestElasticsearchStore"
-    config = {"store_type": "elasticsearch",
-              "index": "roocs-char-test",
-              "api_token": ELASTIC_API_TOKEN,
-              "id_type": "ds_id"}
+    config = {
+        "store_type": "elasticsearch",
+        "index": "roocs-char-test",
+        "api_token": ELASTIC_API_TOKEN,
+        "id_type": "ds_id",
+    }
     required_fields = ["d"]
 
 
@@ -141,6 +143,7 @@ def test_get_all_ids():
 # need to specify exact fields to search or search all (doesn't search nested
 # field if only top level field is specified)
 
+
 @pytest.mark.online
 def test_search_by_term():
     store.put(recs[2][0], recs[2][1], force=True)
@@ -157,7 +160,7 @@ def test_search_by_term():
 
     # Search with custom fields + partial match
     resp = store.search("at MAT", exact=False, fields=["d"])
-    assert resp == [] # wildcard matching is case sensitive by default
+    assert resp == []  # wildcard matching is case sensitive by default
 
     # Search with custom nested fields + exact match as integer
     resp = store.search(123, exact=True, fields=["z.d2.test1"])
@@ -176,13 +179,15 @@ def test_search_by_term():
 
     # Search with partial match for string
     resp = store.search("123", exact=False, fields=["z", "ds_id"])
-    assert resp == [] # elasticsearch doesn't search nested fields
+    assert resp == []  # elasticsearch doesn't search nested fields
 
     # Search with custom multiple fields and partial match
     with pytest.raises(exceptions.RequestError) as exc:
         store.search("e", exact=False, fields=["d", "z.d2.test1"])
-        assert str(exc.value).find('Can only use wildcard queries on keyword and text fields - '
-                                   'not on [z.d2.test1] which is of type [long]')
+        assert str(exc.value).find(
+            "Can only use wildcard queries on keyword and text fields - "
+            "not on [z.d2.test1] which is of type [long]"
+        )
 
     # Search everything if no fields
     resp = store.search("e", exact=False, fields=None)
