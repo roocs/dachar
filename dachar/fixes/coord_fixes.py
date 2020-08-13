@@ -63,4 +63,3 @@ Attributes will be set by: ds.test.attrs['units'] = 'm'
     required_operands = ["dtype", "id", "value", "length", "attrs"]
     ref_implementation = "daops.data_utils.coord_utils.add_scalar_coord"
     process_type = "post_processor"
-

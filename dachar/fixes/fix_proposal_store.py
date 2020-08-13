@@ -4,6 +4,7 @@ from dachar.utils.common import now_string
 from dachar.utils.json_store import _LocalBaseJsonStore, _ElasticSearchBaseJsonStore
 from dachar.config import ELASTIC_API_TOKEN
 
+
 class BaseFixProposalStore(object):
     """
     TODO:
@@ -143,7 +144,9 @@ class LocalFixProposalStore(BaseFixProposalStore, _LocalBaseJsonStore):
 
 class ElasticFixProposalStore(BaseFixProposalStore, _ElasticSearchBaseJsonStore):
 
-    config = {"store_type": "elasticsearch",
-              "index": "roocs-fix-proposal",
-              "api_token": ELASTIC_API_TOKEN,
-              "id_type": "dataset_id"}
+    config = {
+        "store_type": "elasticsearch",
+        "index": "roocs-fix-proposal",
+        "api_token": ELASTIC_API_TOKEN,
+        "id_type": "dataset_id",
+    }

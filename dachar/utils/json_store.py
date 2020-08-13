@@ -164,8 +164,6 @@ class _LocalBaseJsonStore(_BaseJsonStore):
 
         return results
 
-
-
     def _id_to_path(self, id):
         # Define a "grouped" ds_id that splits facets across directories and then groups
         # the final set into a file path, based on config.DIR_GROUPING_LEVEL value
@@ -233,20 +231,22 @@ class _LocalBaseJsonStore(_BaseJsonStore):
 
 
 class _ElasticSearchBaseJsonStore(_BaseJsonStore):
-    config = {"store_type": "elasticsearch",
-              "index": "",
-              "api_token": None,
-              "id_type": "id"}
+    config = {
+        "store_type": "elasticsearch",
+        "index": "",
+        "api_token": None,
+        "id_type": "id",
+    }
 
     def __init__(self):
         super().__init__()
         api_token = self.config.get("api_token")
         if api_token is not None:
-            self.es = CEDAElasticsearchClient(headers={
-            "x-api-key": api_token
-            })
+            self.es = CEDAElasticsearchClient(headers={"x-api-key": api_token})
         else:
-            self.es = Elasticsearch(["elasticsearch.ceda.ac.uk"], use_ssl=True, port=443)
+            self.es = Elasticsearch(
+                ["elasticsearch.ceda.ac.uk"], use_ssl=True, port=443
+            )
 
     def _convert_id(self, id):
         m = hashlib.md5()
@@ -283,14 +283,19 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
 
         self.es.index(index=self.config.get("index"), body=content, id=id)
 
-        self._map(drs_id, reverse=True)#
-        self.es.update(index=self.config.get("index"),
-                       id=id, body={"doc": {self.config.get("id_type"): drs_id}})
+        self._map(drs_id, reverse=True)  #
+        self.es.update(
+            index=self.config.get("index"),
+            id=id,
+            body={"doc": {self.config.get("id_type"): drs_id}},
+        )
 
     def get_all_ids(self):
         # Generator to return all records
         results = helpers.scan(
-            self.es, index=self.config.get("index"), query={"_source": [self.config.get("id_type")]}
+            self.es,
+            index=self.config.get("index"),
+            query={"_source": [self.config.get("id_type")]},
         )
         for item in results:
             yield (item["_source"][self.config.get("id_type")])
@@ -347,19 +352,21 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
         else:
             return self._search_all(term)
 
-    def search(
-        self, term, exact=False, match_ids=True, fields=None
-    ):
+    def search(self, term, exact=False, match_ids=True, fields=None):
 
         if isinstance(term, float) or isinstance(term, int):
             exact = True
-            print("[INFO]: Must search for exact value when the search term is a number,"
-                  " Changing search to exact=True")
+            print(
+                "[INFO]: Must search for exact value when the search term is a number,"
+                " Changing search to exact=True"
+            )
 
-        if isinstance(term, str) and ' ' in term and exact is False:
-            print("[INFO]: Ensure the case of your search term is correct as this type of "
-                  "search is case sensitive. If you are not sure of the correct case change "
-                  "your search term to a one word search or use exact=True.")
+        if isinstance(term, str) and " " in term and exact is False:
+            print(
+                "[INFO]: Ensure the case of your search term is correct as this type of "
+                "search is case sensitive. If you are not sure of the correct case change "
+                "your search term to a one word search or use exact=True."
+            )
 
         if match_ids is True and exact is True:
             query_type = "term"
