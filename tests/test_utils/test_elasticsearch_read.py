@@ -14,19 +14,23 @@ from dachar.config import ELASTIC_API_TOKEN
 class _TestStore(_ElasticSearchBaseJsonStore):
 
     store_name = "TestElasticsearchStore"
-    config = {"store_type": "elasticsearch",
-              "index": "roocs-char-test",
-              "api_token": ELASTIC_API_TOKEN,
-              "id_type": "ds_id"}
+    config = {
+        "store_type": "elasticsearch",
+        "index": "roocs-char-test",
+        "api_token": ELASTIC_API_TOKEN,
+        "id_type": "ds_id",
+    }
 
 
 # Create dummy stores to run tests on - one with write access and one with read only
 class _TestReadStore(_ElasticSearchBaseJsonStore):
 
     store_name = "TestElasticsearchStore"
-    config = {"store_type": "elasticsearch",
-              "index": "roocs-char-test",
-              "id_type": "ds_id"}
+    config = {
+        "store_type": "elasticsearch",
+        "index": "roocs-char-test",
+        "id_type": "ds_id",
+    }
 
 
 store = None

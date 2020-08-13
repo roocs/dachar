@@ -24,11 +24,12 @@ def mock_base_dirs_scan():
 @pytest.fixture(scope="session", autouse=True)
 def mock_base_dirs_switch_ds():
     with mock.patch(
-        "dachar.utils.switch_ds.get_project_base_dir", side_effect=get_tests_project_base_dir
+        "dachar.utils.switch_ds.get_project_base_dir",
+        side_effect=get_tests_project_base_dir,
     ):
         yield
-        
-        
+
+
 @pytest.fixture
 def create_netcdf_file():
     if not os.path.exists("test/data"):
