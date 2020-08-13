@@ -10,6 +10,12 @@ else:
     import roocs_utils.config as config
 
 project_base_dirs = config.project_base_dirs
+
+
+def get_project_base_dir(project):
+    return project_base_dirs.get(project)
+
+
 known_projects = project_base_dirs.keys()
 locations = ["ceda", "dkrz", "other"]
 facet_rules = {

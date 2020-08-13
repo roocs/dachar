@@ -1,6 +1,5 @@
 from dachar.utils.get_stores import get_ar_store, get_dc_store, get_fix_prop_store
-from dachar.utils.options import get_checks
-from dachar.utils import options
+from dachar.utils.options import get_checks, get_project_base_dir
 from dachar import __version__ as version
 
 import os
@@ -86,7 +85,7 @@ class OneSampleAnalyser(object):
     def _load_ids(self):
         """ Gets list of possible ds_ids from sample_id"""
 
-        base_dir = options.project_base_dirs[self.project]
+        base_dir = get_project_base_dir[self.project]
         _sample_id = os.path.join(base_dir, "/".join(self.sample_id.split(".")))
 
         self._sample = []

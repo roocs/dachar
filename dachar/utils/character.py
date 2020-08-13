@@ -2,7 +2,7 @@ from datetime import datetime
 
 import numpy as np
 import xarray as xr
-from roocs_utils import xarary_utils
+from roocs_utils.xarray_utils import xarray_utils
 
 
 def get_coords(da):
@@ -28,7 +28,7 @@ def get_coords(da):
 
         coord = da.coords[coord_id]
 
-        coord_type = xarary_utils.get_coord_type(coord)
+        coord_type = xarray_utils.get_coord_type(coord)
         name = coord_type or coord.name
         data = coord.values
 
