@@ -246,7 +246,7 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
             "x-api-key": api_token
             })
         else:
-            self.es = Elasticsearch("elasticsearch.ceda.ac.uk")
+            self.es = Elasticsearch(["elasticsearch.ceda.ac.uk"], use_ssl=True, port=443)
 
     def _convert_id(self, id):
         m = hashlib.md5()
@@ -322,7 +322,7 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
                     results.append(each["_source"])
 
         # ensure there are no duplicates of the same result
-        return dict((v[self.config.get("id_type")], v) for v in results).values()
+        return list(dict((v[self.config.get("id_type")], v) for v in results).values())
 
     def _search_all(self, term):
 
@@ -337,7 +337,7 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
                 results.append(each["_source"])
 
         # ensure there are no duplicates of the same result
-        return dict((v[self.config.get("id_type")], v) for v in results).values()
+        return list(dict((v[self.config.get("id_type")], v) for v in results).values())
 
     def _field_requirements(self, fields, term, query_type):
 

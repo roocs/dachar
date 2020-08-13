@@ -7,13 +7,6 @@ from dachar.scan.scan import scan_datasets
 from dachar.utils import options
 
 
-def setup_module(module):
-    options.project_base_dirs[
-        "c3s-cordex"
-    ] = "tests/mini-esgf-data/test_data/group_workspaces/jasmin2/cp4cds1/data"
-    module.base_dir = options.project_base_dirs["c3s-cordex"]
-
-
 @pytest.mark.skip("This ds id no longer creates a corrupt JSON file")
 def test_corrupt_json_file():
     """ Tests what happens when a JSON file exists but is incomplete due to an issue encoding."""
@@ -53,5 +46,4 @@ def test_fake_corrupt_json_file(tmpdir):
 
 
 def teardown_module(module):
-    options.project_base_dirs["c3s-cordex"] = "/group_workspaces/jasmin2/cp4cds1/data"
-    module.base_dir = options.project_base_dirs["c3s-cordex"]
+    pass
