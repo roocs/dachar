@@ -12,7 +12,6 @@ from dachar.scan import scan
 char_store = None
 prop_store = None
 
-options.project_base_dirs["cmip5"] = "tests/mini-esgf-data/test_data/badc/cmip5/data"
 
 ds_ids = [
     "cmip5.output1.INM.inmcm4.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga",

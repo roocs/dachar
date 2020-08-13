@@ -10,14 +10,10 @@ import xarray as xr
 
 from dachar.scan import scan
 from dachar.utils import character
-from dachar.utils import options
+from tests._common import get_tests_project_base_dir
 
 
-def setup_module(module):
-    options.project_base_dirs[
-        "cmip5"
-    ] = "tests/mini-esgf-data/test_data/badc/cmip5/data"
-    module.base_dir = options.project_base_dirs["cmip5"]
+base_dir = get_tests_project_base_dir("cmip5")
 
 
 # def test_parser():
@@ -269,6 +265,5 @@ def test_min_max_value():
     assert np.isfinite(mx)
 
 
-def teardown_module(module):
-    options.project_base_dirs["cmip5"] = "mini-esgf-data/test_data/badc/cmip5/data"
-    module.base_dir = options.project_base_dirs["cmip5"]
+def teardown_module():
+    pass

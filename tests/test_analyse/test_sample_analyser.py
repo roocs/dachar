@@ -8,7 +8,8 @@ from tests._stores_for_tests import (
     _TestAnalysisStore,
     _TestDatasetCharacterStore,
 )
-from dachar.utils import options
+from tests._common import get_tests_project_base_dir
+from dachar.utils.options import get_project_base_dir
 from dachar.analyse.checks import _base_check
 from dachar.analyse import sample_analyser
 from dachar.scan import scan
@@ -20,7 +21,7 @@ char_store = None
 prop_store = None
 analysis_store = None
 
-options.project_base_dirs["cmip5"] = "tests/mini-esgf-data/test_data/badc/cmip5/data"
+# options.project_base_dirs["cmip5"] = "tests/mini-esgf-data/test_data/badc/cmip5/data"
 
 ds_ids = [
     "cmip5.output1.INM.inmcm4.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga",
@@ -56,8 +57,7 @@ def setup_module():
 class _TestOneSampleAnalyser(OneSampleAnalyser):
     def _load_ids(self):
         """ Gets list of possible ds_ids from sample_id"""
-
-        base_dir = options.project_base_dirs[self.project]
+        base_dir = get_tests_project_base_dir(self.project)
         _sample_id = os.path.join(base_dir, "/".join(self.sample_id.split(".")))
 
         self._sample = []
@@ -78,7 +78,7 @@ def populate_dc_store():
     scan.get_dc_store = Mock(return_value=char_store)
 
     ds_paths = get_dataset_paths(
-        "cmip5", ds_ids=ds_ids, paths=options.project_base_dirs["cmip5"]
+        "cmip5", ds_ids=ds_ids, paths=get_project_base_dir("cmip5")
     )
     for ds_id, ds_path in ds_paths.items():
         scan_dataset("cmip5", ds_id, ds_path, "full", "ceda")

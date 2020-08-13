@@ -15,10 +15,6 @@ test_files = [
 
 F1, F2, F3 = test_files
 
-options.project_base_dirs[
-    "c3s-cordex"
-] = "tests/mini-esgf-data/test_data/group_workspaces/jasmin2/cp4cds1/data"
-
 
 class TestCorruptJson:
     @pytest.mark.skip("This ds id no longer creates a corrupt JSON file")
