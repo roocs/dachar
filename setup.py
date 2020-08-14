@@ -83,7 +83,7 @@ setup(
     install_requires=[requirements,
                       'time_checks @ git+https://github.com/cedadev/time-checks.git',
                       'ceda-elasticsearch-tools @ git+https://github.com/cedadev/ceda-elasticsearch-tools.git',
-                      'roocs_utils @ git+https://github.com/roocs/roocs_utils.git'],
+                      'roocs_utils @ git+https://github.com/roocs/roocs-utils.git'],
     long_description=_long_description,
     long_description_content_type="text/markdown",
     include_package_data=True,
