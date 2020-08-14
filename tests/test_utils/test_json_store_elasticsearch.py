@@ -219,5 +219,4 @@ def test_search_by_id():
 
 
 def teardown_module():
-    pass
-    # clear_store()
+    clear_store()
