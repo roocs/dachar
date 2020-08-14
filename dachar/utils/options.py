@@ -11,7 +11,6 @@ if "ROOCS_CONFIG" in os.environ:
     import config_local as config
     # project_base_dirs = {k: config.project_base_dirs[k] for k, _ in set(set(config.project_base_dirs.items() - project_base_dirs.items()))}
     project_base_dirs = dict(set(config.project_base_dirs.items() ^ set(project_base_dirs.items())))
-    # project_base_dirs = dict(set(project_base_dirs.items() ^ set(config.project_base_dirs.items())))
     print(project_base_dirs)
 
 def get_project_base_dir(project):
