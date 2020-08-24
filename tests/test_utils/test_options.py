@@ -5,7 +5,6 @@ from dachar.utils import options
 
 
 def test_project_dirs_no_env_var():
-    # del os.environ['ROOCS_CONFIG'] - needed?
     reload(options)
 
     assert options.get_project_base_dir("cmip5") == "/badc/cmip5/data"
@@ -23,6 +22,7 @@ def test_project_dirs_no_env_var():
 
 
 @mock.patch.dict(os.environ, {"ROOCS_CONFIG": "./tests/test_utils/"})
+# as environment variable is present, dictionary gets updated with dictionary in config_local file
 def test_project_dirs_paths_env_var():
     reload(options)
 
