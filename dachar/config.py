@@ -27,5 +27,5 @@ EXTRACT_ERROR_PATH = join(BASE_LOG_DIR, "failure/extract_error/{grouped_ds_id}.l
 WRITE_ERROR_PATH = join(BASE_LOG_DIR, "failure/write_error/{grouped_ds_id}.log")
 FIX_PATH = join(_base_path, "fixes/{grouped_ds_id}.json")
 
-#ELASTIC_API_TOKEN = ""
-ELASTIC_API_TOKEN = None
+ELASTIC_API_TOKEN = 'cdad90eaf6f889732fd691e38df2f6456e9f73029b3a49f0a871d5f64a553c44'
+# ELASTIC_API_TOKEN = None
