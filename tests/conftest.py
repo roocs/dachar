@@ -7,6 +7,27 @@ import pytest
 from netCDF4 import Dataset
 from netCDF4 import date2num
 from netCDF4 import num2date
+from unittest import mock
+
+from tests._common import get_tests_project_base_dir
+from unittest import mock
+
+
+@pytest.fixture(scope="session", autouse=True)
+def mock_base_dirs_scan():
+    with mock.patch(
+        "dachar.scan.scan.get_project_base_dir", side_effect=get_tests_project_base_dir
+    ):
+        yield
+
+
+@pytest.fixture(scope="session", autouse=True)
+def mock_base_dirs_switch_ds():
+    with mock.patch(
+        "dachar.utils.switch_ds.get_project_base_dir",
+        side_effect=get_tests_project_base_dir,
+    ):
+        yield
 
 
 @pytest.fixture

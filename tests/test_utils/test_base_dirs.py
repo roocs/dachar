@@ -20,6 +20,7 @@ def test_c3s_cmip5_base_dir():
         mode="quick",
         location="ceda",
     )
+
     assert os.path.exists(
         "./outputs/register/c3s-cmip5/output1/MOHC/HadGEM2-ES/rcp85/mon/atmos/Amon.r1i1p1.tas.latest.json"
     )

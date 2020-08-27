@@ -7,7 +7,7 @@ __all__ = ["SqueezeDimensionsFix", "AddScalarCoordFix"]
 
 class SqueezeDimensionsFix(_BaseDatasetFix):
     fix_id = "SqueezeDimensionsFix"
-    title = " Squeeze singleton dimensions of the main variable"
+    title = "Squeeze singleton dimensions of the main variable"
     description = """
 Takes a sequence of identifiers that specify the dimensions to be squeezed.
 
@@ -45,7 +45,7 @@ class AddScalarCoordFix(_BaseDatasetFix):
     fix_id = "AddScalarCoordFix"
     title = "Add a coordinate"
     description = """
-Takes the coordinate to add along with its attributes - what if more than one missing scalar coord is provided?
+Takes the coordinate to add along with its attributes
 
 For example:
   - inputs:
@@ -56,11 +56,10 @@ For example:
                 'standard_name': 'height'}}
 
 Fix example: ds = ds.assign_coords(height=2.0) will add a scalar height coordinate with a value of 2.0
-Attributes will be set by: ds.test.attrs['units'] = 'm'
+Attributes will be set by attrs: e.g. ds.attrs['units'] = 'm'
     """
 
     category = "coord_fixes"
     required_operands = ["dtype", "id", "value", "length", "attrs"]
     ref_implementation = "daops.data_utils.coord_utils.add_scalar_coord"
     process_type = "post_processor"
-

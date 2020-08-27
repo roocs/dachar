@@ -13,6 +13,7 @@ import os
 
 from dachar import config
 from dachar.utils import options
+from dachar.utils.options import get_project_base_dir
 from dachar.utils import switch_ds
 from dachar.utils.character import extract_character
 
@@ -43,8 +44,7 @@ def _get_ds_paths_from_paths(paths, project):
     :param project: top-level project, e.g. "cmip5", "cmip6" or "cordex" (case-insensitive)
     :return: OrderedDict of {<ds_id>: <ds_path>}
     """
-    base_dir = options.project_base_dirs[project]
-
+    base_dir = get_project_base_dir(project)
     # Check paths first
     bad_paths = []
 
@@ -105,7 +105,7 @@ def get_dataset_paths(project, ds_ids=None, paths=None, facets=None, exclude=Non
 
     :return: An Ordered Dictionary of {dsid: directory}
     """
-    base_dir = options.project_base_dirs[project]
+    base_dir = get_project_base_dir(project)
     ds_paths = collections.OrderedDict()
 
     # If ds_ids is defined then ignore all other arguments and use this list
