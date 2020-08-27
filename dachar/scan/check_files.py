@@ -1,13 +1,9 @@
 from netCDF4 import Dataset
+from roocs_utils.exceptions import InconsistencyError
 
 from time_checks.multifile_time_checks import check_multifile_temporal_continuity
 
 keys_to_check = ["standard_name", "long_name", "units", "_FillValue", "missing_value"]
-
-
-class InconsistencyError(Exception):
-    """ Raised when there is some inconsistency which prevents files
-    being scanned. """
 
 
 def extract_var_id(fpath):

@@ -43,7 +43,6 @@ docs_requirements = [
     "matplotlib",
 ]
 
-dev_requirements = [line.strip() for line in open("requirements_dev.txt")]
 
 setup(
     author=__author__,
@@ -82,7 +81,8 @@ setup(
     entry_points={"console_scripts": ["dachar=dachar.cli:main",],},
     install_requires=[requirements,
                       'time_checks @ git+https://github.com/cedadev/time-checks.git',
-                      'ceda-elasticsearch-tools @ git+https://github.com/cedadev/ceda-elasticsearch-tools.git'],
+                      'ceda-elasticsearch-tools @ git+https://github.com/cedadev/ceda-elasticsearch-tools.git',
+                      'roocs_utils @ git+https://github.com/roocs/roocs-utils.git'],
     long_description=_long_description,
     long_description_content_type="text/markdown",
     include_package_data=True,
@@ -92,7 +92,7 @@ setup(
     setup_requires=setup_requirements,
     test_suite="tests",
     tests_require=test_requirements,
-    extras_require={"docs": docs_requirements, "dev": dev_requirements},
+    extras_require={"docs": docs_requirements},
     url="https://github.com/roocs/dachar",
     version=__version__,
     zip_safe=False,
