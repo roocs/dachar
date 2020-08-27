@@ -43,7 +43,6 @@ docs_requirements = [
     "matplotlib",
 ]
 
-dev_requirements = [line.strip() for line in open("requirements_dev.txt")]
 
 setup(
     author=__author__,
@@ -93,7 +92,7 @@ setup(
     setup_requires=setup_requirements,
     test_suite="tests",
     tests_require=test_requirements,
-    extras_require={"docs": docs_requirements, "dev": dev_requirements},
+    extras_require={"docs": docs_requirements},
     url="https://github.com/roocs/dachar",
     version=__version__,
     zip_safe=False,
