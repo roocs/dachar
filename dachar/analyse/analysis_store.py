@@ -1,5 +1,5 @@
 from dachar.utils.json_store import _LocalBaseJsonStore, _ElasticSearchBaseJsonStore
-from dachar.config import ELASTIC_API_TOKEN
+from dachar import CONFIG
 
 
 class LocalAnalysisRecordsStore(_LocalBaseJsonStore):
@@ -30,7 +30,7 @@ class ElasticAnalysisRecordsStore(_ElasticSearchBaseJsonStore):
     config = {
         "store_type": "elasticsearch",
         "index": "roocs-analysis",
-        "api_token": ELASTIC_API_TOKEN,
+        "api_token": CONFIG['dachar:settings']['elastic_api_token'],
         "id_type": "sample_id",
     }
     id_mappers = {"*": "__ALL__"}

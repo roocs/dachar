@@ -13,7 +13,7 @@ __license__ = "BSD"
 import argparse
 import sys
 
-from dachar.utils import options
+from dachar import CONFIG
 from dachar.scan.scan import scan_datasets
 from dachar.analyse.sample_analyser import analyse
 from dachar.fixes import fix_processor
@@ -41,8 +41,8 @@ def _get_arg_parser_scan(parser):
     :return: Namespace object built from attributes parsed from command line.
     """
     # parser = argparse.ArgumentParser()
-    project_options = options.known_projects
-    location_options = options.locations
+    project_options = CONFIG['misc']['known_projects']
+    location_options = CONFIG['dachar:settings']['locations']
 
     parser.add_argument(
         "project",
@@ -130,8 +130,8 @@ def scan_main(args):
 
 
 def _get_arg_parser_analyse(parser):
-    project_options = options.known_projects
-    location_options = options.locations
+    project_options = CONFIG['misc']['known_projects']
+    location_options = CONFIG['dachar:settings']['locations']
 
     parser.add_argument(
         "project",

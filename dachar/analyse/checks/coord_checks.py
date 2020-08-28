@@ -1,7 +1,6 @@
 from dachar.analyse.checks._base_check import _BaseCheck
 from dachar.fixes.fix_api import get_fix
-from dachar.utils.common import get_extra_items_in_larger_sequence
-from dachar.utils import options
+from dachar.utils.common import get_extra_items_in_larger_sequence, coord_mappings
 from dachar.utils import nested_lookup
 from scipy.stats import mode
 from collections import Counter, namedtuple
@@ -67,7 +66,7 @@ class MissingCoordCheck(_BaseCheck):
         # use mappings to get equivalent coords
         for coord in atypical:
             if coord not in typical:
-                equivalent_coord = options.coord_mappings[coord]
+                equivalent_coord = coord_mappings[coord]
                 atypical = [equivalent_coord if i == coord else i for i in atypical]
 
         missing_coords = get_extra_items_in_larger_sequence(atypical, typical)

@@ -5,6 +5,9 @@ from collections import deque
 UNDEFINED = "UNDEFINED"
 FIX_STATUS_VALUES = ["proposed", "rejected", "accepted", "withdrawn"]
 
+# if coordinates are given different names but are equivalent
+coord_mappings = {"ni": "i", "nj": "j", "i": "ni", "j": "nj"}
+
 
 def is_undefined(x):
     if x and x != UNDEFINED:
@@ -107,3 +110,9 @@ def get_extra_items_in_larger_sequence(small, large):
         if item not in small:
             excess.append(item)
     return excess
+
+
+def get_checks(project):
+    # Return list of checks to carry out based on project
+    project_checks = checks.get(project)
+    return [*project_checks, *common_checks]
