@@ -1,14 +1,14 @@
 import os
 
-from dachar import config
-from dachar.utils.options import get_project_base_dir
+from dachar import CONFIG
+from roocs_utils.project_utils import get_project_base_dir
 
 
 def get_grouped_ds_id(ds_id):
 
     # Define a "grouped" ds_id that splits facets across directories and then groups
-    # the final set into a file path, based on config.DIR_GROUPING_LEVEL value
-    gl = config.DIR_GROUPING_LEVEL
+    # the final set into a file path, based on dir_grouping_level value in CONFIG
+    gl = CONFIG['dachar:settings']['dir_grouping_level']
     parts = ds_id.split(".")
     grouped_ds_id = "/".join(parts[:-gl]) + "/" + ".".join(parts[-gl:])
 
