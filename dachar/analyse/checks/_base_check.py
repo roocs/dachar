@@ -144,3 +144,5 @@ class _BaseCheck(object):
 
     def _propose_fix(self, ds_id, fix):
         get_fix_prop_store().propose(ds_id, fix)
+
+
