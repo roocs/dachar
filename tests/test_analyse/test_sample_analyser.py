@@ -9,7 +9,7 @@ from tests._stores_for_tests import (
     _TestDatasetCharacterStore,
 )
 from tests._common import get_tests_project_base_dir
-from dachar.utils.options import get_project_base_dir
+from roocs_utils.project_utils import get_project_base_dir
 from dachar.analyse.checks import _base_check
 from dachar.analyse import sample_analyser
 from dachar.scan import scan

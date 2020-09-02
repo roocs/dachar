@@ -2,7 +2,7 @@ from copy import deepcopy
 
 from dachar.utils.common import now_string
 from dachar.utils.json_store import _LocalBaseJsonStore, _ElasticSearchBaseJsonStore
-from dachar.config import ELASTIC_API_TOKEN
+from dachar import CONFIG
 
 
 class BaseFixProposalStore(object):
@@ -147,6 +147,6 @@ class ElasticFixProposalStore(BaseFixProposalStore, _ElasticSearchBaseJsonStore)
     config = {
         "store_type": "elasticsearch",
         "index": "roocs-fix-proposal",
-        "api_token": ELASTIC_API_TOKEN,
+        "api_token": CONFIG['dachar:settings']['elastic_api_token'],
         "id_type": "dataset_id",
     }

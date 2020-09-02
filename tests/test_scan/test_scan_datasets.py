@@ -4,7 +4,8 @@ import os
 import xarray as xr
 
 from dachar.scan.scan import scan_datasets
-from dachar.utils import options, switch_ds
+from dachar.utils import switch_ds
+from dachar import CONFIG
 from .test_check_files import make_nc_modify_var_attr
 
 test_files = [
@@ -27,7 +28,7 @@ class TestCorruptJson:
             scan_datasets(
                 project="c3s-cordex",
                 ds_ids=ds_id,
-                paths=options.project_base_dirs["c3s-cordex"],
+                paths=CONFIG['project:c3s-cordex']['base_dir'],
                 mode="quick",
                 location="ceda",
             )
@@ -67,7 +68,7 @@ class TestFileChecker:
         ds_id = ["cmip5.output1.MOHC.HadGEM2-ES.rcp85.mon.atmos.Amon.r1i1p1.latest.tas"]
 
         grouped_ds_id = switch_ds.get_grouped_ds_id(ds_id[0])
-        options.project_base_dirs["cmip5"] = "tests/test_outputs/"
+        CONFIG['project:cmip5']['base_dir'] = "tests/test_outputs/"
 
         failure_file = f"outputs/logs/failure/pre_extract_error/{grouped_ds_id}.log"
         json_file = f"outputs/logs/register/{grouped_ds_id}.json"
@@ -80,7 +81,7 @@ class TestFileChecker:
         scan_datasets(
             project="cmip5",
             ds_ids=ds_id,
-            paths=options.project_base_dirs["cmip5"],
+            paths=CONFIG['project:cmip5']['base_dir'],
             mode="quick",
             location="ceda",
         )
