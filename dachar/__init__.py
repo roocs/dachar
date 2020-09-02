@@ -11,7 +11,6 @@ from roocs_utils.config import get_config
 
 import dachar
 CONFIG = get_config(dachar)
-print(CONFIG)
 
 from .fixes import *
 from .scan import *

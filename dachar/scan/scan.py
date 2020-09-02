@@ -86,8 +86,8 @@ def _get_ds_paths_from_paths(paths, project):
         print(f"[INFO] Finding dataset paths for pattern: {pattern}")
 
         for ds_path in glob.glob(pattern):
-            dsid = switch_ds.switch_ds(project, ds_path)
-            ds_paths[dsid] = ds_path
+            ds_id = switch_ds.switch_ds(project, ds_path)
+            ds_paths[ds_id] = ds_path
 
     return ds_paths
 
@@ -127,8 +127,8 @@ def get_dataset_paths(project, ds_ids=None, paths=None, facets=None, exclude=Non
         print(f"[INFO] Finding dataset paths for pattern: {pattern}")
 
         for ds_path in glob.glob(pattern):
-            dsid = switch_ds.switch_ds(project, ds_path)
-            ds_paths[dsid] = ds_path
+            ds_id = switch_ds.switch_ds(project, ds_path)
+            ds_paths[ds_id] = ds_path
 
     elif paths:
 
@@ -212,11 +212,11 @@ def _get_output_paths(project, ds_id):
     grouped_ds_id = switch_ds.get_grouped_ds_id(ds_id)
 
     paths = {
-        "json": config.JSON_OUTPUT_PATH.format(**vars()),
-        "no_files_error": config.NO_FILES_PATH.format(**vars()),
-        "pre_extract_error": config.PRE_EXTRACT_ERROR_PATH.format(**vars()),
-        "extract_error": config.EXTRACT_ERROR_PATH.format(**vars()),
-        "write_error": config.WRITE_ERROR_PATH.format(**vars()),
+        "json": CONFIG['dachar:output_paths']['json_output_path'].format(**vars()),
+        "no_files_error": CONFIG['dachar:output_paths']['no_files_path'].format(**vars()),
+        "pre_extract_error": CONFIG['dachar:output_paths']['pre_extract_error_path'].format(**vars()),
+        "extract_error": CONFIG['dachar:output_paths']['extract_error_path'].format(**vars()),
+        "write_error": CONFIG['dachar:output_paths']['write_error_path'].format(**vars()),
         # 'batch': config.BATCH_OUTPUT_PATH.format(**vars())
     }
 

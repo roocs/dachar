@@ -6,7 +6,7 @@ import os
 from .common import nested_lookup
 from elasticsearch import Elasticsearch, helpers
 from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
-
+from dachar import CONFIG
 
 class _BaseJsonStore(object):
     store_name = "_BASE"
@@ -234,7 +234,7 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
     config = {
         "store_type": "elasticsearch",
         "index": "",
-        "api_token": None,
+        "api_token": CONFIG['dachar:settings']['elastic_api_token'],
         "id_type": "id",
     }
 
