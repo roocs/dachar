@@ -278,9 +278,9 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
     :return: Boolean - indicating success of failure of scan.
     """
 
-    if project not in CONFIG['misc']['known_projects']:
+    if project not in CONFIG['common']['known_projects']:
         raise Exception(
-            f"Project must be one of known projects: {CONFIG['misc']['known_projects']}"
+            f"Project must be one of known projects: {CONFIG['common']['known_projects']}"
         )
 
     print(f"[INFO] Scanning dataset: {ds_id}\n\t\t{ds_path} in {mode} mode ")
