@@ -1,5 +1,5 @@
 # scan all c3s-cmip5 datasets using lotus
-from dachar import config
+from dachar import CONFIG
 from dachar.utils import switch_ds
 import glob
 import os
@@ -92,7 +92,7 @@ def get_ensemble(freq_path, project, resource, mode):
 
         ds_id = switch_ds.switch_ds(project, ensemble_path)
         grouped_ds_id = switch_ds.get_grouped_ds_id(ds_id)
-        output_base = config.BATCH_OUTPUT_PATH.format(grouped_ds_id=grouped_ds_id)
+        output_base = CONFIG['dachar:output_paths']['batch_output_path'].format(grouped_ds_id=grouped_ds_id)
 
         dr = os.path.dirname(output_base)
 
@@ -100,28 +100,31 @@ def get_ensemble(freq_path, project, resource, mode):
             os.makedirs(dr)
 
         if resource == "large":
-            wallclock = config.WALLCLOCK_LARGE
+            wallclock = CONFIG['dachar:processing']['wallclock_large']
+            memory_large = CONFIG['dachar:processing']['memory_large']
             memory_limit = (
-                f'-R"rusage[mem={config.MEMORY_LARGE}]" -M {config.MEMORY_LARGE}'
+                f'-R"rusage[mem={memory_large}]" -M {memory_large}'
             )
-            memory_limit_slurm = f"--mem={config.MEMORY_LARGE}"
+            memory_limit_slurm = f"--mem={memory_large}"
 
         else:
-            wallclock = config.WALLCLOCK_SMALL
+            wallclock = CONFIG['dachar:processing']['wallclock_small']
+            memory_small = CONFIG['dachar:processing']['memory_small']
             memory_limit = (
-                f'-R"rusage[mem={config.MEMORY_SMALL}]" -M {config.MEMORY_SMALL}'
+                f'-R"rusage[mem={memory_small}]" -M {memory_small}'
             )
-            memory_limit_slurm = f"--mem={config.MEMORY_SMALL}"
+            memory_limit_slurm = f"--mem={memory_small}"
 
         # submit to lotus (LSF)
+        queue = CONFIG['dachar:processing']['queue']
         bsub_command = (
-            f"bsub -q {config.QUEUE} -W {wallclock} -o "
+            f"bsub -q {queue} -W {wallclock} -o "
             f"{output_base}.out -e {output_base}.err {memory_limit} "
             f"{current_directory}/scan_vars.py -p {ensemble_path} -pr {project} -m {mode}"
         )
 
         # to use with slurm:
-        # sbatch_cmd = f'sbatch -p {config.QUEUE} -t {wallclock} -o ' \
+        # sbatch_cmd = f'sbatch -p {queue} -t {wallclock} -o ' \
         #              f'{output_base}.out -e {output_base}.err {memory_limit_slurm} ' \
         #              f'{current_directory}/scan_vars.py -p {ensemble_path} -pr {project} -m {mode}'
 
