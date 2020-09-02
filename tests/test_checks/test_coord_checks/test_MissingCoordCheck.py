@@ -5,7 +5,7 @@ import shutil
 from tests._stores_for_tests import _TestDatasetCharacterStore, _TestFixProposalStore
 from dachar.scan.scan import scan_dataset, get_dataset_paths
 from dachar.analyse.checks import _base_check
-from dachar.utils import options
+from dachar import CONFIG
 from unittest.mock import Mock
 from dachar.scan import scan
 
@@ -46,7 +46,7 @@ def populate_dc_store(ds_ids, project):
     scan.get_dc_store = Mock(return_value=char_store)
 
     ds_paths = get_dataset_paths(
-        project, ds_ids=ds_ids, paths=options.project_base_dirs[project]
+        project, ds_ids=ds_ids, paths=CONFIG[f'project:{project}']['base_dir']
     )
     for ds_id, ds_path in ds_paths.items():
         scan_dataset(project, ds_id, ds_path, "full", "ceda")
