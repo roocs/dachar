@@ -4,7 +4,7 @@ import shutil
 import argparse
 import sys
 
-from dachar.utils import options
+from dachar import CONFIG
 
 
 def _to_list(item):
@@ -22,8 +22,8 @@ def _to_dict(item):
 def example_arg_parse(args):
     parser = argparse.ArgumentParser()
 
-    project_options = options.known_projects
-    location_options = options.locations
+    project_options = CONFIG['common']['known_projects']
+    location_options = CONFIG['dachar:settings']['locations']
 
     parser.add_argument(
         "project",

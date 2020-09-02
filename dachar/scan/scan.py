@@ -11,9 +11,8 @@ import json
 import os
 
 
-from dachar import config
-from dachar.utils import options
-from dachar.utils.options import get_project_base_dir
+from dachar import CONFIG
+from roocs_utils.project_utils import get_project_base_dir, get_facet
 from dachar.utils import switch_ds
 from dachar.utils.character import extract_character
 
@@ -60,7 +59,7 @@ def _get_ds_paths_from_paths(paths, project):
     for pth in paths:
 
         print(f"[INFO] Searching for datasets under: {pth}")
-        facet_order = options.facet_rules[project]
+        facet_order = CONFIG[f'project:{project}']['facet_rule']
         facets_in_path = pth.replace(base_dir, "").strip("/").split("/")
 
         facets = {}
@@ -87,8 +86,8 @@ def _get_ds_paths_from_paths(paths, project):
         print(f"[INFO] Finding dataset paths for pattern: {pattern}")
 
         for ds_path in glob.glob(pattern):
-            dsid = switch_ds.switch_ds(project, ds_path)
-            ds_paths[dsid] = ds_path
+            ds_id = switch_ds.switch_ds(project, ds_path)
+            ds_paths[ds_id] = ds_path
 
     return ds_paths
 
@@ -121,15 +120,15 @@ def get_dataset_paths(project, ds_ids=None, paths=None, facets=None, exclude=Non
     # Else use facets if they exist
     elif facets:
 
-        facet_order = options.facet_rules[project]
+        facet_order = CONFIG[f'project:{project}']['facet_rule']
         facets_as_path = "/".join([facets.get(_, "*") for _ in facet_order])
 
         pattern = os.path.join(base_dir, facets_as_path)
         print(f"[INFO] Finding dataset paths for pattern: {pattern}")
 
         for ds_path in glob.glob(pattern):
-            dsid = switch_ds.switch_ds(project, ds_path)
-            ds_paths[dsid] = ds_path
+            ds_id = switch_ds.switch_ds(project, ds_path)
+            ds_paths[ds_id] = ds_path
 
     elif paths:
 
@@ -213,11 +212,11 @@ def _get_output_paths(project, ds_id):
     grouped_ds_id = switch_ds.get_grouped_ds_id(ds_id)
 
     paths = {
-        "json": config.JSON_OUTPUT_PATH.format(**vars()),
-        "no_files_error": config.NO_FILES_PATH.format(**vars()),
-        "pre_extract_error": config.PRE_EXTRACT_ERROR_PATH.format(**vars()),
-        "extract_error": config.EXTRACT_ERROR_PATH.format(**vars()),
-        "write_error": config.WRITE_ERROR_PATH.format(**vars()),
+        "json": CONFIG['dachar:output_paths']['json_output_path'].format(**vars()),
+        "no_files_error": CONFIG['dachar:output_paths']['no_files_path'].format(**vars()),
+        "pre_extract_error": CONFIG['dachar:output_paths']['pre_extract_error_path'].format(**vars()),
+        "extract_error": CONFIG['dachar:output_paths']['extract_error_path'].format(**vars()),
+        "write_error": CONFIG['dachar:output_paths']['write_error_path'].format(**vars()),
         # 'batch': config.BATCH_OUTPUT_PATH.format(**vars())
     }
 
@@ -238,7 +237,7 @@ def analyse_facets(project, ds_id):
     :param ds_id:
     :return:
     """
-    facet_names = options.facet_rules[project]
+    facet_names = CONFIG[f'project:{project}']['facet_rule']
     facet_values = ds_id.split(".")
 
     return dict(zip(facet_names, facet_values))
@@ -279,9 +278,9 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
     :return: Boolean - indicating success of failure of scan.
     """
 
-    if project not in options.known_projects:
+    if project not in CONFIG['common']['known_projects']:
         raise Exception(
-            f"Project must be one of known projects: {options.known_projects}"
+            f"Project must be one of known projects: {CONFIG['common']['known_projects']}"
         )
 
     print(f"[INFO] Scanning dataset: {ds_id}\n\t\t{ds_path} in {mode} mode ")
@@ -343,9 +342,9 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
         return False
 
     # Open files with Xarray and get character
-    expected_facets = options.facet_rules[project]
+    expected_facets = facet_names = CONFIG[f'project:{project}']['facet_rule']
 
-    var_id = options.get_facet("variable", facets, project)
+    var_id = get_facet("variable", facets, project)
 
     # uncomment this to check files before opening as xarray dataset
     # try:

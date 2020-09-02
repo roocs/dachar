@@ -4,8 +4,7 @@ import subprocess
 import pytest
 
 from dachar.scan.scan import scan_datasets
-from dachar.utils import options
-
+from dachar import CONFIG
 
 @pytest.mark.skip("Fails - not possible locally")
 def test_c3s_cmip5_base_dir():
@@ -16,7 +15,7 @@ def test_c3s_cmip5_base_dir():
     result = scan_datasets(
         project="c3s-cmip5",
         ds_ids=c3s_cmip5_id,
-        paths=options.project_base_dirs["c3s-cmip5"],
+        paths=CONFIG['project:c3s-cmip5']['base_dir'],
         mode="quick",
         location="ceda",
     )
@@ -35,7 +34,7 @@ def test_c3s_cmip6_base_dir():
     result = scan_datasets(
         project="c3s-cmip6",
         ds_ids=c3s_cmip6_id,
-        paths=options.project_base_dirs["c3s-cmip6"],
+        paths=CONFIG['project:c3s-cmip6']['base_dir'],
         mode="quick",
         location="ceda",
     )
@@ -53,7 +52,7 @@ def test_c3s_cordex_base_dir():
     result = scan_datasets(
         project="c3s-cordex",
         ds_ids=c3s_cordex_id,
-        paths=options.project_base_dirs["c3s-cordex"],
+        paths=CONFIG['project:c3s-cordex']['base_dir'],
         mode="quick",
         location="ceda",
     )

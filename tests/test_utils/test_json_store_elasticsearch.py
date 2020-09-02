@@ -7,7 +7,7 @@ import time
 from dachar.utils.json_store import _ElasticSearchBaseJsonStore
 from elasticsearch import Elasticsearch, exceptions
 from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
-from dachar.config import ELASTIC_API_TOKEN
+from dachar import CONFIG
 
 
 # Create a new dummy store to run tests on
@@ -17,7 +17,7 @@ class _TestStore(_ElasticSearchBaseJsonStore):
     config = {
         "store_type": "elasticsearch",
         "index": "roocs-char-test",
-        "api_token": ELASTIC_API_TOKEN,
+        "api_token": CONFIG['dachar:settings']['elastic_api_token'],
         "id_type": "ds_id",
     }
     required_fields = ["d"]
