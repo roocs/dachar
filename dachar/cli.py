@@ -41,7 +41,7 @@ def _get_arg_parser_scan(parser):
     :return: Namespace object built from attributes parsed from command line.
     """
     # parser = argparse.ArgumentParser()
-    project_options = CONFIG['misc']['known_projects']
+    project_options = CONFIG['common']['known_projects']
     location_options = CONFIG['dachar:settings']['locations']
 
     parser.add_argument(
@@ -130,7 +130,7 @@ def scan_main(args):
 
 
 def _get_arg_parser_analyse(parser):
-    project_options = CONFIG['misc']['known_projects']
+    project_options = CONFIG['common']['known_projects']
     location_options = CONFIG['dachar:settings']['locations']
 
     parser.add_argument(
