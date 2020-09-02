@@ -89,6 +89,7 @@ setup(
     keywords="dachar",
     name="dachar",
     packages=find_packages(include=["dachar", "dachar.*"]),
+    package_data={'dachar': ['etc/roocs.ini']},
     setup_requires=setup_requirements,
     test_suite="tests",
     tests_require=test_requirements,

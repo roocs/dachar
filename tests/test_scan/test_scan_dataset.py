@@ -4,7 +4,7 @@ import os
 import pytest
 
 from dachar.scan.scan import scan_datasets
-from dachar.utils import options
+from dachar import CONFIG
 
 
 @pytest.mark.skip("This ds id no longer creates a corrupt JSON file")
@@ -16,7 +16,7 @@ def test_corrupt_json_file():
     scan_datasets(
         project="c3s-cordex",
         ds_ids=ds_id,
-        paths=options.project_base_dirs["c3s-cordex"],
+        paths=CONFIG['project:c3s-cordex']['base_dir'],
         mode="quick",
         location="ceda",
     )
@@ -24,7 +24,7 @@ def test_corrupt_json_file():
         scan_datasets(
             project="c3s-cordex",
             ds_ids=ds_id,
-            paths=options.project_base_dirs["c3s-cordex"],
+            paths=CONFIG['project:c3s-cordex']['base_dir'],
             mode="quick",
             location="ceda",
         )
