@@ -10,10 +10,10 @@ import xarray as xr
 
 from dachar.scan import scan
 from dachar.utils import character
-from tests._common import get_tests_project_base_dir
+from roocs_utils.project_utils import get_project_base_dir
 
 
-base_dir = get_tests_project_base_dir("cmip5")
+base_dir = get_project_base_dir("cmip5")
 
 
 # def test_parser():
