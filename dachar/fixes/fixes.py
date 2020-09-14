@@ -4,6 +4,9 @@ import os
 
 import SETTINGS
 from lib import utils
+from dachar import logging, CONFIG
+
+LOGGER = logging.getLogger(__file__)
 
 
 example_fixes = {
@@ -29,7 +32,7 @@ def write_fixes():
     for ds_id in ds_ids:
 
         grouped_ds_id = utils.get_grouped_ds_id(ds_id)
-        json_path = SETTINGS.FIX_PATH.format(**vars())
+        json_path = CONFIG["dachar:output_paths"]["fix_path"].format(**vars())
 
         dr = os.path.dirname(json_path)
         if not os.path.isdir(dr):
@@ -40,7 +43,7 @@ def write_fixes():
         with open(json_path, "w") as writer:
             json.dump(content, writer, indent=4, sort_keys=True)
 
-        print(f"[INFO] Wrote: {json_path}")
+        LOGGER.info(f"Wrote: {json_path}")
 
 
 class _BaseFix(object):

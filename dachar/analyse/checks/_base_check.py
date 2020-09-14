@@ -7,8 +7,9 @@ from dachar.utils.get_stores import get_fix_prop_store, get_dc_store
 
 from dachar.fixes.fix_api import get_fix
 
-logging.basicConfig()
-log = logging.getLogger(__name__)
+from dachar import logging
+
+LOGGER = logging.getLogger(__file__)
 
 # AGREED PLAN
 """
@@ -82,7 +83,7 @@ class _BaseCheck(object):
         # print('results=', results)
         total = len(content)
 
-        #       print(f'\n[INFO] Testing: {keys} - found {len(results)} varieties')
+        #       LOGGER.info(f"\nTesting: {keys} - found {len(results)} varieties')
         typical_content = None
         atypical_content = []
 
