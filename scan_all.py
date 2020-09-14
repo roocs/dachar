@@ -1,10 +1,13 @@
 # scan all c3s-cmip5 datasets using lotus
-from dachar import CONFIG
+from dachar import CONFIG, logging
 from dachar.utils import switch_ds
 import glob
 import os
 import subprocess
 import argparse
+
+LOGGER = logging.getLogger(__file__)
+
 
 # glob.glob('/group_workspaces/jasmin2/cp4cds1/vol1/data/c3s-cmip5/output1/*/*/*/*/*/*/*/*')
 
@@ -131,7 +134,7 @@ def get_ensemble(freq_path, project, resource, mode):
         # bsub_command = f'{current_directory}/scan_vars.py -p {ensemble_path} -pr {project}'
         subprocess.call(bsub_command, shell=True)
 
-        print(f"running {bsub_command}")
+        LOGGER.info(f"running {bsub_command}")
 
 
 def main():
