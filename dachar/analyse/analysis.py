@@ -5,9 +5,11 @@ import json
 from dachar import config
 from dachar.utils import options
 from dachar.utils import switch_ds
-
+from dahcar import logging
 
 # Is the check store a superset of the fixes?
+
+LOGGER = logging.getLogger(__file__)
 
 
 def prep_dir(dr):
@@ -71,15 +73,15 @@ def OLD_analyse_characteristic(records, *keys):
         results[result].append(ds_id)
         count += 1
 
-    print(f"\n[INFO] Testing: {keys} - found {len(results)} varieties")
+    LOGGER.info(f"\nTesting: {keys} - found {len(results)} varieties")
     for key in sorted(results):
 
         ds_ids = results[key]
-        print(f"\t{keys} == {key}:   {len(ds_ids)}")
+        LOGGER.info(f"\t{keys} == {key}:   {len(ds_ids)}")
         count_ratio = float(len(ds_ids)) / count
 
         if count_ratio < config.CONCERN_THRESHOLD:
-            print(f"\t[WARN] SUGGEST FIX OF {keys} ON:\n\t\t" + "\n\t\t".join(ds_ids))
+            LOGGER.info(f"\t[WARN] SUGGEST FIX OF {keys} ON:\n\t\t" + "\n\t\t".join(ds_ids))
 
 
 def analyse_datasets(project, ds_ids):
