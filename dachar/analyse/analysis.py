@@ -5,7 +5,7 @@ import json
 from dachar import config
 from dachar.utils import options
 from dachar.utils import switch_ds
-from dahcar import logging
+from dachar import logging
 
 # Is the check store a superset of the fixes?
 
