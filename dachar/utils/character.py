@@ -29,11 +29,10 @@ def get_coords(da):
     LOGGER.info(f"NOT CAPTURING scalar COORDS BOUND BY coordinates attr yet!!!")
 
     for coord_id in sorted(da.coords):
-
         coord = da.coords[coord_id]
 
         coord_type = xarray_utils.get_coord_type(coord)
-        name = coord_type or coord.name
+        name = coord.name
         data = coord.values
 
         if data.size == 1:
@@ -43,6 +42,7 @@ def get_coords(da):
 
             coords[name] = {
                 "id": name,
+                "type": coord_type,
                 "value": value,
                 "dtype": str(data.dtype),
                 "length": 1,

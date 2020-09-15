@@ -49,14 +49,14 @@ class RankCheck(_BaseCheck):
 
 
 class MissingCoordCheck(_BaseCheck):
-    characteristics = ["coordinates.*.id"]
+    characteristics = ["coordinates.*.type"]
     associated_fix = "AddScalarCoordFix"
 
     def deduce_fix(self, ds_id, atypical_content, typical_content):
         dicts = []
 
-        atypical = atypical_content["coordinates.*.id"]
-        typical = typical_content["coordinates.*.id"]
+        atypical = atypical_content["coordinates.*.type"]
+        typical = typical_content["coordinates.*.type"]
 
         # length of atypical should be shorter if missing coord
         # Will this always be the case?
