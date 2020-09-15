@@ -19,4 +19,5 @@ dependencies:
  - udunits2>=2.2
  - pip:
     - -e git+https://github.com/roocs/roocs-utils.git@master#egg=roocs_utils
+    - -e git+https://github.com/roocs/clisops.git@master#egg=clisops
 

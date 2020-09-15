@@ -18,6 +18,10 @@ from dachar.utils.character import extract_character
 
 from dachar.scan.check_files import check_files
 from dachar.utils.get_stores import get_dc_store
+from dachar import logging
+
+
+LOGGER = logging.getLogger(__file__)
 
 
 def to_json(character, output_path):
@@ -58,7 +62,7 @@ def _get_ds_paths_from_paths(paths, project):
 
     for pth in paths:
 
-        print(f"[INFO] Searching for datasets under: {pth}")
+        LOGGER.info(f"Searching for datasets under: {pth}")
         facet_order = CONFIG[f'project:{project}']['facet_rule']
         facets_in_path = pth.replace(base_dir, "").strip("/").split("/")
 
@@ -83,7 +87,7 @@ def _get_ds_paths_from_paths(paths, project):
         # TODO: This is repet code of below. Suggest we create a module/class
         #      to manage all mapping of different args to resolve to ds_paths dictionary, later.
         pattern = os.path.join(base_dir, facets_as_path)
-        print(f"[INFO] Finding dataset paths for pattern: {pattern}")
+        LOGGER.info(f"Finding dataset paths for pattern: {pattern}")
 
         for ds_path in glob.glob(pattern):
             ds_id = switch_ds.switch_ds(project, ds_path)
@@ -124,7 +128,7 @@ def get_dataset_paths(project, ds_ids=None, paths=None, facets=None, exclude=Non
         facets_as_path = "/".join([facets.get(_, "*") for _ in facet_order])
 
         pattern = os.path.join(base_dir, facets_as_path)
-        print(f"[INFO] Finding dataset paths for pattern: {pattern}")
+        LOGGER.info(f"Finding dataset paths for pattern: {pattern}")
 
         for ds_path in glob.glob(pattern):
             ds_id = switch_ds.switch_ds(project, ds_path)
@@ -192,10 +196,9 @@ def scan_datasets(
 
     percentage_failed = (failure_count / float(count)) * 100
 
-    print(
-        f"[INFO] COMPLETED. Total count: {count}"
-        f", Failure count = {failure_count}. Percentage failed"
-        f" = {percentage_failed:.2f}%"
+    LOGGER.info(f"COMPLETED. Total count: {count}"
+                f", Failure count = {failure_count}. Percentage failed"
+                f" = {percentage_failed:.2f}%"
     )
 
 
@@ -283,7 +286,7 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
             f"Project must be one of known projects: {CONFIG['common']['known_projects']}"
         )
 
-    print(f"[INFO] Scanning dataset: {ds_id}\n\t\t{ds_path} in {mode} mode ")
+    LOGGER.info(f"Scanning dataset: {ds_id}\n\t\t{ds_path} in {mode} mode ")
     facets = analyse_facets(project, ds_id)
 
     # Generate output file paths
@@ -301,25 +304,24 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
                 if mode == "full-force":
                     os.remove(outputs["json"])
                     mode = "full"
-                    print(
-                        f"[INFO] Already ran for {ds_id} in quick mode."
-                        f" Overwriting with full mode "
+                    LOGGER.info(f"Already ran for {ds_id} in quick mode."
+                                f" Overwriting with full mode "
                     )
                 else:
-                    print(f"[INFO] Already ran for {ds_id} in quick mode")
+                    LOGGER.info(f"Already ran for {ds_id} in quick mode")
                     return True
 
             if previous_mode == "full":
                 check = _check_for_min_max(outputs["json"])
                 if check:
-                    print(f"[INFO] Already ran for {ds_id} in full mode")
+                    LOGGER.info(f"Already ran for {ds_id} in full mode")
 
                     return True
 
         # flag that a corrupt JSON file exists
         except json.decoder.JSONDecodeError as exc:
             os.remove(outputs["json"])
-            print(f"[INFO] Corrupt JSON file. Deleting and re-running.")
+            LOGGER.info(f"Corrupt JSON file. Deleting and re-running.")
 
     # Delete previous failure files and log files
     for file_key in (
@@ -337,7 +339,7 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
     nc_files = glob.glob(f"{ds_path}/*.nc")
 
     if not nc_files:
-        print(f"[ERROR] No data files found for: {ds_path}/*.nc")
+        LOGGER.info(f"No data files found for: {ds_path}/*.nc")
         open(outputs["no_files_error"], "w")
         return False
 
@@ -363,9 +365,9 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
             nc_files, location, var_id=var_id, mode=mode, expected_attrs=expected_facets
         )
     except Exception as exc:
-        print(f"[ERROR] Could not load Xarray Dataset for: {ds_path}")
-        print(f"[ERROR] Files: {nc_files}")
-        print(f"[ERROR] Exception was: {exc}")
+        LOGGER.debug(f"Could not load Xarray Dataset for: {ds_path}")
+        LOGGER.debug(f"Files: {nc_files}")
+        LOGGER.debug(f"Exception was: {exc}")
 
         # Create error file if can't open dataset
         with open(outputs["extract_error"], "w") as writer:
@@ -376,12 +378,12 @@ def scan_dataset(project, ds_id, ds_path, mode, location):
     try:
         get_dc_store().put(ds_id, character)
     except Exception as exc:
-        print(f"[ERROR] Exception: {exc}")
+        LOGGER.debug(f"Exception: {exc}")
         # Create error file if can't output file
         open(outputs["write_error"], "w")
         return False
 
-    print(f"[INFO] Written to character store")  # add file path to json file ?
+    LOGGER.info(f"Written to character store")  # add file path to json file ?
 
     # Output to JSON file
     # try:

@@ -6,7 +6,10 @@ import os
 from .common import nested_lookup
 from elasticsearch import Elasticsearch, helpers
 from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
-from dachar import CONFIG
+from dachar import CONFIG, logging
+
+LOGGER = logging.getLogger(__file__)
+
 
 class _BaseJsonStore(object):
     store_name = "_BASE"
@@ -356,16 +359,14 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
 
         if isinstance(term, float) or isinstance(term, int):
             exact = True
-            print(
-                "[INFO]: Must search for exact value when the search term is a number,"
-                " Changing search to exact=True"
+            LOGGER.info(f"Must search for exact value when the search term is a number, "
+                        f"Changing search to exact=True"
             )
 
         if isinstance(term, str) and " " in term and exact is False:
-            print(
-                "[INFO]: Ensure the case of your search term is correct as this type of "
-                "search is case sensitive. If you are not sure of the correct case change "
-                "your search term to a one word search or use exact=True."
+            LOGGER.info(f"Ensure the case of your search term is correct as this type of "
+                        f"search is case sensitive. If you are not sure of the correct case change "
+                        f"your search term to a one word search or use exact=True."
             )
 
         if match_ids is True and exact is True:
