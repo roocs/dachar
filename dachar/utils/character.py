@@ -4,6 +4,10 @@ import numpy as np
 import xarray as xr
 from roocs_utils.xarray_utils import xarray_utils
 
+from dachar import logging
+
+LOGGER = logging.getLogger(__file__)
+
 
 def get_coords(da):
     """
@@ -21,8 +25,8 @@ def get_coords(da):
     """
 
     coords = {}
-    print(f"[DEBUG] Found coords: {str(da.coords.keys())}")
-    print(f"[WARN] NOT CAPTURING scalar COORDS BOUND BY coorindates attr yet!!!")
+    LOGGER.debug(f"Found coords: {str(da.coords.keys())}")
+    LOGGER.info(f"NOT CAPTURING scalar COORDS BOUND BY coordinates attr yet!!!")
 
     for coord_id in sorted(da.coords):
 
@@ -98,7 +102,7 @@ def get_variable_metadata(da):
 
 def get_global_attrs(ds, expected_attrs=None):
     if expected_attrs:
-        print("[WARN] Not testing expected attrs yet")
+        LOGGER.info(f"Not testing expected attrs yet")
 
     d = _copy_dict_for_json(ds.attrs)
     return d
@@ -150,9 +154,8 @@ class CharacterExtractor(object):
 
     def _extract(self):
         ds = xr.open_mfdataset(self._files, use_cftime=True, combine="by_coords")
-        print("[WARN] NEED TO CHECK NUMBER OF VARS/DOMAINS RETURNED HERE")
-        print(
-            "[WARN] DOES NOT CHECK YET WHETHER WE MIGHT GET 2 DOMAINS/VARIABLES BACK FROM MULTI-FILE OPEN"
+        LOGGER.info(f"NEED TO CHECK NUMBER OF VARS/DOMAINS RETURNED HERE")
+        LOGGER.info(f"DOES NOT CHECK YET WHETHER WE MIGHT GET 2 DOMAINS/VARIABLES BACK FROM MULTI-FILE OPEN"
         )
         # Get content by variable
         da = ds[self._var_id]

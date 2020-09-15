@@ -5,6 +5,9 @@ import pytest
 
 from dachar.scan.scan import scan_datasets
 from dachar import CONFIG
+from dachar import logging
+
+LOGGER = logging.getLogger(__file__)
 
 
 @pytest.mark.skip("This ds id no longer creates a corrupt JSON file")
@@ -41,7 +44,7 @@ def test_fake_corrupt_json_file(tmpdir):
         filename = os.path.join(bad_json.dirname, bad_json.basename)
         json.load(open(filename))
     except json.decoder.JSONDecodeError as exc:
-        print("[INFO] Corrupt JSON file found.")
+        LOGGER.debug(f"Corrupt JSON file found.")
         pass
 
 

@@ -2,6 +2,9 @@ from dachar.utils.get_stores import get_ar_store, get_dc_store, get_fix_prop_sto
 from dachar.utils.common import get_checks
 from roocs_utils.project_utils import get_project_base_dir
 from dachar import __version__ as version
+from dachar import logging
+
+LOGGER = logging.getLogger(__file__)
 
 import os
 import datetime
@@ -119,11 +122,11 @@ class OneSampleAnalyser(object):
     def _analysed(self):
         """
         checks whether already analysed if not - if analysed and force =False then stop.
-        If analysed and force = True then carry on. Print statements to say what is happening
+        If analysed and force = True then carry on.
         :return:
         """
         if get_ar_store().exists(self.sample_id) and self.force is True:
-            print(f"Overwriting existing analysis for {self.sample_id}.")
+            LOGGER.info(f"Overwriting existing analysis for {self.sample_id}.")
         elif get_ar_store().exists(self.sample_id) and self.force is False:
             raise Exception(
                 f"Analysis already run for {self.sample_id}. "
@@ -182,7 +185,7 @@ class OneSampleAnalyser(object):
 
         get_ar_store().put(self.sample_id, a_record.content, force=self.force)
 
-        print(f"[INFO] Analysis complete for sample: {self.sample_id}")
+        LOGGER.info(f"Analysis complete for sample: {self.sample_id}")
 
 
 def analyse(project, sample_id, location, force):
