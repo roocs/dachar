@@ -12,6 +12,8 @@ from roocs_utils.config import get_config
 import dachar
 CONFIG = get_config(dachar)
 
+from clisops import logging
+
 from .fixes import *
 from .scan import *
 from .utils import *
