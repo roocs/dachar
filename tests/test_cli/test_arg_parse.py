@@ -22,7 +22,7 @@ def _to_dict(item):
 def example_arg_parse(args):
     parser = argparse.ArgumentParser()
 
-    project_options = CONFIG['common']['known_projects']
+    project_options = [_.split(':')[1] for _ in CONFIG.keys() if _.startswith('project:')]
     location_options = CONFIG['dachar:settings']['locations']
 
     parser.add_argument(
