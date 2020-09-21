@@ -49,25 +49,25 @@ class RankCheck(_BaseCheck):
 
 
 class MissingCoordCheck(_BaseCheck):
-    characteristics = ["coordinates.*.type"]
+    characteristics = ["coordinates.*.id"]
     associated_fix = "AddScalarCoordFix"
 
     def deduce_fix(self, ds_id, atypical_content, typical_content):
         dicts = []
 
-        atypical = atypical_content["coordinates.*.type"]
-        typical = typical_content["coordinates.*.type"]
+        atypical = atypical_content["coordinates.*.id"]
+        typical = typical_content["coordinates.*.id"]
 
         # length of atypical should be shorter if missing coord
         # Will this always be the case?
         if len(atypical) >= len(typical):
             return None
 
-        # use mappings to get equivalent coords
-        for coord in atypical:
-            if coord not in typical:
-                equivalent_coord = coord_mappings[coord]
-                atypical = [equivalent_coord if i == coord else i for i in atypical]
+        # # use mappings to get equivalent coords
+        # for coord in atypical:
+        #     if coord not in typical:
+        #         equivalent_coord = coord_mappings[coord]
+        #         atypical = [equivalent_coord if i == coord else i for i in atypical]
 
         missing_coords = get_extra_items_in_larger_sequence(atypical, typical)
 
@@ -102,7 +102,7 @@ class MissingCoordCheck(_BaseCheck):
                         operands = {}
 
                         operand_dict = dict(typical_coord._asdict())
-                        for k in ["dtype", "value", "id", "length"]:
+                        for k in ["dtype", "value", "id", "length", "coord_type"]:
                             v = operand_dict.pop(k)
 
                             operands[k] = v

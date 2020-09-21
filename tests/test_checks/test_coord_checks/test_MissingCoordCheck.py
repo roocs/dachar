@@ -19,10 +19,11 @@ ds_ids_cmip6 = [
     "CMIP6.CMIP.CCCma.CanESM5.historical.r1i1p1f1.SImon.siconc.gn.latest",
     "CMIP6.CMIP.MPI-M.MPI-ESM1-2-HR.historical.r1i1p1f1.SImon.siconc.gn.latest",
 ]
-# 'CMIP6.CMIP.BCC.BCC-ESM1.historical.r1i1p1f1.SImon.siconc.gn.latest']
-# 'CMIP6.CMIP.MIROC.MIROC6.historical.r1i1p1f1.SImon.siconc.gn.latest',]
-# 'CMIP6.CMIP.IPSL.IPSL-CM6A-LR.historical.r1i1p1f1.SImon.siconc.gn.latest',
-# 'CMIP6.CMIP.NOAA-GFDL.GFDL-ESM4.historical.r1i1p1f1.SImon.siconc.gn.latest'
+# ds_ids_cmip6 = ['CMIP6.CMIP.NCAR.CESM2.historical.r1i1p1f1.SImon.siconc.gn.latest',
+#                 'CMIP6.CMIP.BCC.BCC-ESM1.historical.r1i1p1f1.SImon.siconc.gn.latest',
+#                 'CMIP6.CMIP.MIROC.MIROC6.historical.r1i1p1f1.SImon.siconc.gn.latest',
+#                 'CMIP6.CMIP.IPSL.IPSL-CM6A-LR.historical.r1i1p1f1.SImon.siconc.gn.latest',
+#                 'CMIP6.CMIP.NOAA-GFDL.GFDL-ESM4.historical.r1i1p1f1.SImon.siconc.gn.latest']
 
 ds_ids_cmip5 = [
     "cmip5.output1.ICHEC.EC-EARTH.historical.mon.atmos.Amon.r1i1p1.latest.tas",
@@ -137,6 +138,7 @@ def test_MissingCoordCheck_deduce_fix_cmip5():
         "dtype": "float64",
         "value": 2.0,
         "id": "height",
+        "coord_type": "level",
         "length": 1,
         "attrs": {
             "axis": "Z",
