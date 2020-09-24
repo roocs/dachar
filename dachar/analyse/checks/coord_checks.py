@@ -48,6 +48,9 @@ class RankCheck(_BaseCheck):
             return None
 
 
+# TODO: Need to change this so that characteristic compared is coord_type
+#   But characteristic used to create new variable is id
+
 class MissingCoordCheck(_BaseCheck):
     characteristics = ["coordinates.*.id"]
     associated_fix = "AddScalarCoordFix"
