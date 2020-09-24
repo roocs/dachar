@@ -131,7 +131,6 @@ class _BaseCheck(object):
                 ]
             )
             content.append((ds_id, items))
-        print("HERE=", content)
         return content
 
     def _process_fix(self, ds_id, atypical_content, typical_content):
