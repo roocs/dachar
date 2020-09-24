@@ -29,11 +29,10 @@ def get_coords(da):
     LOGGER.info(f"NOT CAPTURING scalar COORDS BOUND BY coordinates attr yet!!!")
 
     for coord_id in sorted(da.coords):
-
         coord = da.coords[coord_id]
 
         coord_type = xarray_utils.get_coord_type(coord)
-        name = coord_type or coord.name
+        name = coord.name
         data = coord.values
 
         if data.size == 1:
@@ -43,6 +42,7 @@ def get_coords(da):
 
             coords[name] = {
                 "id": name,
+                "coord_type": coord_type,
                 "value": value,
                 "dtype": str(data.dtype),
                 "length": 1,
@@ -59,7 +59,7 @@ def get_coords(da):
             else:
                 mn, mx = [float(_) for _ in (mn, mx)]
 
-            coords[name] = {"id": name, "min": mn, "max": mx, "length": len(data)}
+            coords[name] = {"id": name, "coord_type": coord_type, "min": mn, "max": mx, "length": len(data)}
 
         if coord_type == "time":
             if type(data[0]) == np.datetime64:
