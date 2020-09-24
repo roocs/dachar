@@ -40,6 +40,7 @@ def test_AddScalarCoordFix():
         "value": 2.0,
         "id": "height",
         "length": 1,
+        "coord_type": "level",
         "attrs": {
             "axis": "Z",
             "long_name": "height",
@@ -55,7 +56,7 @@ def test_AddScalarCoordFix():
     assert fix.title == "Add a coordinate"
 
     assert fix.category == "coord_fixes"
-    assert fix.required_operands == ["dtype", "id", "value", "length", "attrs"]
+    assert fix.required_operands == ["dtype", "id", "value", "length", "attrs", "coord_type"]
     assert fix.ref_implementation == "daops.data_utils.coord_utils.add_scalar_coord"
     assert fix.process_type == "post_processor"
 
