@@ -1,0 +1,16 @@
+{
+    "dataset_id": "cmip5.output1.NSF-DOE-NCAR.CESM1-BGC.rcp45.mon.land.Lmon.r1i1p1.latest.gpp",
+    "fixes": [
+        {
+            "category": "array_fixes",
+            "description": "Masks missing values set at a given value",
+            "fix_id": "MissingDataFix",
+            "operands": {
+                "value": 1.0e33
+            },
+            "process_type": "post_processor",
+            "reference_implementation": "daops.data_utils.array_utils.fix_missing_data",
+            "title": "Apply Missing Data Fix"
+        }
+    ]
+}

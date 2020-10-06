@@ -2,7 +2,7 @@ import logging
 import pprint as pp
 
 from dachar.utils import UNDEFINED, nested_lookup, JDict
-
+from dachar import __version__ as version
 from dachar.utils.get_stores import get_fix_prop_store, get_dc_store
 
 from dachar.fixes.fix_api import get_fix
@@ -52,6 +52,12 @@ class _BaseCheck(object):
 
     typical_threshold = 0.41
     atypical_threshold = 0.15
+
+    source = {
+        "name": "dachar",
+        "version": f"{version}",
+        "comment": "No specific source provided - link to all fixes in dachar",
+        "url": "https://github.com/roocs/dachar/tree/master/dachar/fixes"}
 
     def __init__(self, sample):
         self.sample = sample
