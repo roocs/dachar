@@ -241,7 +241,7 @@ def test_withdraw_fix_not_found():
     fix_processor.get_fix_store = Mock(return_value=f_store)
     with pytest.raises(Exception) as exc:
         fix_processor.process_all_fixes("withdraw", [ds_ids[1]])
-        assert exc.value == "A fix could not be found."
+    assert exc.value.args[0] == "A fix could not be found."
 
 
 def teardown_module():
