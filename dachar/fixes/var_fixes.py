@@ -2,30 +2,25 @@ from dachar.utils.common import UNDEFINED
 
 from dachar.fixes._base_fix import _BaseDatasetFix
 
-__all__ = ["MetadataFix"]
+__all__ = ["Reverse2DVarFix"]
 
 
-class MetadataFix(_BaseDatasetFix):
-    fix_id = "MetadataFix"
-    title = "Apply Metadata Fix"
+class Reverse2DVarFix(_BaseDatasetFix):
+    fix_id = "Reverse2DVarFix"
+    title = "Reverse data of 2D Variables"
     description = """
-"Applies metadata fix e.g. fixing standard name
+"Reverses the order of the data of the given 2d variables
 
-Takes a list of fixes with each fix as a string containing the attribute
-to be changed and what it will be changed to separated by a comma e.g.:
-
-["long_name,Dissolved Oxygen Concentration",
-"standard_name,mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"]
+Takes as an input the names of the variables to be reversed
+as a list:
 
 For example:
   - inputs:
-    {"fixes": [
-        "long_name,Dissolved Oxygen Concentration",
-        "standard_name,mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"
-        ]
+    {
+    "var_ids": ["a_bnds", "b_bnds"]
     },
 """
     category = "var_fixes"
-    required_operands = ["fixes"]
-    ref_implementation = "daops.data_utils.var_utils.fix_metadata"
+    required_operands = ["var_ids"]
+    ref_implementation = "daops.data_utils.var_utils.reverse_2d_vars"
     process_type = "post_processor"

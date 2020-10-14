@@ -72,5 +72,5 @@ def test_withdraw_fix_1():
 
 
 def teardown_module():
-    pass
-    # _clear_store()
+    # pass
+    _clear_store()

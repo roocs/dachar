@@ -116,8 +116,8 @@ def test_MissingCoordCheck_cmip5():
     results, atypical_content, typical_content = x.run()
     assert atypical_content[0]["coordinates.*.id"] == ["latitude", "longitude", "time"]
     assert typical_content["coordinates.*.id"] == [
-        "height",
         "latitude",
+        "level",
         "longitude",
         "time",
     ]
@@ -136,7 +136,7 @@ def test_MissingCoordCheck_deduce_fix_cmip5():
     assert (d[0]["fix"]["operands"]) == {
         "dtype": "float64",
         "value": 2.0,
-        "id": "height",
+        "id": "level",
         "length": 1,
         "attrs": {
             "axis": "Z",

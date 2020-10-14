@@ -1,5 +1,5 @@
 {
-    "dataset_id": "cmip5.output1.NSF-DOE-NCAR.CESM1-BGC.rcp45.mon.land.Lmon.r1i1p1.latest.gpp",
+    "dataset_id": "",
     "fixes": [{
         "fix_id": "MaskDataFix",
         "operands": {

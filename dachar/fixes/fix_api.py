@@ -3,6 +3,9 @@ import glob
 from pydoc import locate
 
 import dachar.fixes.coord_fixes as coord_fixes
+import dachar.fixes.array_fixes as array_fixes
+import dachar.fixes.attr_fixes as attr_fixes
+import dachar.fixes.var_fixes as var_fixes
 
 
 def get_fix_modules():
@@ -27,7 +30,7 @@ def get_fix_dict():
 
 def get_fix(fix_id):
     if fix_id:
-        fix_cls = locate(f"dachar.fixes.coord_fixes.{fix_id}")
+        fix_cls = locate(f"dachar.fixes.{fix_id}")
         return fix_cls
 
 

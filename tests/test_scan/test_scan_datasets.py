@@ -20,22 +20,6 @@ F1, F2, F3 = test_files
 
 
 class TestCorruptJson:
-    @pytest.mark.skip("This ds id no longer creates a corrupt JSON file")
-    def test_corrupt_json_file(self):
-        """ Tests what happens when a JSON file exists but is incomplete due to an issue encoding."""
-        ds_id = [
-            "c3s-cordex.output.EUR-11.IPSL.MOHC-HadGEM2-ES.rcp85.r1i1p1.IPSL-WRF381P.v1.day.psl.v20190212"
-        ]
-        try:
-            scan_datasets(
-                project="c3s-cordex",
-                ds_ids=ds_id,
-                paths=CONFIG['project:c3s-cordex']['base_dir'],
-                mode="quick",
-                location="ceda",
-            )
-        except json.decoder.JSONDecodeError as exc:
-            pass
 
     def test_fake_corrupt_json_file(self, tmpdir):
         """ Creates a bad JSON file and tests the code responds properly"""

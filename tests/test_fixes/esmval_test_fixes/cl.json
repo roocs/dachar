@@ -1,0 +1,43 @@
+{
+  "dataset_id": "CMIP6.CMIP.NCAR.CESM2.amip.r3i1p1f1.Amon.cl.gn.v20190319",
+  "fixes": [{
+    "fix_id": "AttrFix",
+    "operands": {
+      "var_id": "lev",
+      "attrs": [
+        {"standard_name": "atmosphere_hybrid_sigma_pressure_coordinate"},
+        {"formula_terms": "p0: p0 a: a b: b ps: ps"}
+      ]},
+    "source": {
+      "name": "esmvaltool",
+      "version": "2.0.0",
+      "comments": "",
+      "url":"https://github.com/ESMValGroup/ESMValCore/issues/538"}
+  },
+    {
+      "fix_id": "ReverseCoordFix",
+      "operands": {
+        "coords": [
+          "lev"
+        ]},
+      "source": {
+        "name": "esmvaltool",
+        "version": "2.0.0",
+        "comments": "",
+        "url":"https://github.com/ESMValGroup/ESMValCore/issues/538"}
+    },
+    {
+      "fix_id": "Reverse2DVarFix",
+      "operands": {
+        "var_ids": [
+          "a_bnds",
+          "b_bnds"
+          ]
+      },
+      "source": {
+        "name": "esmvaltool",
+        "version": "2.0.0",
+        "comments": "",
+        "url":"https://github.com/ESMValGroup/ESMValCore/issues/538"}
+    }]
+}

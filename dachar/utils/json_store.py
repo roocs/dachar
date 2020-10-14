@@ -286,7 +286,7 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
 
         self.es.index(index=self.config.get("index"), body=content, id=id)
 
-        self._map(drs_id, reverse=True)  #
+        self._map(drs_id, reverse=True)
         self.es.update(
             index=self.config.get("index"),
             id=id,
