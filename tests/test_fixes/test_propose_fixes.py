@@ -33,7 +33,7 @@ def test_generate_proposal_json():
     generate_proposals.generate_fix_proposals(file)
     record = prop_store.get_proposed_fix_by_id(
         "cmip5.output1.MOHC.HadGEM2-CC.historical.yr.ocnBgchem.Oyr.r1i1p1.latest.o2")
-    assert record["fixes"][0]["fix"]["fix_id"] == "MetadataFix"
+    assert record[0]["this_fix"]["fix"]["fix_id"] == "MainVarAttrFix"
 
 
 def test_generate_proposal_json_2_fixes():
@@ -41,9 +41,9 @@ def test_generate_proposal_json_2_fixes():
     file = [{
         "dataset_id": "cmip5.output1.MOHC.HadGEM2-CC.historical.yr.ocnBgchem.Oyr.r1i1p1.latest.o2",
         "fixes": [{
-            "fix_id": "MetadataFix",
+            "fix_id": "MainVarAttrFix",
             "operands": {
-                "fixes": [
+                "attrs": [
                     "long_name,Dissolved Oxygen Concentration",
                     "standard_name,mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"
                 ]},
@@ -71,8 +71,8 @@ def test_generate_proposal_json_2_fixes():
     generate_proposals.generate_fix_proposals(file)
     record = prop_store.get_proposed_fix_by_id(
         "cmip5.output1.MOHC.HadGEM2-CC.historical.yr.ocnBgchem.Oyr.r1i1p1.latest.o2")
-    assert record["fixes"][0]["fix"]["fix_id"] == "MetadataFix"
-    assert record["fixes"][1]["fix"]["fix_id"] == "SqueezeDimensionsFix"
+    assert record[0]["this_fix"]["fix"]["fix_id"] == "MainVarAttrFix"
+    assert record[1]["this_fix"]["fix"]["fix_id"] == "SqueezeDimensionsFix"
 
 
 def test_generate_proposal_template():
@@ -84,7 +84,7 @@ def test_generate_proposal_template():
     generate_proposals.generate_proposal_from_template(template, ds_list)
     record = prop_store.get_proposed_fix_by_id(
         "cmip5.output1.MOHC.HadGEM2-CC.rcp85.mon.ocnBgchem.Omon.r1i1p1.v20120531.o2")
-    assert record["fixes"][0]["fix"]["fix_id"] == "MetadataFix"
+    assert record[0]["this_fix"]["fix"]["fix_id"] == "MainVarAttrFix"
 
 
 def test_generate_proposal_when_one_already_exists():
@@ -109,15 +109,15 @@ def test_generate_proposal_when_one_already_exists():
     generate_proposals.generate_fix_proposals(file)
     record = prop_store.get_proposed_fix_by_id(
         "cmip5.output1.MOHC.HadGEM2-CC.rcp85.mon.ocnBgchem.Omon.r1i1p1.v20120531.o2")
-    assert record["fixes"][0]["fix"]["fix_id"] == "MetadataFix"
-    assert record["fixes"][1]["fix"]["fix_id"] == "SqueezeDimensionsFix"
+    assert record[0]["this_fix"]["fix"]["fix_id"] == "MainVarAttrFix"
+    assert record[1]["this_fix"]["fix"]["fix_id"] == "SqueezeDimensionsFix"
 
 
 def test_unexpected_operands():
     file = [{
         "dataset_id": "cmip5.output1.MOHC.HadGEM2-CC.historical.yr.ocnBgchem.Oyr.r1i1p1.latest.o2",
         "fixes": [{
-            "fix_id": "MetadataFix",
+            "fix_id": "MainVarAttrFix",
             "operands": {
                 "test": [
                     "not_real"
@@ -134,16 +134,16 @@ def test_unexpected_operands():
 
     with pytest.raises(KeyError) as exc:
         generate_proposals.generate_fix_proposals(file)
-    assert exc.value.args[0] == "Required keyword argument(s) not provided: {'fixes'}"
+    assert exc.value.args[0] == "Required keyword argument(s) not provided: {'attrs'}"
 
 
 def test_invalid_fields():
     file = [{
         "dataset_id": "cmip5.output1.MOHC.HadGEM2-CC.historical.yr.ocnBgchem.Oyr.r1i1p1.latest.o2",
         "fixes": [{
-            "fox_id": "MetadataFix",
+            "fox_id": "MainVarAttrFix",
             "operands": {
-                "fixes": [
+                "attrs": [
                     "not_real"
                 ]},
             "source": {
@@ -165,7 +165,7 @@ def test_missing_fields():
     file = [{
         "dataset_id": "cmip5.output1.MOHC.HadGEM2-CC.historical.yr.ocnBgchem.Oyr.r1i1p1.latest.o2",
         "fixes": [{
-            "fix_id": "MetadataFix",
+            "fix_id": "MainVarAttrFix",
             "source": {
                 "name": "esmvaltool",
                 "version": "2.0.0",

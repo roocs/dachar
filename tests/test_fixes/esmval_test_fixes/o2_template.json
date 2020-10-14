@@ -1,12 +1,13 @@
 {
     "dataset_id": "",
     "fixes": [{
-        "fix_id": "MetadataFix",
+        "fix_id": "MainVarAttrFix",
         "operands": {
-            "fixes": [
-                "long_name,Dissolved Oxygen Concentration",
-                "standard_name,mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"
-            ]},
+            "attrs": [
+                {"long_name": "Dissolved Oxygen Concentration"},
+                {"standard_name": "mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"}
+            ]
+        },
         "source": {
             "name": "esmvaltool",
             "version": "2.0.0",

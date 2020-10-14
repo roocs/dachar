@@ -106,11 +106,15 @@ class BaseFixProposalStore(object):
 
     def get_proposed_fix_by_id(self, ds_id):
         # go through fixes and return if status is proposed
+        proposed_fixes = []
+
         if self.exists(ds_id):
             content = self.get(ds_id)
             for this_fix in content["fixes"]:
                 if this_fix["status"] == "proposed":
-                    return content
+                    proposed_fixes.append({"dataset_id": ds_id, "this_fix": this_fix})
+                    
+        return proposed_fixes
 
     def get_proposed_fixes(self):
         # go through fixes and return if status is proposed
@@ -121,7 +125,7 @@ class BaseFixProposalStore(object):
                 content = self.get(ds_id)
                 for this_fix in content["fixes"]:
                     if this_fix["status"] == "proposed":
-                        proposed_fixes.append(content)
+                        proposed_fixes.append({"dataset_id": ds_id, "this_fix": this_fix})
 
         return proposed_fixes
 

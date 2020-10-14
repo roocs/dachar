@@ -1,8 +1,16 @@
 from dachar.fixes.coord_fixes import SqueezeDimensionsFix, AddScalarCoordFix
 
 
+source = {
+        "name": "dachar",
+        "version": "test",
+        "comment": "No specific source provided - link to all fixes in dachar",
+        "url": "https://github.com/roocs/dachar/tree/master/dachar/fixes"}
+
+
 def test_SqueezeDimensionsFix():
-    fix = SqueezeDimensionsFix("cmip5.output1.INM.inmcm4.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga", dims="lev")
+    fix = SqueezeDimensionsFix("cmip5.output1.INM.inmcm4.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga", dims="lev",
+                               source=source)
 
     assert fix.fix_id == "SqueezeDimensionsFix"
     assert fix.title == "Squeeze singleton dimensions of the main variable"
@@ -49,7 +57,8 @@ def test_AddScalarCoordFix():
         },
     }
 
-    fix = AddScalarCoordFix("cmip5.output1.ICHEC.EC-EARTH.historical.mon.atmos.Amon.r1i1p1.latest.tas", **operands)
+    fix = AddScalarCoordFix("cmip5.output1.ICHEC.EC-EARTH.historical.mon.atmos.Amon.r1i1p1.latest.tas", **operands,
+                            source=source)
 
     assert fix.fix_id == "AddScalarCoordFix"
     assert fix.title == "Add a coordinate"
