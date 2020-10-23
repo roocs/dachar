@@ -55,6 +55,9 @@ class RankCheck(_BaseCheck):
             return None
 
 
+# TODO: Need to change this so that characteristic compared is coord_type
+#   But characteristic used to create new variable is id
+
 class MissingCoordCheck(_BaseCheck):
     characteristics = ["coordinates.*.id"]
     associated_fix = "AddScalarCoordFix"
@@ -76,11 +79,11 @@ class MissingCoordCheck(_BaseCheck):
         if len(atypical) >= len(typical):
             return None
 
-        # use mappings to get equivalent coords
-        for coord in atypical:
-            if coord not in typical:
-                equivalent_coord = coord_mappings[coord]
-                atypical = [equivalent_coord if i == coord else i for i in atypical]
+        # # use mappings to get equivalent coords
+        # for coord in atypical:
+        #     if coord not in typical:
+        #         equivalent_coord = coord_mappings[coord]
+        #         atypical = [equivalent_coord if i == coord else i for i in atypical]
 
         missing_coords = get_extra_items_in_larger_sequence(atypical, typical)
 
@@ -115,7 +118,7 @@ class MissingCoordCheck(_BaseCheck):
                         operands = {}
 
                         operand_dict = dict(typical_coord._asdict())
-                        for k in ["dtype", "value", "id", "length"]:
+                        for k in ["dtype", "value", "id", "length", "coord_type"]:
                             v = operand_dict.pop(k)
 
                             operands[k] = v

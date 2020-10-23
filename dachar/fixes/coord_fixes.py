@@ -60,7 +60,7 @@ Attributes will be set by attrs: e.g. ds.attrs['units'] = 'm'
     """
 
     category = "coord_fixes"
-    required_operands = ["dtype", "id", "value", "length", "attrs"]
+    required_operands = ["dtype", "id", "value", "length", "attrs", "coord_type"]
     ref_implementation = "daops.data_utils.coord_utils.add_scalar_coord"
     process_type = "post_processor"
 
