@@ -146,7 +146,7 @@ class ElasticFixProposalStore(BaseFixProposalStore, _ElasticSearchBaseJsonStore)
 
     config = {
         "store_type": "elasticsearch",
-        "index": "roocs-fix-proposal",
+        "index": CONFIG['elasticsearch']["fix_proposal_store"],
         "api_token": CONFIG['dachar:settings']['elastic_api_token'],
         "id_type": "dataset_id",
     }
