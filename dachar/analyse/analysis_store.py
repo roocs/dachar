@@ -29,7 +29,7 @@ class ElasticAnalysisRecordsStore(_ElasticSearchBaseJsonStore):
     store_name = "Analysis Results Store"
     config = {
         "store_type": "elasticsearch",
-        "index": "roocs-analysis",
+        "index": CONFIG['elasticsearch']["analysis_store"],
         "api_token": CONFIG['dachar:settings']['elastic_api_token'],
         "id_type": "sample_id",
     }
