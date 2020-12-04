@@ -248,7 +248,9 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
             self.es = CEDAElasticsearchClient(headers={"x-api-key": api_token})
         else:
             self.es = Elasticsearch(
-                ["elasticsearch.ceda.ac.uk"], use_ssl=True, port=443
+                [CONFIG["elasticsearch"]["endpoint"]],
+                use_ssl=True,
+                port=CONFIG["elasticsearch"]["port"],
             )
 
     def _convert_id(self, id):
