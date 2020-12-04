@@ -12,6 +12,7 @@ from datetime import datetime
 from elasticsearch import Elasticsearch
 from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
 from dachar.config import ELASTIC_API_TOKEN
+from dachar import CONFIG
 
 from dachar.utils.get_stores import (
     get_fix_store,
@@ -36,13 +37,13 @@ es = CEDAElasticsearchClient(headers={"x-api-key": ELASTIC_API_TOKEN})
 date = datetime.today().strftime("%Y-%m-%d")
 
 # character store
-char_name = "roocs-char"
+char_name = CONFIG['elasticsearch']["character_store"]
 # analysis store
-a_name = "roocs-analysis"
+a_name = CONFIG['elasticsearch']["analysis_store"]
 # fix store
-fix_name = "roocs-fix"
+fix_name = CONFIG['elasticsearch']["fix_store"]
 # fix proposal store
-fix_prop_name = "roocs-fix-prop"
+fix_prop_name = CONFIG['elasticsearch']["fix_proposal_store"]
 
 
 def create_index_and_alias(name):

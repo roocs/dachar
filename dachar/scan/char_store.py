@@ -26,7 +26,7 @@ class ElasticDatasetCharacterStore(_ElasticSearchBaseJsonStore):
     store_name = "Dataset Character Store"
     config = {
         "store_type": "elasticsearch",
-        "index": "roocs-char",
+        "index": CONFIG['elasticsearch']["character_store"],
         "api_token": CONFIG['dachar:settings']['elastic_api_token'],
         "id_type": "dataset_id",
     }
