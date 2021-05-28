@@ -59,8 +59,10 @@ class _TestOneSampleAnalyser(OneSampleAnalyser):
 
         self._sample = []
         for path in glob.glob(_sample_id):
+            print(path)
             if self.project in ["cmip5", "cmip6", "cordex"]:
                 self._sample.append(".".join(path.split("/")[10:]))
+                print(".".join(path.split("/")[10:]))
             else:
                 self._sample.append(".".join(path.split("/")[13:]))
 
