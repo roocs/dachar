@@ -1,33 +1,37 @@
 import os
 import tempfile
+from pathlib import Path
+
 from jinja2 import Template
 
+ROOCS_CFG = os.path.join(tempfile.gettempdir(), "roocs.ini")
 TESTS_HOME = os.path.abspath(os.path.dirname(__file__))
-ROOCS_CFG = os.path.join(tempfile.gettempdir(), 'roocs.ini')
+MINI_ESGF_CACHE_DIR = Path.home() / ".mini-esgf-data"
+MINI_ESGF_MASTER_DIR = os.path.join(MINI_ESGF_CACHE_DIR, "master")
 
 
 def write_roocs_cfg():
     cfg_templ = """
     [project:cmip5]
-    base_dir = {{ base_dir }}/mini-esgf-data/test_data/badc/cmip5/data
+    base_dir = {{ base_dir }}/test_data/badc/cmip5/data
 
     [project:cmip6]
-    base_dir = {{ base_dir }}/mini-esgf-data/test_data/badc/cmip6/data
+    base_dir = {{ base_dir }}/test_data/badc/cmip6/data
 
     [project:cordex]
-    base_dir = {{ base_dir }}/mini-esgf-data/test_data/badc/cordex/data
+    base_dir = {{ base_dir }}/test_data/badc/cordex/data
 
     [project:c3s-cmip5]
-    base_dir = {{ base_dir }}/mini-esgf-data/test_data/group_workspaces/jasmin2/cp4cds1/vol1/data
+    base_dir = {{ base_dir }}/test_data/gws/nopw/j04/cp4cds1_vol1/data/
 
     [project:c3s-cmip6]
-    base_dir = NOT DEFINED YET
+    base_dir = {{ base_dir }}/test_data/badc/cmip6/data
 
     [project:c3s-cordex]
-    base_dir = {{ base_dir }}/mini-esgf-data/test_data/group_workspaces/jasmin2/cp4cds1/vol1/data
+    base_dir = {{ base_dir }}/test_data/gws/nopw/j04/cp4cds1_vol1/data/
     """
-    cfg = Template(cfg_templ).render(base_dir=TESTS_HOME)
-    with open(ROOCS_CFG, 'w') as fp:
+    cfg = Template(cfg_templ).render(base_dir=MINI_ESGF_MASTER_DIR)
+    with open(ROOCS_CFG, "w") as fp:
         fp.write(cfg)
     # point to roocs cfg in environment
-    os.environ['ROOCS_CONFIG'] = ROOCS_CFG
+    os.environ["ROOCS_CONFIG"] = ROOCS_CFG

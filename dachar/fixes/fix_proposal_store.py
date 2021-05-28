@@ -1,8 +1,9 @@
 from copy import deepcopy
 
-from dachar.utils.common import now_string
-from dachar.utils.json_store import _LocalBaseJsonStore, _ElasticSearchBaseJsonStore
 from dachar import CONFIG
+from dachar.utils.common import now_string
+from dachar.utils.json_store import _ElasticSearchBaseJsonStore
+from dachar.utils.json_store import _LocalBaseJsonStore
 
 
 class BaseFixProposalStore(object):
@@ -32,9 +33,9 @@ class BaseFixProposalStore(object):
                     'reason': '',
                     'status': 'proposed',
                     'timestamp': '2020-04-29T14:41:52'}]}
-                    
-                    
-    Are title, description, category, ref_implementation needed here?                
+
+
+    Are title, description, category, ref_implementation needed here?
     Should ncml be in fix?
     """
 
@@ -113,7 +114,7 @@ class BaseFixProposalStore(object):
             for this_fix in content["fixes"]:
                 if this_fix["status"] == "proposed":
                     proposed_fixes.append({"dataset_id": ds_id, "this_fix": this_fix})
-                    
+
         return proposed_fixes
 
     def get_proposed_fixes(self):
@@ -125,7 +126,9 @@ class BaseFixProposalStore(object):
                 content = self.get(ds_id)
                 for this_fix in content["fixes"]:
                     if this_fix["status"] == "proposed":
-                        proposed_fixes.append({"dataset_id": ds_id, "this_fix": this_fix})
+                        proposed_fixes.append(
+                            {"dataset_id": ds_id, "this_fix": this_fix}
+                        )
 
         return proposed_fixes
 
@@ -150,7 +153,7 @@ class ElasticFixProposalStore(BaseFixProposalStore, _ElasticSearchBaseJsonStore)
 
     config = {
         "store_type": "elasticsearch",
-        "index": "roocs-fix-proposal",
-        "api_token": CONFIG['dachar:settings']['elastic_api_token'],
+        "index": CONFIG["elasticsearch"]["fix_proposal_store"],
+        "api_token": CONFIG["dachar:settings"]["elastic_api_token"],
         "id_type": "dataset_id",
     }

@@ -1,13 +1,15 @@
 # Tests for default JsonStore class
 import os
 import shutil
-import pytest
 import time
 
-from dachar.utils.json_store import _ElasticSearchBaseJsonStore
-from elasticsearch import Elasticsearch, exceptions
+import pytest
 from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
+from elasticsearch import Elasticsearch
+from elasticsearch import exceptions
+
 from dachar import CONFIG
+from dachar.utils.json_store import _ElasticSearchBaseJsonStore
 
 
 # Create dummy stores to run tests on - one with write access and one with read only
@@ -17,7 +19,7 @@ class _TestStore(_ElasticSearchBaseJsonStore):
     config = {
         "store_type": "elasticsearch",
         "index": "roocs-char-test",
-        "api_token": CONFIG['dachar:settings']['elastic_api_token'],
+        "api_token": CONFIG["dachar:settings"]["elastic_api_token"],
         "id_type": "ds_id",
     }
 
@@ -63,13 +65,19 @@ def setup_module():
     clear_store()
 
 
-@pytest.mark.online
+@pytest.mark.skipif(
+    CONFIG["dachar:settings"]["elastic_api_token"] == "",
+    reason="cannot connect to elasticsearch",
+)
 def test_verify_store():
     # Tests that the store gets created - via setup_module()
     pass
 
 
-@pytest.mark.online
+@pytest.mark.skipif(
+    CONFIG["dachar:settings"]["elastic_api_token"] == "",
+    reason="cannot connect to elasticsearch",
+)
 def test_put():
     store.put(recs[0][0], recs[0][1])
     store.put(recs[2][0], recs[2][1])
@@ -77,7 +85,10 @@ def test_put():
     assert store.exists(recs[2][0])
 
 
-@pytest.mark.online
+@pytest.mark.skipif(
+    CONFIG["dachar:settings"]["elastic_api_token"] == "",
+    reason="cannot connect to elasticsearch",
+)
 def test_read():
     rec = read_store.get("1.2.3.4.5.6.b")
     assert rec["ds_id"] == "1.2.3.4.5.6.b"

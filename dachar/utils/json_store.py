@@ -1,12 +1,14 @@
-import json
 import hashlib
+import json
 import os
 
+from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
+from elasticsearch import Elasticsearch
+from elasticsearch import helpers
 
 from .common import nested_lookup
-from elasticsearch import Elasticsearch, helpers
-from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
-from dachar import CONFIG, logging
+from dachar import CONFIG
+from dachar import logging
 
 LOGGER = logging.getLogger(__file__)
 
@@ -237,7 +239,7 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
     config = {
         "store_type": "elasticsearch",
         "index": "",
-        "api_token": CONFIG['dachar:settings']['elastic_api_token'],
+        "api_token": CONFIG["dachar:settings"]["elastic_api_token"],
         "id_type": "id",
     }
 
@@ -248,7 +250,9 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
             self.es = CEDAElasticsearchClient(headers={"x-api-key": api_token})
         else:
             self.es = Elasticsearch(
-                ["elasticsearch.ceda.ac.uk"], use_ssl=True, port=443
+                [CONFIG["elasticsearch"]["endpoint"]],
+                use_ssl=True,
+                port=CONFIG["elasticsearch"]["port"],
             )
 
     def _convert_id(self, id):
@@ -330,7 +334,7 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
                     results.append(each["_source"])
 
         # ensure there are no duplicates of the same result
-        return list(dict((v[self.config.get("id_type")], v) for v in results).values())
+        return list({v[self.config.get("id_type")]: v for v in results}.values())
 
     def _search_all(self, term):
 
@@ -345,7 +349,7 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
                 results.append(each["_source"])
 
         # ensure there are no duplicates of the same result
-        return list(dict((v[self.config.get("id_type")], v) for v in results).values())
+        return list({v[self.config.get("id_type")]: v for v in results}.values())
 
     def _field_requirements(self, fields, term, query_type):
 
@@ -359,14 +363,16 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
 
         if isinstance(term, float) or isinstance(term, int):
             exact = True
-            LOGGER.info(f"Must search for exact value when the search term is a number, "
-                        f"Changing search to exact=True"
+            LOGGER.info(
+                f"Must search for exact value when the search term is a number, "
+                f"Changing search to exact=True"
             )
 
         if isinstance(term, str) and " " in term and exact is False:
-            LOGGER.info(f"Ensure the case of your search term is correct as this type of "
-                        f"search is case sensitive. If you are not sure of the correct case change "
-                        f"your search term to a one word search or use exact=True."
+            LOGGER.info(
+                f"Ensure the case of your search term is correct as this type of "
+                f"search is case sensitive. If you are not sure of the correct case change "
+                f"your search term to a one word search or use exact=True."
             )
 
         if match_ids is True and exact is True:

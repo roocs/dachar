@@ -2,23 +2,21 @@
 Currently this script produces a index with today's date and creates an alias for it.
 There is a function to populate the elasticsearch store with the contents of the local store
 """
-
-import sys
-import os
-import pathlib
 import hashlib
 import json
+import os
+import pathlib
+import sys
 from datetime import datetime
-from elasticsearch import Elasticsearch
-from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
-from dachar import CONFIG
 
-from dachar.utils.get_stores import (
-    get_fix_store,
-    get_fix_prop_store,
-    get_dc_store,
-    get_ar_store,
-)
+from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
+from elasticsearch import Elasticsearch
+
+from dachar import CONFIG
+from dachar.utils.get_stores import get_ar_store
+from dachar.utils.get_stores import get_dc_store
+from dachar.utils.get_stores import get_fix_prop_store
+from dachar.utils.get_stores import get_fix_store
 
 # from tests._stores_for_tests import (
 #     _TestFixProposalStore,
@@ -27,7 +25,9 @@ from dachar.utils.get_stores import (
 #     _TestDatasetCharacterStore,
 # )
 
-es = CEDAElasticsearchClient(headers={"x-api-key": CONFIG['dachar:settings']['elastic_api_token']})
+es = CEDAElasticsearchClient(
+    headers={"x-api-key": CONFIG["dachar:settings"]["elastic_api_token"]}
+)
 
 # es.indices.delete(index="roocs-fix-2020-10-12", ignore=[400, 404])
 # print(es.indices.exists("roocs-char-test"))
@@ -36,13 +36,13 @@ es = CEDAElasticsearchClient(headers={"x-api-key": CONFIG['dachar:settings']['el
 # date = datetime.today().strftime("%Y-%m-%d")
 
 # character store
-char_name = "roocs-char"
+char_name = CONFIG["elasticsearch"]["character_store"]
 # analysis store
-a_name = "roocs-analysis"
+a_name = CONFIG["elasticsearch"]["analysis_store"]
 # fix store
-fix_name = "roocs-fix"
+fix_name = CONFIG["elasticsearch"]["fix_store"]
 # fix proposal store
-fix_prop_name = "roocs-fix-prop"
+fix_prop_name = CONFIG["elasticsearch"]["fix_proposal_store"]
 
 
 def create_index_and_alias(name, date):
@@ -53,12 +53,14 @@ def create_index_and_alias(name, date):
         )  # do I need to include a mapping - should be put in here
     alias_exists = es.indices.exists_alias(name=f"{name}", index=f"{name}-{date}")
     if not alias_exists:
-        es.indices.update_aliases(body={
-            "actions": [
-                {"remove": {"alias": f"{name}", "index": "*"}},
-                {"add": {"alias": f"{name}", "index": f"{name}-{date}"}}
-            ]
-        })
+        es.indices.update_aliases(
+            body={
+                "actions": [
+                    {"remove": {"alias": f"{name}", "index": "*"}},
+                    {"add": {"alias": f"{name}", "index": f"{name}-{date}"}},
+                ]
+            }
+        )
         # es.indices.put_alias(index=f"{name}-{date}", name=f"{name}")
 
 
