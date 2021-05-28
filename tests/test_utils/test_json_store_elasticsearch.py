@@ -1,13 +1,15 @@
 # Tests for default JsonStore class
 import os
 import shutil
-import pytest
 import time
 
-from dachar.utils.json_store import _ElasticSearchBaseJsonStore
-from elasticsearch import Elasticsearch, exceptions
+import pytest
 from ceda_elasticsearch_tools.elasticsearch import CEDAElasticsearchClient
+from elasticsearch import Elasticsearch
+from elasticsearch import exceptions
+
 from dachar import CONFIG
+from dachar.utils.json_store import _ElasticSearchBaseJsonStore
 
 
 # Create a new dummy store to run tests on
@@ -17,7 +19,7 @@ class _TestStore(_ElasticSearchBaseJsonStore):
     config = {
         "store_type": "elasticsearch",
         "index": "roocs-char-test",
-        "api_token": CONFIG['dachar:settings']['elastic_api_token'],
+        "api_token": CONFIG["dachar:settings"]["elastic_api_token"],
         "id_type": "ds_id",
     }
     required_fields = ["d"]
@@ -50,13 +52,19 @@ def setup_module():
     clear_store()
 
 
-@pytest.mark.online
+@pytest.mark.skipif(
+    CONFIG["dachar:settings"]["elastic_api_token"] == "",
+    reason="cannot connect to elasticsearch",
+)
 def test_verify_store():
     # Tests that the store gets created - via setup_module()
     pass
 
 
-@pytest.mark.online
+@pytest.mark.skipif(
+    CONFIG["dachar:settings"]["elastic_api_token"] == "",
+    reason="cannot connect to elasticsearch",
+)
 def test_put():
     store.put(recs[0][0], recs[0][1])
     store.put(recs[2][0], recs[2][1])
@@ -64,13 +72,19 @@ def test_put():
     assert store.exists(recs[2][0])
 
 
-@pytest.mark.online
+@pytest.mark.skipif(
+    CONFIG["dachar:settings"]["elastic_api_token"] == "",
+    reason="cannot connect to elasticsearch",
+)
 def test_get():
     rec = store.get("1.2.3.4.5.6.b")
     assert rec["ds_id"] == "1.2.3.4.5.6.b"
 
 
-@pytest.mark.online
+@pytest.mark.skipif(
+    CONFIG["dachar:settings"]["elastic_api_token"] == "",
+    reason="cannot connect to elasticsearch",
+)
 def test_put_force_parameter():
     _id, content = recs[0]
     if not store.exists(_id):
@@ -97,7 +111,10 @@ def test_put_force_parameter():
 #     store.delete(_id)
 
 
-@pytest.mark.online
+@pytest.mark.skipif(
+    CONFIG["dachar:settings"]["elastic_api_token"] == "",
+    reason="cannot connect to elasticsearch",
+)
 def test_delete():
     _id = recs[2][0]
     assert store.exists(_id)
@@ -106,21 +123,30 @@ def test_delete():
     assert store.get(_id) is None
 
 
-@pytest.mark.online
+@pytest.mark.skipif(
+    CONFIG["dachar:settings"]["elastic_api_token"] == "",
+    reason="cannot connect to elasticsearch",
+)
 def test_validate_non_json():
     with pytest.raises(Exception) as exc:
         store._validate("rubbish")
         assert str(exc.value) == "Cannot serialise content to valid JSON."
 
 
-@pytest.mark.online
+@pytest.mark.skipif(
+    CONFIG["dachar:settings"]["elastic_api_token"] == "",
+    reason="cannot connect to elasticsearch",
+)
 def test_put_fail_validate():
     with pytest.raises(ValueError) as exc:
         store.put(*recs[1])
         assert str(exc.value).find('Required content "d" not found.') > -1
 
 
-@pytest.mark.online
+@pytest.mark.skipif(
+    CONFIG["dachar:settings"]["elastic_api_token"] == "",
+    reason="cannot connect to elasticsearch",
+)
 def test_get_all():
     time.sleep(5)  # sleep to ensure index has updated
 
@@ -128,7 +154,10 @@ def test_get_all():
     assert len(all) == 1
 
 
-@pytest.mark.online
+@pytest.mark.skipif(
+    CONFIG["dachar:settings"]["elastic_api_token"] == "",
+    reason="cannot connect to elasticsearch",
+)
 def test_get_all_ids():
     time.sleep(5)  # sleep to ensure index has updated
 
@@ -144,7 +173,10 @@ def test_get_all_ids():
 # field if only top level field is specified)
 
 
-@pytest.mark.online
+@pytest.mark.skipif(
+    CONFIG["dachar:settings"]["elastic_api_token"] == "",
+    reason="cannot connect to elasticsearch",
+)
 def test_search_by_term():
     store.put(recs[2][0], recs[2][1], force=True)
     store.put(recs[0][0], recs[0][1], force=True)
@@ -198,7 +230,10 @@ def test_search_by_term():
     assert resp == []
 
 
-@pytest.mark.online
+@pytest.mark.skipif(
+    CONFIG["dachar:settings"]["elastic_api_token"] == "",
+    reason="cannot connect to elasticsearch",
+)
 def test_search_by_id():
     store.put(recs[2][0], recs[2][1], force=True)
     store.put(recs[0][0], recs[0][1], force=True)
