@@ -1,17 +1,20 @@
-from netCDF4 import Dataset
-import pytest
-import os
-import xarray as xr
-import numpy as np
 import itertools
+import os
 
+import numpy as np
+import pytest
+import xarray as xr
+from netCDF4 import Dataset
 from time_checks.multifile_time_checks import check_multifile_temporal_continuity
-from dachar.scan.check_files import check_files, InconsistencyError
+
+from dachar.scan.check_files import check_files
+from dachar.scan.check_files import InconsistencyError
+from tests._common import MINI_ESGF_MASTER_DIR
 
 test_files = [
-    "tests/mini-esgf-data/test_data/badc/cmip5/data/cmip5/output1/MOHC/HadGEM2-ES/rcp85/mon/atmos/Amon/r1i1p1/latest/tas/tas_Amon_HadGEM2-ES_rcp85_r1i1p1_200512-203011.nc",
-    "tests/mini-esgf-data/test_data/badc/cmip5/data/cmip5/output1/MOHC/HadGEM2-ES/rcp85/mon/atmos/Amon/r1i1p1/latest/tas/tas_Amon_HadGEM2-ES_rcp85_r1i1p1_203012-205511.nc",
-    "tests/mini-esgf-data/test_data/badc/cmip5/data/cmip5/output1/MOHC/HadGEM2-ES/rcp85/mon/atmos/Amon/r1i1p1/latest/tas/tas_Amon_HadGEM2-ES_rcp85_r1i1p1_205512-208011.nc",
+    f"{MINI_ESGF_MASTER_DIR}/test_data/badc/cmip5/data/cmip5/output1/MOHC/HadGEM2-ES/rcp85/mon/atmos/Amon/r1i1p1/latest/tas/tas_Amon_HadGEM2-ES_rcp85_r1i1p1_200512-203011.nc",
+    f"{MINI_ESGF_MASTER_DIR}/test_data/badc/cmip5/data/cmip5/output1/MOHC/HadGEM2-ES/rcp85/mon/atmos/Amon/r1i1p1/latest/tas/tas_Amon_HadGEM2-ES_rcp85_r1i1p1_203012-205511.nc",
+    f"{MINI_ESGF_MASTER_DIR}/test_data/badc/cmip5/data/cmip5/output1/MOHC/HadGEM2-ES/rcp85/mon/atmos/Amon/r1i1p1/latest/tas/tas_Amon_HadGEM2-ES_rcp85_r1i1p1_205512-208011.nc",
 ]
 
 F1, F2, F3 = test_files
@@ -84,13 +87,13 @@ def var_attr(request):
     return attr
 
 
-def test_success_with_no_changes():
+def test_success_with_no_changes(load_esgf_test_data):
     ds_open = open([F1, F2, F3])
     ds_check = _check_and_open([F1, F2, F3])
     assert ds_open == ds_check
 
 
-def test_fail_diff_var_attrs(var_attr):
+def test_fail_diff_var_attrs(var_attr, load_esgf_test_data):
     V = "rubbish"
     file_paths = F1, make_nc_modify_var_attr(F2, "tas", var_attr, V), F3
     try:
@@ -103,7 +106,7 @@ def test_fail_diff_var_attrs(var_attr):
         )
 
 
-def test_fail_diff_fill_value():
+def test_fail_diff_fill_value(load_esgf_test_data):
     fill_value = np.float32(-1e20)
     file_paths = F1, make_nc_modify_fill_value(F2, "tas", fill_value=fill_value), F3
     try:
@@ -115,7 +118,7 @@ def test_fail_diff_fill_value():
         )
 
 
-def test_fail_diff_var_id():
+def test_fail_diff_var_id(load_esgf_test_data):
     new_var_id = "blah"
     old_var_id = "tas"
     _f = make_nc_modify_var_id(F2, old_var_id, new_var_id)
@@ -129,7 +132,7 @@ def test_fail_diff_var_id():
         )
 
 
-def test_fail_files_missing_in_time_series():
+def test_fail_files_missing_in_time_series(load_esgf_test_data):
     # exclude middle file to break up time series
     file_paths = F1, F3
     try:
@@ -138,7 +141,7 @@ def test_fail_files_missing_in_time_series():
         assert str(exc) == "[ERROR] File not in series"
 
 
-def test_fail_coord_values_different():
+def test_fail_coord_values_different(load_esgf_test_data):
     file_paths = F1, make_nc_modify_coord_value(F2), F3
     try:
         _check_and_open(file_paths)
@@ -149,7 +152,7 @@ def test_fail_coord_values_different():
         )
 
 
-def test_fail_coord_attr_different():
+def test_fail_coord_attr_different(load_esgf_test_data):
     V = "fake"
     file_paths = F1, make_nc_modify_var_attr(F2, "lat", "standard_name", V), F3
     try:
@@ -162,7 +165,7 @@ def test_fail_coord_attr_different():
         )
 
 
-def test_fail_time_attr_different():
+def test_fail_time_attr_different(load_esgf_test_data):
     V = "fake"
     file_paths = F1, make_nc_modify_var_attr(F2, "time", "standard_name", V), F3
     try:
@@ -175,7 +178,7 @@ def test_fail_time_attr_different():
         )
 
 
-def test_failures_not_affected_by_order():
+def test_failures_not_affected_by_order(load_esgf_test_data):
     # Apply a breaking change to different files in the sequence and
     # assert that the same exception is raised regardless of which
     # file is modified
