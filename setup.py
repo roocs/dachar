@@ -5,12 +5,11 @@
 __author__ = "Elle Smith"
 __contact__ = "eleanor.smith@stfc.ac.uk"
 __copyright__ = "Copyright 2018 United Kingdom Research and Innovation"
-__version__ = ""
+__version__ = "0.1.0"
 __license__ = "BSD"
 
-from setuptools import find_packages
-from setuptools import setup
-
+import os
+from setuptools import setup, find_packages
 
 # One strategy for storing the overall version is to put it in the top-level
 # package's __init__ but Nb. test_json_store.py files are not needed to declare
@@ -20,9 +19,8 @@ from setuptools import setup
 #
 # Use markdown format read me file as GitHub will render it automatically
 # on package page
-with open("README.md") as readme_file:
-    _long_description = readme_file.read()
-
+here = os.path.abspath(os.path.dirname(__file__))
+_long_description = open(os.path.join(here, "README.rst")).read()
 
 requirements = [line.strip() for line in open("requirements.txt")]
 
@@ -79,15 +77,9 @@ setup(
     # in this case early Python 2 and 3 releases
     python_requires=">=3.6.0",
     entry_points={"console_scripts": ["dachar=dachar.cli:main",],},
-    install_requires=[
-        requirements,
-        "time_checks @ git+https://github.com/cedadev/time-checks.git",
-        "ceda-elasticsearch-tools @ git+https://github.com/cedadev/ceda-elasticsearch-tools.git",
-        "roocs-utils @ git+https://github.com/roocs/roocs-utils.git",
-        "clisops @ git+https://github.com/roocs/clisops.git",
-    ],
+    install_requires=[requirements,],
     long_description=_long_description,
-    long_description_content_type="text/markdown",
+    long_description_content_type="text/x-rst",
     include_package_data=True,
     keywords="dachar",
     name="dachar",
