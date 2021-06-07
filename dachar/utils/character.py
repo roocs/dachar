@@ -59,7 +59,13 @@ def get_coords(da):
             else:
                 mn, mx = [float(_) for _ in (mn, mx)]
 
-            coords[name] = {"id": name, "coord_type": coord_type, "min": mn, "max": mx, "length": len(data)}
+            coords[name] = {
+                "id": name,
+                "coord_type": coord_type,
+                "min": mn,
+                "max": mx,
+                "length": len(data),
+            }
 
         if coord_type == "time":
             if type(data[0]) == np.datetime64:
@@ -153,9 +159,10 @@ class CharacterExtractor(object):
         self._extract()
 
     def _extract(self):
-        ds = xr.open_mfdataset(self._files, use_cftime=True, combine="by_coords")
+        ds = xarray_utils.open_xr_dataset(self._files)
         LOGGER.info(f"NEED TO CHECK NUMBER OF VARS/DOMAINS RETURNED HERE")
-        LOGGER.info(f"DOES NOT CHECK YET WHETHER WE MIGHT GET 2 DOMAINS/VARIABLES BACK FROM MULTI-FILE OPEN"
+        LOGGER.info(
+            f"DOES NOT CHECK YET WHETHER WE MIGHT GET 2 DOMAINS/VARIABLES BACK FROM MULTI-FILE OPEN"
         )
         # Get content by variable
         da = ds[self._var_id]
