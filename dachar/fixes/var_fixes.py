@@ -1,26 +1,27 @@
+from dachar.fixes._base_fix import _BaseDatasetFix
 from dachar.utils.common import UNDEFINED
 
-from dachar.fixes._base_fix import _BaseDatasetFix
-
-__all__ = ["Reverse2DVarFix"]
+__all__ = ["AddDataVarFix"]
 
 
-class Reverse2DVarFix(_BaseDatasetFix):
-    fix_id = "Reverse2DVarFix"
-    title = "Reverse data of 2D Variables"
+class AddDataVarFix(_BaseDatasetFix):
+    fix_id = "AddDataVarFix"
+    title = "Add a variable"
     description = """
-"Reverses the order of the data of the given 2d variables
-
-Takes as an input the names of the variables to be reversed
-as a list:
+Takes the variable to add along with its attributes
 
 For example:
   - inputs:
-    {
-    "var_ids": ["a_bnds", "b_bnds"]
-    },
-"""
-    category = "var_fixes"
-    required_operands = ["var_ids"]
-    ref_implementation = "daops.data_utils.var_utils.reverse_2d_vars"
+    - {'var_id': 'realization',
+       'value': '1',
+       'dtype': 'int32',
+       'attrs': {'long_name': 'realization',
+                 'comment': 'example'}
+      }
+
+    """
+
+    category = "coord_fixes"
+    required_operands = ["dtype", "var_id", "value", "attrs"]
+    ref_implementation = "daops.data_utils.var_utils.add_data_var"
     process_type = "post_processor"

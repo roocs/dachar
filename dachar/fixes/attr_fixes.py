@@ -1,60 +1,87 @@
+from dachar.fixes._base_fix import _BaseDatasetFix
 from dachar.utils.common import UNDEFINED
 
-from dachar.fixes._base_fix import _BaseDatasetFix
+__all__ = [
+    "GlobalAttrFix",
+    "CheckAddGlobalAttrFix",
+    "VarAttrFix",
+    "RemoveFillValuesFix",
+]
 
-__all__ = ["MainVarAttrFix", "AttrFix"]
 
-
-class MainVarAttrFix(_BaseDatasetFix):
-    fix_id = "MainVarAttrFix"
-    title = "Apply Fix to Attributes of Main Variable"
+class GlobalAttrFix(_BaseDatasetFix):
+    fix_id = "GlobalAttrFix"
+    title = "Apply Fix to Global Attributes"
     description = """
-"Applies metadata fix e.g. fixing standard name or adding missing standard name
- for the main variable of the dataset.
+Edits or adds global attributes e.g. fixing forcing description or institution_id.
 
-Takes a list of fixes with each fix as a dictionary containing the attribute
-to be changed as the key and what the value should be as the value e.g.:
-
-{"long_name": "Dissolved Oxygen Concentration"},
-{"standard_name": "mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"}
+Takes a dictionary of fixes with each fix as a key and value pair with the attribute
+to be changed as the key and what the value should be as the value.
 
 For example:
   - inputs:
-    {"attrs": [
-        {"long_name": "Dissolved Oxygen Concentration"},
-        {"standard_name": "mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"}
-        ]
+    {"attrs":
+        {"forcing_description": "Free text describing the forcings",
+        "physics_description": "Free text describing the physics method"}
     },
 """
     category = "attr_fixes"
     required_operands = ["attrs"]
-    ref_implementation = "daops.data_utils.attr_utils.fix_attr_main_var"
+    ref_implementation = "daops.data_utils.attr_utils.edit_global_attrs"
     process_type = "post_processor"
 
 
-class AttrFix(_BaseDatasetFix):
-    fix_id = "AttrFix"
+class CheckAddGlobalAttrFix(_BaseDatasetFix):
+    fix_id = "CheckAddGlobalAttrFix"
+    title = "Add Global Attributes if missing"
+    description = """
+"Checks for the existence of a global attribute and adds it, only if it is missing.
+
+Takes a dictionary of fixes with each fix as a key and value pair with the attribute
+as the key and what the value should be as the value.
+
+For example:
+  - inputs:
+    {"attrs":
+        {"forcing_description": "Free text describing the forcings",
+        "physics_description": "Free text describing the physics method"}
+    },
+"""
+    category = "attr_fixes"
+    required_operands = ["attrs"]
+    ref_implementation = "daops.data_utils.attr_utils.add_global_attrs_if_needed"
+    process_type = "post_processor"
+
+
+class VarAttrFix(_BaseDatasetFix):
+    fix_id = "VarAttrFix"
     title = "Apply Fix to Attributes of any Variable"
     description = """
-"Applies metadata fix e.g. fixing standard name or adding missing standard name
- for a given variable of the dataset.
+Edits or adds the attributes of a given variables e.g. fixing standard name or adding missing standard name
 
-Takes a list of fixes with each fix as a dictionary containing the attribute
-to be changed as the key and what the value should be as the value e.g.:
-
-{"long_name": "Dissolved Oxygen Concentration"},
-{"standard_name": "mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"}
+Takes a dictionary of fixes with each fix as a key and value pair with the attribute
+to be changed as the key and what the value should be as the value.
 
 For example:
   - inputs:
     {"var_id": "lev",
-    "attrs": [
-        {"long_name": "Dissolved Oxygen Concentration"},
-        {"standard_name": "mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"}
-        ]
-    },
+    "attrs":
+        {"long_name": "Dissolved Oxygen Concentration",
+        "standard_name": "mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"}
+    }
 """
     category = "attr_fixes"
     required_operands = ["var_id", "attrs"]
-    ref_implementation = "daops.data_utils.attr_utils.fix_attr"
+    ref_implementation = "daops.data_utils.attr_utils.edit_var_attrs"
+    process_type = "post_processor"
+
+
+class RemoveFillValuesFix(_BaseDatasetFix):
+    fix_id = "RemoveFillValuesFix"
+    title = "Remove the Fill Value from coordiante varaibles"
+    description = """
+"Remove the FillValue attributes from coordinate variables which are added during manipulation with xarray, as NaNs.
+"""
+    category = "attr_fixes"
+    ref_implementation = "daops.data_utils.attr_utils.remove_fill_values"
     process_type = "post_processor"

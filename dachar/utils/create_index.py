@@ -1,6 +1,6 @@
 """
-Currently this script produces a index with today's date and creates an alias for it.
-There is a function to populate the elasticsearch store with the contents of the local store
+This script can produce an index with today's date and update the alias to point to it.
+There is also a function to populate the elasticsearch store with the contents of the local store
 """
 import hashlib
 import json
@@ -46,11 +46,13 @@ fix_prop_name = CONFIG["elasticsearch"]["fix_proposal_store"]
 
 
 def create_index_and_alias(name, date):
+    """
+    create an index and update the alias to point to it
+    """
+
     exists = es.indices.exists(f"{name}-{date}")
     if not exists:
-        es.indices.create(
-            f"{name}-{date}"
-        )  # do I need to include a mapping - should be put in here
+        es.indices.create(f"{name}-{date}")
     alias_exists = es.indices.exists_alias(name=f"{name}", index=f"{name}-{date}")
     if not alias_exists:
         es.indices.update_aliases(
@@ -65,6 +67,13 @@ def create_index_and_alias(name, date):
 
 
 def populate_store(local_store, index, id_type):
+    """
+    Populates elasticsearch index from local store
+    :param local_store: local store object to populate from
+    :param index: Name of elasticsearch index to populate
+    :param id_type: what the id is called in the provided index i.e. either dataset_id (for fix, character and fix proposal store) or sample_id (for the analysis store)
+    """
+
     root = local_store.config.get(
         "local.base_dir"
     )  # change if wanting to use a test store
