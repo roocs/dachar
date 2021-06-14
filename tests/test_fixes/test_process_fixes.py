@@ -109,45 +109,33 @@ def test_get_2_proposed_fixes():
 
     assert len(proposed_fixes) == 2
 
-    assert (proposed_fixes[0]) == {
-        "dataset_id": "ds.1.1.1.1.1.1",
-        "fixes": [
-            {
-                "fix": {
-                    "category": "test_fixes",
-                    "description": "Applies fix 1",
-                    "fix_id": "Fix1",
-                    "operands": {"arg1": "1"},
-                    "reference_implementation": "daops.test.test_fix1",
-                    "title": "Apply Fix 1",
-                },
-                "history": [],
-                "reason": "",
-                "status": "proposed",
-                "timestamp": now_string(),
-            }
-        ],
-    }
+    assert (proposed_fixes[1]) == {'dataset_id': 'ds.1.1.1.1.1.1',
+                                   'this_fix':
+                                       {'fix':
+                                            {'category': 'test_fixes',
+                                             'description': 'Applies fix 1',
+                                             'fix_id': 'Fix1',
+                                             'operands': {'arg1': '1'},
+                                             'reference_implementation': 'daops.test.test_fix1',
+                                             'title': 'Apply Fix 1'},
+                                        'history': [],
+                                        'reason': '',
+                                        'status': 'proposed',
+                                        'timestamp': now_string()}}
 
-    assert proposed_fixes[1] == {
-        "dataset_id": "ds.2.1.1.1.1.1",
-        "fixes": [
-            {
-                "fix": {
-                    "category": "test_fixes",
-                    "description": "Applies fix 2",
-                    "fix_id": "Fix2",
-                    "operands": {"arg2": "2"},
-                    "reference_implementation": "daops.test.test_fix2",
-                    "title": "Apply Fix 2",
-                },
-                "history": [],
-                "reason": "",
-                "status": "proposed",
-                "timestamp": now_string(),
-            }
-        ],
-    }
+    assert proposed_fixes[0] == {'dataset_id': 'ds.2.1.1.1.1.1',
+                                 'this_fix':
+                                     {'fix':
+                                          {'category': 'test_fixes',
+                                           'description': 'Applies fix 2',
+                                           'fix_id': 'Fix2',
+                                           'operands': {'arg2': '2'},
+                                           'reference_implementation': 'daops.test.test_fix2',
+                                           'title': 'Apply Fix 2'},
+                                      'history': [],
+                                      'reason': '',
+                                      'status': 'proposed',
+                                      'timestamp': now_string()}}
 
 
 # tests only one proposed fix returned as other fix is now published
@@ -163,25 +151,19 @@ def test_get_1_proposed_fixes():
     assert prop_store.exists(ds_ids[0])
     assert prop_store.exists(ds_ids[1])
     assert len(proposed_fixes) == 1
-    assert proposed_fixes[0] == {
-        "dataset_id": "ds.1.1.1.1.1.1",
-        "fixes": [
-            {
-                "fix": {
-                    "category": "test_fixes",
-                    "description": "Applies fix 1",
-                    "fix_id": "Fix1",
-                    "operands": {"arg1": "1"},
-                    "reference_implementation": "daops.test.test_fix1",
-                    "title": "Apply Fix 1",
-                },
-                "history": [],
-                "reason": "",
-                "status": "proposed",
-                "timestamp": now_string(),
-            }
-        ],
-    }
+    assert proposed_fixes[0] == {'dataset_id': 'ds.1.1.1.1.1.1',
+                                 'this_fix':
+                                     {'fix':
+                                          {'category': 'test_fixes',
+                                           'description': 'Applies fix 1',
+                                           'fix_id': 'Fix1',
+                                           'operands': {'arg1': '1'},
+                                           'reference_implementation': 'daops.test.test_fix1',
+                                           'title': 'Apply Fix 1'},
+                                      'history': [],
+                                      'reason': '',
+                                      'status': 'proposed',
+                                      'timestamp': now_string()}}
 
 
 def test_process_proposed_fixes(monkeypatch):
@@ -241,7 +223,7 @@ def test_withdraw_fix_not_found():
     fix_processor.get_fix_store = Mock(return_value=f_store)
     with pytest.raises(Exception) as exc:
         fix_processor.process_all_fixes("withdraw", [ds_ids[1]])
-        assert exc.value == "A fix could not be found."
+    assert exc.value.args[0] == "A fix could not be found."
 
 
 def teardown_module():
