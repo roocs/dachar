@@ -1,0 +1,17 @@
+{
+    "dataset_id": "",
+    "fixes": [{
+        "fix_id": "MainVarAttrFix",
+        "operands": {
+            "attrs": [
+                {"long_name": "Dissolved Oxygen Concentration"},
+                {"standard_name": "mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"}
+            ]
+        },
+        "source": {
+            "name": "esmvaltool",
+            "version": "2.0.0",
+            "comments": "",
+            "url":"https://github.com/ESMValGroup/ESMValCore/blob/master/esmvalcore/cmor/_fixes/cmip5/hadgem2_cc.py#L34-L55"}
+    }]
+}

@@ -1,13 +1,13 @@
-import logging
 import pprint as pp
 
-from dachar.utils import UNDEFINED, nested_lookup, JDict
-
-from dachar.utils.get_stores import get_fix_prop_store, get_dc_store
-
-from dachar.fixes.fix_api import get_fix
-
+from dachar import __version__ as version
 from dachar import logging
+from dachar.fixes.fix_api import get_fix
+from dachar.utils import JDict
+from dachar.utils import nested_lookup
+from dachar.utils import UNDEFINED
+from dachar.utils.get_stores import get_dc_store
+from dachar.utils.get_stores import get_fix_prop_store
 
 LOGGER = logging.getLogger(__file__)
 
@@ -52,6 +52,13 @@ class _BaseCheck(object):
 
     typical_threshold = 0.41
     atypical_threshold = 0.15
+
+    source = {
+        "name": "dachar",
+        "version": f"{version}",
+        "comment": "No specific source provided - link to all fixes in dachar",
+        "url": "https://github.com/roocs/dachar/tree/master/dachar/fixes",
+    }
 
     def __init__(self, sample):
         self.sample = sample
@@ -124,12 +131,10 @@ class _BaseCheck(object):
         content = []
 
         for ds_id in self.sample:
-            items = dict(
-                [
-                    (key, nested_lookup(key, self._cache[ds_id], must_exist=True))
-                    for key in self.characteristics
-                ]
-            )
+            items = {
+                key: nested_lookup(key, self._cache[ds_id], must_exist=True)
+                for key in self.characteristics
+            }
             content.append((ds_id, items))
         return content
 
@@ -144,5 +149,3 @@ class _BaseCheck(object):
 
     def _propose_fix(self, ds_id, fix):
         get_fix_prop_store().propose(ds_id, fix)
-
-

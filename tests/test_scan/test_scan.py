@@ -142,7 +142,7 @@ def test_varying_coords_example_fail(create_netcdf_file, create_netcdf_file_2):
     # seems to keep one variable but joins the coordinate lists together
 
 
-@pytest.mark.skip(reason="Can't test for this shape when using test data")
+@pytest.mark.xfail(reason="Can't test for this shape when using test data")
 def test_varying_coords_example_succeed():
     """ Tests what happens when opening files as mfdataset for which the coordinates vary """
     ds = xr.open_mfdataset(
@@ -155,7 +155,7 @@ def test_varying_coords_example_succeed():
         )
 
 
-@pytest.mark.skip(
+@pytest.mark.xfail(
     reason="Exception was: Cannot compare type 'Timestamp' with type 'DatetimeProlepticGregorian'"
 )
 def test_time_axis_types_issue():

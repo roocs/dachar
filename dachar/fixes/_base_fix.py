@@ -1,5 +1,4 @@
 from dachar.utils.common import UNDEFINED
-from dachar import __version__ as version
 
 
 class FixDetails(object):
@@ -51,7 +50,7 @@ class _BaseDatasetFix(object):
     </variable>
         """
 
-    def __init__(self, ds_id, source=f"dachar version {version}", **operands):
+    def __init__(self, ds_id, source, **operands):
         self.ds_id = ds_id
         self.source = source
         self.operands = operands
