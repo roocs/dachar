@@ -1,5 +1,7 @@
-from dachar.utils.get_stores import get_fix_prop_store, get_fix_store
 import pprint
+
+from dachar.utils.get_stores import get_fix_prop_store
+from dachar.utils.get_stores import get_fix_store
 
 
 def get_proposed_fixes(ds_ids=None):
@@ -9,9 +11,10 @@ def get_proposed_fixes(ds_ids=None):
         proposed_fixes = []
 
         for ds_id in ds_ids:
-            proposed_fix = get_fix_prop_store().get_proposed_fix_by_id(ds_id)
-            if proposed_fix is not None:
-                proposed_fixes.append(proposed_fix)
+            proposed_fix_list = get_fix_prop_store().get_proposed_fix_by_id(ds_id)
+            if proposed_fix_list is not None:
+                for fix in proposed_fix_list:
+                    proposed_fixes.append(fix)
 
     return proposed_fixes
 
@@ -19,11 +22,12 @@ def get_proposed_fixes(ds_ids=None):
 def process_proposed_fixes(proposed_fixes):
     if len(proposed_fixes) > 0:
         for proposed_fix in proposed_fixes:
-            fix = proposed_fix["fixes"][0]["fix"]
             ds_id = proposed_fix["dataset_id"]
+            fix = proposed_fix["this_fix"]["fix"]
 
             # print fix so user can see what they are processing
-            pprint.pprint(proposed_fix)
+            pprint.pprint(ds_id)
+            pprint.pprint(fix)
 
             action = input("Enter action for proposed fix: ")
 
@@ -41,7 +45,7 @@ def process_proposed_fixes(proposed_fixes):
 
             else:
                 # print('[INFO] You have not selected an action for this fix.')
-                pass
+                continue
 
     else:
         raise Exception("No proposed fixes found.")
@@ -61,7 +65,7 @@ def get_fixes_to_withdraw(ds_ids):
 def process_withdraw_fixes(existing_fixes):
     if len(existing_fixes) > 0:
         for existing_fix in existing_fixes:
-            fix = existing_fix["fixes"][0]
+            # fix = existing_fix["fixes"][0]
             ds_id = existing_fix["dataset_id"]
 
             # print fix so user can see what they are processing

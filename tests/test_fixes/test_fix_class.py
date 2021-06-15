@@ -1,15 +1,22 @@
 import importlib
 import pprint as pp
 
-from dachar.fixes.fix_api import get_fix_categories, get_fix_dict, get_fix
 from dachar.fixes._base_fix import _BaseDatasetFix
+from dachar.fixes.fix_api import get_fix
+from dachar.fixes.fix_api import get_fix_categories
+from dachar.fixes.fix_api import get_fix_dict
 
 
 def test_get_fix_categories():
-    expected_fix_categories = ["coord_fixes"]
+    expected_fix_categories = ["array_fixes", "attr_fixes", "coord_fixes", "var_fixes"]
     assert get_fix_categories() == expected_fix_categories
 
-    expected_fix_dict = {"coord_fixes": ["SqueezeDimensionsFix", "AddScalarCoordFix"]}
+    expected_fix_dict = {
+        "coord_fixes": ["SqueezeDimensionsFix", "AddScalarCoordFix", "ReverseCoordFix"],
+        "array_fixes": ["MaskDataFix"],
+        "attr_fixes": ["MainVarAttrFix", "AttrFix"],
+        "var_fixes": ["Reverse2DVarFix"],
+    }
     assert get_fix_dict() == expected_fix_dict
 
 
@@ -75,8 +82,16 @@ class _TestFix(_BaseDatasetFix):
     # }
 
 
+source = {
+    "name": "dachar",
+    "version": "test",
+    "comment": "No specific source provided - link to all fixes in dachar",
+    "url": "https://github.com/roocs/dachar/tree/master/dachar/fixes",
+}
+
+
 def test_eg_fix():
-    fix = _TestFix("ds1", thing=23, other="hello")
+    fix = _TestFix("ds1", thing=23, other="hello", source=source)
     assert fix.description == _TestFix.description
 
     expected_dict = {
@@ -89,7 +104,12 @@ def test_eg_fix():
             "reference_implementation": _TestFix.ref_implementation,
             "process_type": _TestFix.process_type,
             "operands": {"thing": 23, "other": "hello"},
-            "source": "dachar version 0.1.0",
+            "source": {
+                "name": "dachar",
+                "version": "test",
+                "comment": "No specific source provided - link to all fixes in dachar",
+                "url": "https://github.com/roocs/dachar/tree/master/dachar/fixes",
+            },
         },
     }
 

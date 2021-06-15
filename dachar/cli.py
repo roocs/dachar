@@ -2,8 +2,6 @@
 import os
 import shutil
 
-from dachar.utils._stores_for_tests import _TestFixProposalStore
-
 """Console script for dachar."""
 
 __author__ = """Elle Smith"""
@@ -18,6 +16,10 @@ from dachar.scan.scan import scan_datasets
 from dachar.analyse.sample_analyser import analyse
 from dachar.fixes import fix_processor
 from dachar.fixes.fix_processor import process_all_fixes
+from dachar.fixes.generate_proposals import (
+    generate_fix_proposals,
+    generate_proposal_from_template,
+)
 from unittest.mock import Mock
 
 
@@ -41,8 +43,10 @@ def _get_arg_parser_scan(parser):
     :return: Namespace object built from attributes parsed from command line.
     """
     # parser = argparse.ArgumentParser()
-    project_options = [_.split(':')[1] for _ in CONFIG.keys() if _.startswith('project:')]
-    location_options = CONFIG['dachar:settings']['locations']
+    project_options = [
+        _.split(":")[1] for _ in CONFIG.keys() if _.startswith("project:")
+    ]
+    location_options = CONFIG["dachar:settings"]["locations"]
 
     parser.add_argument(
         "project",
@@ -130,8 +134,10 @@ def scan_main(args):
 
 
 def _get_arg_parser_analyse(parser):
-    project_options = [_.split(':')[1] for _ in CONFIG.keys() if _.startswith('project:')]
-    location_options = CONFIG['dachar:settings']['locations']
+    project_options = [
+        _.split(":")[1] for _ in CONFIG.keys() if _.startswith("project:")
+    ]
+    location_options = CONFIG["dachar:settings"]["locations"]
 
     parser.add_argument(
         "project",
@@ -200,7 +206,7 @@ def _get_arg_parser_process_fixes(parser):
         type=str,
         default=None,
         required=True,
-        help="Action to carry out on fixes: process for proposed fixes, withdraw to withdraw"
+        help="Action to carry out on fixes: process for proposed fixes, withdraw to withdraw "
         "existing fixes",
     )
 
@@ -216,6 +222,71 @@ def parse_args_process_fixes(args):
 def process_fixes_main(args):
     ds_ids, action = parse_args_process_fixes(args)
     process_all_fixes(action, ds_ids)
+
+
+def _get_arg_parser_propose_fixes(parser):
+
+    parser.add_argument(
+        "-f",
+        "--files",
+        type=str,
+        default=None,
+        required=False,
+        help="List of comma-separated json files containing information to generate fix proposals. "
+        "This option must be used on its own",
+    )
+
+    parser.add_argument(
+        "-d",
+        "--dataset-list",
+        type=str,
+        default=None,
+        required=False,
+        help="Text file containing dataset ids for which to propose the fix provided in the template. "
+        "If using this option you must provide a template using --template (-t) option.",
+    )
+
+    parser.add_argument(
+        "-t",
+        "--template",
+        type=str,
+        default=None,
+        required=False,
+        help="Template for fix proposal. "
+        "If using this option you must provide a list of dataset ids using the --dataset-list (-d) option.",
+    )
+
+    return parser
+
+
+def parse_args_propose_fixes(args):
+
+    if args.files:
+        if args.dataset_list or args.template:
+            raise Exception(
+                "The file option must be used on its own. "
+                "A dataset list and a template must be provided together. "
+            )
+
+    if args.dataset_list and not args.template:
+        raise Exception("A dataset list and a template must be provided together.")
+
+    if args.template and not args.dataset_list:
+        raise Exception("A dataset list and a template must be provided together.")
+
+    files = _to_list(args.files)
+    ds_list = args.dataset_list
+    template = args.template
+    return files, ds_list, template
+
+
+def propose_fixes_main(args):
+    files, ds_list, template = parse_args_propose_fixes(args)
+
+    if files:
+        generate_fix_proposals(files)
+    elif ds_list and template:
+        generate_proposal_from_template(template, ds_list)
 
 
 def main():
@@ -235,9 +306,13 @@ def main():
     _get_arg_parser_process_fixes(fix_parser)
     fix_parser.set_defaults(func=process_fixes_main)
 
+    fix_proposal_parser = subparsers.add_parser("propose-fixes")
+    _get_arg_parser_propose_fixes(fix_proposal_parser)
+    fix_proposal_parser.set_defaults(func=propose_fixes_main)
+
     args = main_parser.parse_args()
     args.func(args)
 
 
 if __name__ == "__main__":
-    sys.exit(main())  # pragma: no cover
+    sys.exit(main())
