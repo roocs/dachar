@@ -1,23 +1,28 @@
-from dachar.analyse.checks._base_check import _BaseCheck
-from dachar import __version__ as version
-from dachar.fixes.fix_api import get_fix
-from dachar.utils.common import get_extra_items_in_larger_sequence, coord_mappings
-from dachar.utils import nested_lookup
-from scipy.stats import mode
-from collections import Counter, namedtuple
-from itertools import chain
 import pprint
+from collections import Counter
+from collections import namedtuple
+from itertools import chain
+
+from scipy.stats import mode
+
+from dachar import __version__ as version
+from dachar.analyse.checks._base_check import _BaseCheck
+from dachar.fixes.fix_api import get_fix
+from dachar.utils import nested_lookup
+from dachar.utils.common import coord_mappings
+from dachar.utils.common import get_extra_items_in_larger_sequence
 
 
 class RankCheck(_BaseCheck):
     characteristics = ["data.dim_names", "data.shape"]
     associated_fix = "SqueezeDimensionsFix"
-    
+
     source = {
         "name": "dachar",
         "version": f"{version}",
         "comment": "",
-        "url": "https://github.com/roocs/dachar/blob/master/dachar/fixes/coord_fixes.py#L8"}
+        "url": "https://github.com/roocs/dachar/blob/master/dachar/fixes/coord_fixes.py#L8",
+    }
 
     def deduce_fix(self, ds_id, atypical_content, typical_content):
         dicts = []
@@ -58,6 +63,7 @@ class RankCheck(_BaseCheck):
 # TODO: Need to change this so that characteristic compared is coord_type
 #   But characteristic used to create new variable is id
 
+
 class MissingCoordCheck(_BaseCheck):
     characteristics = ["coordinates.*.id"]
     associated_fix = "AddScalarCoordFix"
@@ -66,7 +72,8 @@ class MissingCoordCheck(_BaseCheck):
         "name": "dachar",
         "version": f"{version}",
         "comment": "",
-        "url": "https://github.com/roocs/dachar/blob/master/dachar/fixes/coord_fixes.py#L44"}
+        "url": "https://github.com/roocs/dachar/blob/master/dachar/fixes/coord_fixes.py#L44",
+    }
 
     def deduce_fix(self, ds_id, atypical_content, typical_content):
         dicts = []
@@ -118,7 +125,7 @@ class MissingCoordCheck(_BaseCheck):
                         operands = {}
 
                         operand_dict = dict(typical_coord._asdict())
-                        for k in ["dtype", "value", "id", "length", "coord_type"]:
+                        for k in ["dtype", "value", "var_id", "encoding"]:
                             v = operand_dict.pop(k)
 
                             operands[k] = v

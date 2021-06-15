@@ -21,7 +21,7 @@ For example:
 
     """
 
-    category = "coord_fixes"
+    category = "var_fixes"
     required_operands = ["dtype", "var_id", "value", "attrs"]
     ref_implementation = "daops.data_utils.var_utils.add_data_var"
     process_type = "post_processor"

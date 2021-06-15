@@ -83,5 +83,6 @@ class RemoveFillValuesFix(_BaseDatasetFix):
 "Remove the FillValue attributes from coordinate variables which are added during manipulation with xarray, as NaNs.
 """
     category = "attr_fixes"
+    required_operands = []
     ref_implementation = "daops.data_utils.attr_utils.remove_fill_values"
     process_type = "post_processor"

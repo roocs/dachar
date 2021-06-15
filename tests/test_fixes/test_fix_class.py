@@ -1,18 +1,27 @@
 import importlib
 import pprint as pp
 
-from dachar.fixes.fix_api import get_fix_categories, get_fix_dict, get_fix
 from dachar.fixes._base_fix import _BaseDatasetFix
+from dachar.fixes.fix_api import get_fix
+from dachar.fixes.fix_api import get_fix_categories
+from dachar.fixes.fix_api import get_fix_dict
 
 
 def test_get_fix_categories():
-    expected_fix_categories = ['array_fixes', 'attr_fixes', 'coord_fixes', 'var_fixes']
+    expected_fix_categories = ["array_fixes", "attr_fixes", "coord_fixes", "var_fixes"]
     assert get_fix_categories() == expected_fix_categories
 
-    expected_fix_dict = {"coord_fixes": ["SqueezeDimensionsFix", "AddScalarCoordFix" , 'ReverseCoordFix'],
-                         "array_fixes": ["MaskDataFix"],
-                         "attr_fixes": ["MainVarAttrFix", "AttrFix"],
-                         "var_fixes": ["Reverse2DVarFix"]}
+    expected_fix_dict = {
+        "coord_fixes": ["SqueezeDimensionsFix", "AddScalarCoordFix", "AddCoordFix"],
+        "array_fixes": [],
+        "attr_fixes": [
+            "GlobalAttrFix",
+            "CheckAddGlobalAttrFix",
+            "VarAttrFix",
+            "RemoveFillValuesFix",
+        ],
+        "var_fixes": ["AddDataVarFix"],
+    }
     assert get_fix_dict() == expected_fix_dict
 
 
@@ -48,7 +57,7 @@ def test_fix_definitions():
 
             cls_category = getattr(cls, "category", None)
             if cls_category != category:
-                errors += f"\tDeduced category does not match category in class: {cls_category} != {category}\n"
+                errors += f"\tDeduced category does not match category in class: {cls_category} != {category}\n for fix {fix}"
 
     if errors:
         raise Exception(errors)
@@ -79,10 +88,11 @@ class _TestFix(_BaseDatasetFix):
 
 
 source = {
-        "name": "dachar",
-        "version": "test",
-        "comment": "No specific source provided - link to all fixes in dachar",
-        "url": "https://github.com/roocs/dachar/tree/master/dachar/fixes"}
+    "name": "dachar",
+    "version": "test",
+    "comment": "No specific source provided - link to all fixes in dachar",
+    "url": "https://github.com/roocs/dachar/tree/master/dachar/fixes",
+}
 
 
 def test_eg_fix():
@@ -99,12 +109,13 @@ def test_eg_fix():
             "reference_implementation": _TestFix.ref_implementation,
             "process_type": _TestFix.process_type,
             "operands": {"thing": 23, "other": "hello"},
-            "source": {"name": "dachar",
-                       "version": "test",
-                       "comment": "No specific source provided - link to all fixes in dachar",
-                       "url": "https://github.com/roocs/dachar/tree/master/dachar/fixes",
-                       }
-        }
+            "source": {
+                "name": "dachar",
+                "version": "test",
+                "comment": "No specific source provided - link to all fixes in dachar",
+                "url": "https://github.com/roocs/dachar/tree/master/dachar/fixes",
+            },
+        },
     }
 
     assert fix.to_ncml() == '<JustStuff info="{thing}">{other}</JustStuff>'.format(
