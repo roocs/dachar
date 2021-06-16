@@ -7,5 +7,5 @@ scipy>=1.5.4
 elasticsearch~=7.6.0
 roocs-utils>=0.4.2
 clisops>=0.6.4
-time_checks @ git+https://github.com/ellesmith88/time-checks.git@master#egg=time-checks
+time_checks @ git+https://github.com/cedadev/time-checks.git@master#egg=time-checks
 ceda-elasticsearch-tools @ git+https://github.com/cedadev/ceda-elasticsearch-tools.git@master#egg=ceda-elasticsearch-tools
