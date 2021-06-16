@@ -11,18 +11,17 @@ class MainVarAttrFix(_BaseDatasetFix):
 "Applies metadata fix e.g. fixing standard name or adding missing standard name
  for the main variable of the dataset.
 
-Takes a list of fixes with each fix as a dictionary containing the attribute
-to be changed as the key and what the value should be as the value e.g.:
+Takes a dictionary of fixes with each fix as a key and value pair with the attribute
+as the key and what the value should be as the value. e.g.:
 
-{"long_name": "Dissolved Oxygen Concentration"},
-{"standard_name": "mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"}
+{"long_name": "Dissolved Oxygen Concentration",
+"standard_name": "mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"}
 
 For example:
   - inputs:
-    {"attrs": [
-        {"long_name": "Dissolved Oxygen Concentration"},
-        {"standard_name": "mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"}
-        ]
+    {"attrs":
+        {"long_name": "Dissolved Oxygen Concentration",
+        "standard_name": "mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"}
     },
 """
     category = "attr_fixes"
@@ -38,19 +37,18 @@ class AttrFix(_BaseDatasetFix):
 "Applies metadata fix e.g. fixing standard name or adding missing standard name
  for a given variable of the dataset.
 
-Takes a list of fixes with each fix as a dictionary containing the attribute
-to be changed as the key and what the value should be as the value e.g.:
+Takes a dictionary of fixes with each fix as a key and value pair with the attribute
+as the key and what the value should be as the value. e.g.:
 
-{"long_name": "Dissolved Oxygen Concentration"},
-{"standard_name": "mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"}
+{"long_name": "Dissolved Oxygen Concentration",
+"standard_name": "mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"}
 
 For example:
   - inputs:
     {"var_id": "lev",
-    "attrs": [
-        {"long_name": "Dissolved Oxygen Concentration"},
-        {"standard_name": "mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"}
-        ]
+    "attrs":
+        {"long_name": "Dissolved Oxygen Concentration",
+        "standard_name": "mole_concentration_of_dissolved_molecular_oxygen_in_sea_water"}
     },
 """
     category = "attr_fixes"
