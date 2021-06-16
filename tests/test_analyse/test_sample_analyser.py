@@ -1,20 +1,19 @@
+import glob
 import os
 import shutil
-import glob
-
-
-from tests._stores_for_tests import (
-    _TestFixProposalStore,
-    _TestAnalysisStore,
-    _TestDatasetCharacterStore,
-)
-from roocs_utils.project_utils import get_project_base_dir
-from dachar.analyse.checks import _base_check
-from dachar.analyse import sample_analyser
-from dachar.scan import scan
-from dachar.scan.scan import scan_dataset, get_dataset_paths
-from dachar.analyse import OneSampleAnalyser
 from unittest.mock import Mock
+
+from roocs_utils.project_utils import get_project_base_dir
+
+from dachar.analyse import OneSampleAnalyser
+from dachar.analyse import sample_analyser
+from dachar.analyse.checks import _base_check
+from dachar.scan import scan
+from dachar.scan.scan import get_dataset_paths
+from dachar.scan.scan import scan_dataset
+from tests._stores_for_tests import _TestAnalysisStore
+from tests._stores_for_tests import _TestDatasetCharacterStore
+from tests._stores_for_tests import _TestFixProposalStore
 
 char_store = None
 prop_store = None
@@ -60,10 +59,7 @@ class _TestOneSampleAnalyser(OneSampleAnalyser):
 
         self._sample = []
         for path in glob.glob(_sample_id):
-            if self.project in ["cmip5", "cmip6", "cordex"]:
-                self._sample.append(".".join(path.split("/")[12:]))
-            else:
-                self._sample.append(".".join(path.split("/")[13:]))
+            self._sample.append(".".join(path.split("/")[-11:]))
 
         return self._sample
 
@@ -76,13 +72,13 @@ def populate_dc_store():
     scan.get_dc_store = Mock(return_value=char_store)
 
     ds_paths = get_dataset_paths(
-        "cmip5", ds_ids=ds_ids, paths=get_project_base_dir('cmip5')
+        "cmip5", ds_ids=ds_ids, paths=get_project_base_dir("cmip5")
     )
     for ds_id, ds_path in ds_paths.items():
         scan_dataset("cmip5", ds_id, ds_path, "full", "ceda")
 
 
-def test_analyse():
+def test_analyse(load_esgf_test_data):
     sample_analyser.get_ar_store = Mock(return_value=analysis_store)
     sample_analyser.get_dc_store = Mock(return_value=char_store)
     sample_analyser.get_fix_prop_store = Mock(return_value=prop_store)

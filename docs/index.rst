@@ -8,7 +8,9 @@ Welcome to dachar's documentation!
    readme
    installation
    usage
-   modules
+   api
+   configuration
+   notebooks/index
    contributing
    authors
    history

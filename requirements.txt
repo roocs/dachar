@@ -1,18 +1,11 @@
 numpy>=1.16
 xarray>=0.15
-Cython
-pandas>=1.0.3
 cftime>=1.0.4
 netCDF4>=1.4
-fiona>=1.8
-geojson>=2.5.0
-shapely>=1.6
-geopandas>=0.7
 dask[complete]>=2.6
-pyproj>=2.5
-bottleneck~=1.3.1
-cfunits>=3.2.7
-scipy>=1.5.1
+scipy>=1.5.4
 elasticsearch~=7.6.0
-# roocs-utils>=0.1.4
-# clisops>=0.4.0
+roocs-utils>=0.4.2
+clisops>=0.6.4
+time_checks @ git+https://github.com/cedadev/time-checks.git@master#egg=time-checks
+ceda-elasticsearch-tools @ git+https://github.com/cedadev/ceda-elasticsearch-tools.git@master#egg=ceda-elasticsearch-tools

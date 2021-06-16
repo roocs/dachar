@@ -7,14 +7,13 @@ import sys
 import numpy as np
 import pytest
 import xarray as xr
+from roocs_utils.project_utils import get_project_base_dir
 
 from dachar.scan import scan
 from dachar.utils import character
-from roocs_utils.project_utils import get_project_base_dir
 
 
 base_dir = get_project_base_dir("cmip5")
-
 
 # def test_parser():
 #     sys.argv = "scan.py -m MOHC/HadGEM2-ES -exp historical -e r1i1p1 -v rh".split()
@@ -185,7 +184,7 @@ def test_time_axis_types_issue():
     # earlier versions netCDF4).
 
 
-def test_time_axis_types_issue_fix():
+def test_time_axis_types_issue_fix(load_esgf_test_data):
     # fix for Exception was: Cannot compare type 'Timestamp' with type 'DatetimeProlepticGregorian'
     # must be using xarray version 0.15
 
@@ -203,7 +202,7 @@ def test_time_axis_types_issue_fix():
     tm.max()
 
 
-def test_time_max_as_strftime():
+def test_time_max_as_strftime(load_esgf_test_data):
     nc_files = [
         f"{base_dir}/cmip5/output1/MPI-M/MPI-ESM-LR/rcp45/mon/ocean/Omon/r1i1p1/latest/zostoga"
         "/zostoga_Omon_MPI-ESM-LR_rcp45_r1i1p1_200601-210012.nc",
@@ -220,7 +219,7 @@ def test_time_max_as_strftime():
     return mx
 
 
-def test_time_max_as_strftime_to_json():
+def test_time_max_as_strftime_to_json(load_esgf_test_data):
     nc_files = [
         f"{base_dir}/cmip5/output1/MPI-M/MPI-ESM-LR/rcp45/mon/ocean/Omon/r1i1p1/latest/zostoga"
         "/zostoga_Omon_MPI-ESM-LR_rcp45_r1i1p1_200601-210012.nc",
@@ -244,13 +243,13 @@ def test_time_max_as_strftime_to_json():
 # latest/rh/rh_Lmon_HadGEM2-ES_historical_r1i1p1_198412-200511.nc
 
 
-def test_nan_for_value_min_and_max():
+def test_nan_for_value_min_and_max(load_esgf_test_data):
     # python scan.py -d cmip5.output1.MRI.MRI-CGCM3.rcp45.mon.ocean.Omon.r1i1p1.latest.zostoga cmip5
     cmd = "python dachar/scan/scan.py -d cmip5.output1.MOHC.HadGEM2-ES.historical.mon.land.Lmon.r1i1p1.latest.rh cmip5"
     subprocess.call(cmd, shell=True)
 
 
-def test_min_max_reproduce_nan():
+def test_min_max_reproduce_nan(load_esgf_test_data):
     fpath = f"{base_dir}/cmip5/output1/MOHC/HadGEM2-ES/historical/mon/land/Lmon/r1i1p1/latest/rh/*.nc"
     ds = xr.open_mfdataset(fpath, combine="by_coords")
     data = ds.rh.values
@@ -258,7 +257,7 @@ def test_min_max_reproduce_nan():
     assert np.isnan(mx)
 
 
-def test_min_max_value():
+def test_min_max_value(load_esgf_test_data):
     fpath = f"{base_dir}/cmip5/output1/MOHC/HadGEM2-ES/historical/mon/land/Lmon/r1i1p1/latest/rh/*.nc"
     ds = xr.open_mfdataset(fpath, combine="by_coords")
     mx = float(ds.rh.max())
