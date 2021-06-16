@@ -1,6 +1,10 @@
 """
 This script can produce an index with today's date and update the alias to point to it.
-There is also a function to populate the elasticsearch store with the contents of the local store
+There is also a function to populate the elasticsearch store with the contents of the local store.
+
+When updating the index:
+- new index must be created with new date - clone_index_and_update_alias function creates this, fills with all documents from old index and updates the alias to point to it
+- it can then be populated either with all documents in local store (populate_store) or one document at a time (add_document_to_index)
 """
 import hashlib
 import json
@@ -45,14 +49,35 @@ fix_name = CONFIG["elasticsearch"]["fix_store"]
 fix_prop_name = CONFIG["elasticsearch"]["fix_proposal_store"]
 
 
-def create_index_and_alias(name, date):
+def create_index_and_alias(index_name, date):
     """
-    create an index and update the alias to point to it
+    create an empty index and update the alias to point to it
     """
 
     exists = es.indices.exists(f"{name}-{date}")
     if not exists:
         es.indices.create(f"{name}-{date}")
+    alias_exists = es.indices.exists_alias(name=f"{name}", index=f"{name}-{date}")
+    if not alias_exists:
+        es.indices.update_aliases(
+            body={
+                "actions": [
+                    {"remove": {"alias": f"{name}", "index": "*"}},
+                    {"add": {"alias": f"{name}", "index": f"{name}-{date}"}},
+                ]
+            }
+        )
+        # es.indices.put_alias(index=f"{name}-{date}", name=f"{name}")
+
+
+def clone_index_and_update_alias(index_name, date, index_to_clone):
+    """
+    clone an index and update the alias to point to the new index
+    """
+
+    exists = es.indices.exists(f"{name}-{date}")
+    if not exists:
+        es.indices.clone(index_to_clone, f"{name}-{date}")
     alias_exists = es.indices.exists_alias(name=f"{name}", index=f"{name}-{date}")
     if not alias_exists:
         es.indices.update_aliases(
@@ -90,20 +115,50 @@ def populate_store(local_store, index, id_type):
             print(drs)
             m = hashlib.md5()
             m.update(drs.encode("utf-8"))
-            id = m.hexdigest()
+            doc_id = m.hexdigest()
             doc = json.load(open(fpath))
             # es.delete(index=index, id=id)
 
-            es.index(index=index, id=id, body=doc)
+            es.index(index=index, id=doc_id, body=doc)
             if id_type is not None:
-                es.update(index=index, id=id, body={"doc": {id_type: drs}})
+                es.update(index=index, id=doc_id, body={"doc": {id_type: drs}})
+
+
+def add_document_to_index(fpath, drs, index, id_type):
+    """
+    Add document to elasticsearch index. Uses given file path to json file and ds_id (drs).
+    """
+
+    mapper = {"__ALL__": "*"}
+    for find_s, replace_s in mapper.items():
+        drs = drs.replace(find_s, replace_s)
+
+        print(drs)
+        m = hashlib.md5()
+        m.update(drs.encode("utf-8"))
+        doc_id = m.hexdigest()
+        doc = json.load(open(fpath))
+        # es.delete(index=index, id=id)
+        print(doc)
+
+        es.index(index=index, id=doc_id, body=doc)
+        if id_type is not None:
+            es.update(index=index, id=doc_id, body={"doc": {id_type: drs}})
 
 
 def main():
     # for store in [char_name, a_name, fix_name, fix_prop_name]:
-    create_index_and_alias(fix_name, "2020-10-12")
 
-    populate_store(get_fix_store(), "roocs-fix-2020-10-12", "dataset_id")
+    # create_index_and_alias(fix_name, "2020-10-12")
+    # clone_index_and_update_alias(fix_name, "2021-06-15", "roocs-fix-2020-10-12"))
+
+    # populate_store(get_fix_store(), "roocs-fix-2020-10-12", "dataset_id")
+    add_document_to_index(
+        "/home/users/esmith88/roocs/dachar/tests/test_fixes/decadal_fixes/decadal.json",
+        "CMIP6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417",
+        "roocs-fix-2020-10-12",
+        "dataset_id",
+    )
 
 
 if __name__ == "__main__":

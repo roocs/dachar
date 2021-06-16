@@ -54,6 +54,9 @@ There are three main stages to the characterisation process:
 #. **Define Fixes**\ : Suggest fixes required to individual data sets to overcome the
    irregularities. Write the required fixes to a new set of files (JSON).
 
+
+The functions used for writing fixes etc. to elasticsearch can be found in `dachar/utils/create_index.py`
+
 Credits
 =======
 
