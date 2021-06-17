@@ -61,7 +61,7 @@ class BaseFixProposalStore(object):
             0,
             {
                 "status": container["status"],
-                "timestamp": container["timestamp"],
+                "timestamp": now_string(),
                 "reason": container["reason"],
             },
         )
