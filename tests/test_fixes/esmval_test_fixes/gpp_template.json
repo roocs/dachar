@@ -3,7 +3,7 @@
     "fixes": [{
         "fix_id": "MaskDataFix",
         "operands": {
-            "value": 1.0e33
+            "value": "1.0e33"
         },
         "source": {
             "name": "esmvaltool",
