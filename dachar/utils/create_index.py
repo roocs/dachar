@@ -82,16 +82,23 @@ def clone_index_and_update_alias(index_name, date, index_to_clone):
     clone an index and update the alias to point to the new index
     """
 
-    exists = es.indices.exists(f"{name}-{date}")
+    exists = es.indices.exists(f"{index_name}-{date}")
     if not exists:
-        es.indices.clone(index_to_clone, f"{name}-{date}")
-    alias_exists = es.indices.exists_alias(name=f"{name}", index=f"{name}-{date}")
+        es.indices.clone(index_to_clone, f"{index_name}-{date}")
+    alias_exists = es.indices.exists_alias(
+        name=f"{index_name}", index=f"{index_name}-{date}"
+    )
     if not alias_exists:
         es.indices.update_aliases(
             body={
                 "actions": [
-                    {"remove": {"alias": f"{name}", "index": "*"}},
-                    {"add": {"alias": f"{name}", "index": f"{name}-{date}"}},
+                    {"remove": {"alias": f"{index_name}", "index": "*"}},
+                    {
+                        "add": {
+                            "alias": f"{index_name}",
+                            "index": f"{index_name}-{date}",
+                        }
+                    },
                 ]
             }
         )
