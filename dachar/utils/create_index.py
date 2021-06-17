@@ -54,16 +54,23 @@ def create_index_and_alias(index_name, date):
     create an empty index and update the alias to point to it
     """
 
-    exists = es.indices.exists(f"{name}-{date}")
+    exists = es.indices.exists(f"{index_name}-{date}")
     if not exists:
-        es.indices.create(f"{name}-{date}")
-    alias_exists = es.indices.exists_alias(name=f"{name}", index=f"{name}-{date}")
+        es.indices.create(f"{index_name}-{date}")
+    alias_exists = es.indices.exists_alias(
+        name=f"{index_name}", index=f"{index_name}-{date}"
+    )
     if not alias_exists:
         es.indices.update_aliases(
             body={
                 "actions": [
-                    {"remove": {"alias": f"{name}", "index": "*"}},
-                    {"add": {"alias": f"{name}", "index": f"{name}-{date}"}},
+                    {"remove": {"alias": f"{index_name}", "index": "*"}},
+                    {
+                        "add": {
+                            "alias": f"{index_name}",
+                            "index": f"{index_name}-{date}",
+                        }
+                    },
                 ]
             }
         )
@@ -75,20 +82,20 @@ def clone_index_and_update_alias(index_name, date, index_to_clone):
     clone an index and update the alias to point to the new index
     """
 
-    exists = es.indices.exists(f"{name}-{date}")
+    exists = es.indices.exists(f"{index_name}-{date}")
     if not exists:
-        es.indices.clone(index_to_clone, f"{name}-{date}")
-    alias_exists = es.indices.exists_alias(name=f"{name}", index=f"{name}-{date}")
-    if not alias_exists:
-        es.indices.update_aliases(
-            body={
-                "actions": [
-                    {"remove": {"alias": f"{name}", "index": "*"}},
-                    {"add": {"alias": f"{name}", "index": f"{name}-{date}"}},
-                ]
-            }
-        )
-        # es.indices.put_alias(index=f"{name}-{date}", name=f"{name}")
+        es.indices.clone(index_to_clone, f"{index_name}-{date}")
+    # alias_exists = es.indices.exists_alias(name=f"{index_name}", index=f"{index_name}-{date}")
+    # if not alias_exists:
+    #     es.indices.update_aliases(
+    #         body={
+    #             "actions": [
+    #                 {"remove": {"alias": f"{index_name}", "index": "*"}},
+    #                 {"add": {"alias": f"{index_name}", "index": f"{index_name}-{date}"}},
+    #             ]
+    #         }
+    #     )
+    #     # es.indices.put_alias(index=f"{name}-{date}", name=f"{name}")
 
 
 def populate_store(local_store, index, id_type):
@@ -153,12 +160,7 @@ def main():
     # clone_index_and_update_alias(fix_name, "2021-06-15", "roocs-fix-2020-10-12"))
 
     # populate_store(get_fix_store(), "roocs-fix-2020-10-12", "dataset_id")
-    add_document_to_index(
-        "/home/users/esmith88/roocs/dachar/tests/test_fixes/decadal_fixes/decadal.json",
-        "CMIP6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417",
-        "roocs-fix-2020-10-12",
-        "dataset_id",
-    )
+    clone_index_and_update_alias("roocs-test", "2020-12-21", "roocs-test")
 
 
 if __name__ == "__main__":
