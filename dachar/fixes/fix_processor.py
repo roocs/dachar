@@ -114,7 +114,7 @@ def process_all_fixes(action, ds_ids=None):
         proposed_fixes = get_proposed_fixes(ds_ids)
         process_proposed_fixes(proposed_fixes)
 
-    if action == "withdraw":
+    elif action == "withdraw":
 
         existing_fixes = get_fixes_to_withdraw(ds_ids)
         process_withdraw_fixes(existing_fixes)

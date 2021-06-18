@@ -33,7 +33,7 @@ def test_generate_proposal_json():
 
     generate_proposals.generate_fix_proposals(file)
     record = prop_store.get_proposed_fix_by_id(
-        "c3s-cmip6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417"
+        "CMIP6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417"
     )
     assert record[0]["this_fix"]["fix"]["fix_id"] == "VarAttrFix"
     clear_store()
@@ -43,7 +43,7 @@ def test_generate_proposal_json_2_fixes():
 
     file = [
         {
-            "dataset_id": "c3s-cmip6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417",
+            "dataset_id": "CMIP6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417",
             "fixes": [
                 {
                     "fix_id": "VarAttrFix",
@@ -84,7 +84,7 @@ def test_generate_proposal_json_2_fixes():
 
     generate_proposals.generate_fix_proposals(file)
     record = prop_store.get_proposed_fix_by_id(
-        "c3s-cmip6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417"
+        "CMIP6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417"
     )
     assert record[0]["this_fix"]["fix"]["fix_id"] == "VarAttrFix"
     assert record[1]["this_fix"]["fix"]["fix_id"] == "GlobalAttrFix"
@@ -100,7 +100,7 @@ def test_generate_proposal_template():
 
     generate_proposals.generate_proposal_from_template(template, ds_list)
     record = prop_store.get_proposed_fix_by_id(
-        "c3s-cmip6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417"
+        "CMIP6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417"
     )
     assert record[0]["this_fix"]["fix"]["fix_id"] == "VarAttrFix"
 
@@ -108,7 +108,7 @@ def test_generate_proposal_template():
 def test_generate_proposal_when_one_already_exists():
     file = [
         {
-            "dataset_id": "c3s-cmip6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417",
+            "dataset_id": "CMIP6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417",
             "fixes": [
                 {
                     "fix_id": "CheckAddGlobalAttrFix",
@@ -128,7 +128,7 @@ def test_generate_proposal_when_one_already_exists():
 
     generate_proposals.generate_fix_proposals(file)
     record = prop_store.get_proposed_fix_by_id(
-        "c3s-cmip6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417"
+        "CMIP6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417"
     )
     assert record[0]["this_fix"]["fix"]["fix_id"] == "VarAttrFix"
     assert record[-1]["this_fix"]["fix"]["fix_id"] == "CheckAddGlobalAttrFix"
@@ -137,7 +137,7 @@ def test_generate_proposal_when_one_already_exists():
 def test_unexpected_operands():
     file = [
         {
-            "dataset_id": "c3s-cmip6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417",
+            "dataset_id": "CMIP6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417",
             "fixes": [
                 {
                     "fix_id": "VarAttrFix",
@@ -163,7 +163,7 @@ def test_unexpected_operands():
 def test_missing_operands():
     file = [
         {
-            "dataset_id": "c3s-cmip6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417",
+            "dataset_id": "CMIP6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417",
             "fixes": [
                 {
                     "fix_id": "VarAttrFix",
@@ -189,7 +189,7 @@ def test_missing_operands():
 def test_invalid_fields():
     file = [
         {
-            "dataset_id": "c3s-cmip6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417",
+            "dataset_id": "CMIP6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417",
             "fixes": [
                 {
                     "fox_id": "VarAttrFix",

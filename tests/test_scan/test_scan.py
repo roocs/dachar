@@ -146,7 +146,7 @@ def test_varying_coords_example_fail(create_netcdf_file, create_netcdf_file_2):
 def test_varying_coords_example_succeed():
     """ Tests what happens when opening files as mfdataset for which the coordinates vary """
     ds = xr.open_mfdataset(
-        f"{base_dir}/cmip5/output1/MOHC/HadGEM2-ES/historical/mon/land/Lmon/r1i1p1/latest/rh/*.nc"
+        f"{base_dir}/output1/MOHC/HadGEM2-ES/historical/mon/land/Lmon/r1i1p1/latest/rh/*.nc"
     )
 
     if not ds.rh.shape == (1752, 145, 192):
@@ -160,9 +160,9 @@ def test_varying_coords_example_succeed():
 )
 def test_time_axis_types_issue():
     nc_files = [
-        f"{base_dir}/cmip5/output1/MPI-M/MPI-ESM-LR/rcp45/mon/ocean/Omon/r1i1p1/latest/zostoga"
+        f"{base_dir}/output1/MPI-M/MPI-ESM-LR/rcp45/mon/ocean/Omon/r1i1p1/latest/zostoga"
         "/zostoga_Omon_MPI-ESM-LR_rcp45_r1i1p1_200601-210012.nc",
-        f"{base_dir}/cmip5/output1/MPI-M/MPI-ESM-LR/rcp45/mon/ocean/Omon/r1i1p1/latest/zostoga"
+        f"{base_dir}/output1/MPI-M/MPI-ESM-LR/rcp45/mon/ocean/Omon/r1i1p1/latest/zostoga"
         "/zostoga_Omon_MPI-ESM-LR_rcp45_r1i1p1_210101-230012.nc",
     ]
 
@@ -189,9 +189,9 @@ def test_time_axis_types_issue_fix(load_esgf_test_data):
     # must be using xarray version 0.15
 
     nc_files = [
-        f"{base_dir}/cmip5/output1/MPI-M/MPI-ESM-LR/rcp45/mon/ocean/Omon/r1i1p1/latest/zostoga"
+        f"{base_dir}/output1/MPI-M/MPI-ESM-LR/rcp45/mon/ocean/Omon/r1i1p1/latest/zostoga"
         "/zostoga_Omon_MPI-ESM-LR_rcp45_r1i1p1_200601-210012.nc",
-        f"{base_dir}/cmip5/output1/MPI-M/MPI-ESM-LR/rcp45/mon/ocean/Omon/r1i1p1/latest/zostoga"
+        f"{base_dir}/output1/MPI-M/MPI-ESM-LR/rcp45/mon/ocean/Omon/r1i1p1/latest/zostoga"
         "/zostoga_Omon_MPI-ESM-LR_rcp45_r1i1p1_210101-230012.nc",
     ]
 
@@ -204,9 +204,9 @@ def test_time_axis_types_issue_fix(load_esgf_test_data):
 
 def test_time_max_as_strftime(load_esgf_test_data):
     nc_files = [
-        f"{base_dir}/cmip5/output1/MPI-M/MPI-ESM-LR/rcp45/mon/ocean/Omon/r1i1p1/latest/zostoga"
+        f"{base_dir}/output1/MPI-M/MPI-ESM-LR/rcp45/mon/ocean/Omon/r1i1p1/latest/zostoga"
         "/zostoga_Omon_MPI-ESM-LR_rcp45_r1i1p1_200601-210012.nc",
-        f"{base_dir}/cmip5/output1/MPI-M/MPI-ESM-LR/rcp45/mon/ocean/Omon/r1i1p1/latest/zostoga"
+        f"{base_dir}/output1/MPI-M/MPI-ESM-LR/rcp45/mon/ocean/Omon/r1i1p1/latest/zostoga"
         "/zostoga_Omon_MPI-ESM-LR_rcp45_r1i1p1_210101-230012.nc",
     ]
 
@@ -221,9 +221,9 @@ def test_time_max_as_strftime(load_esgf_test_data):
 
 def test_time_max_as_strftime_to_json(load_esgf_test_data):
     nc_files = [
-        f"{base_dir}/cmip5/output1/MPI-M/MPI-ESM-LR/rcp45/mon/ocean/Omon/r1i1p1/latest/zostoga"
+        f"{base_dir}/output1/MPI-M/MPI-ESM-LR/rcp45/mon/ocean/Omon/r1i1p1/latest/zostoga"
         "/zostoga_Omon_MPI-ESM-LR_rcp45_r1i1p1_200601-210012.nc",
-        f"{base_dir}/cmip5/output1/MPI-M/MPI-ESM-LR/rcp45/mon/ocean/Omon/r1i1p1/latest/zostoga"
+        f"{base_dir}/output1/MPI-M/MPI-ESM-LR/rcp45/mon/ocean/Omon/r1i1p1/latest/zostoga"
         "/zostoga_Omon_MPI-ESM-LR_rcp45_r1i1p1_210101-230012.nc",
     ]
 
@@ -250,7 +250,7 @@ def test_nan_for_value_min_and_max(load_esgf_test_data):
 
 
 def test_min_max_reproduce_nan(load_esgf_test_data):
-    fpath = f"{base_dir}/cmip5/output1/MOHC/HadGEM2-ES/historical/mon/land/Lmon/r1i1p1/latest/rh/*.nc"
+    fpath = f"{base_dir}/output1/MOHC/HadGEM2-ES/historical/mon/land/Lmon/r1i1p1/latest/rh/*.nc"
     ds = xr.open_mfdataset(fpath, combine="by_coords")
     data = ds.rh.values
     mx = data.max()
@@ -258,7 +258,7 @@ def test_min_max_reproduce_nan(load_esgf_test_data):
 
 
 def test_min_max_value(load_esgf_test_data):
-    fpath = f"{base_dir}/cmip5/output1/MOHC/HadGEM2-ES/historical/mon/land/Lmon/r1i1p1/latest/rh/*.nc"
+    fpath = f"{base_dir}/output1/MOHC/HadGEM2-ES/historical/mon/land/Lmon/r1i1p1/latest/rh/*.nc"
     ds = xr.open_mfdataset(fpath, combine="by_coords")
     mx = float(ds.rh.max())
     assert np.isfinite(mx)

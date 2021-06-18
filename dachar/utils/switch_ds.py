@@ -24,9 +24,7 @@ def switch_ds(project, ds):
     :param ds: either dataset path or dataset ID (DSID)
     :return: either dataset path or dataset ID (DSID) - switched from the input.
     """
-    base_dir = get_project_base_dir(project)
-
     if ds.startswith("/"):
-        return DatasetMapper(dset, project=project).ds_id
+        return DatasetMapper(ds, project=project).ds_id
     else:
-        return DatasetMapper(dset, project=project).data_path
+        return DatasetMapper(ds, project=project).data_path
