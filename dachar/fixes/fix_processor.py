@@ -1,5 +1,7 @@
-from dachar.utils.get_stores import get_fix_prop_store, get_fix_store
 import pprint
+
+from dachar.utils.get_stores import get_fix_prop_store
+from dachar.utils.get_stores import get_fix_store
 
 
 def get_proposed_fixes(ds_ids=None):
@@ -116,3 +118,8 @@ def process_all_fixes(action, ds_ids=None):
 
         existing_fixes = get_fixes_to_withdraw(ds_ids)
         process_withdraw_fixes(existing_fixes)
+
+    else:
+        raise Exception(
+            f"Expected action to be 'process' or 'withdraw', recieved {action}"
+        )

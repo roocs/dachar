@@ -1,16 +1,11 @@
-from dachar.scan.char_store import (
-    LocalDatasetCharacterStore,
-    ElasticDatasetCharacterStore,
-)
-from dachar.fixes.fix_proposal_store import (
-    LocalFixProposalStore,
-    ElasticFixProposalStore,
-)
-from dachar.analyse.analysis_store import (
-    LocalAnalysisRecordsStore,
-    ElasticAnalysisRecordsStore,
-)
-from dachar.fixes.fix_store import LocalFixStore, ElasticFixStore
+from dachar.analyse.analysis_store import ElasticAnalysisRecordsStore
+from dachar.analyse.analysis_store import LocalAnalysisRecordsStore
+from dachar.fixes.fix_proposal_store import ElasticFixProposalStore
+from dachar.fixes.fix_proposal_store import LocalFixProposalStore
+from dachar.fixes.fix_store import ElasticFixStore
+from dachar.fixes.fix_store import LocalFixStore
+from dachar.scan.char_store import ElasticDatasetCharacterStore
+from dachar.scan.char_store import LocalDatasetCharacterStore
 
 
 fix_store = None
@@ -57,3 +52,22 @@ def get_fix_prop_store(type=None):
         else:
             fix_prop_store = LocalFixProposalStore()
     return fix_prop_store
+
+
+def get_store_by_name(name):
+    if name == "fix":
+        return get_fix_store()
+
+    elif name == "fix-proposal":
+        return get_fix_prop_store()
+
+    elif name == "analysis":
+        return get_ar_store()
+
+    elif name == "character":
+        return get_dc_store()
+
+    else:
+        raise Exception(
+            f"Invalid store: {name}. Expected one of fix, fix-proposal, character or analysis"
+        )

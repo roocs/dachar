@@ -75,7 +75,7 @@ Takes the coordinate to add, along with its attributes.
 For example:
   - inputs:
     - {'var_id': 'leadtime',
-       'value': [16, 46, 76, 106],
+       'value': "16, 46, 76, 106",
        'dim': ['time'],
        'dtype': 'timedelta64[D]',
        'attrs': {'long_name': 'Time elapsed since the start of the forecast', 'standard_name': 'forecast_period'},

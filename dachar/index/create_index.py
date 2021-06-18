@@ -29,30 +29,29 @@ from dachar.utils.get_stores import get_fix_store
 #     _TestDatasetCharacterStore,
 # )
 
-es = CEDAElasticsearchClient(
-    headers={"x-api-key": CONFIG["dachar:settings"]["elastic_api_token"]}
-)
-
-# es.indices.delete(index="roocs-fix-2020-10-12", ignore=[400, 404])
-# print(es.indices.exists("roocs-char-test"))
-# es.indices.create("roocs-char-test")
-
-# date = datetime.today().strftime("%Y-%m-%d")
-
-# character store
-char_name = CONFIG["elasticsearch"]["character_store"]
-# analysis store
-a_name = CONFIG["elasticsearch"]["analysis_store"]
-# fix store
-fix_name = CONFIG["elasticsearch"]["fix_store"]
-# fix proposal store
-fix_prop_name = CONFIG["elasticsearch"]["fix_proposal_store"]
+if not CONFIG["dachar:settings"]["elastic_api_token"]:
+    raise Exception(
+        "Elastic api token must be set in the config to be able to create, delete or write to indices."
+    )
+else:
+    es = CEDAElasticsearchClient(
+        headers={"x-api-key": CONFIG["dachar:settings"]["elastic_api_token"]}
+    )
 
 
-def create_index_and_alias(index_name, date):
+def delete_index(index_name):
+    """
+    Delete an index
+    """
+    es.indices.delete(index=index_name, ignore=[400, 404])
+    print(f"Deleted index {index_name}")
+
+
+def create_index_and_alias(index_name):
     """
     create an empty index and update the alias to point to it
     """
+    date = datetime.today().strftime("%Y-%m-%d")
 
     exists = es.indices.exists(f"{index_name}-{date}")
     if not exists:
@@ -76,26 +75,41 @@ def create_index_and_alias(index_name, date):
         )
         # es.indices.put_alias(index=f"{name}-{date}", name=f"{name}")
 
+    print(f"Created index {index_name}-{date} with alias {index_name}")
 
-def clone_index_and_update_alias(index_name, date, index_to_clone):
+
+# doesn't work yet
+def clone_index_and_update_alias(index_name, index_to_clone):
     """
     clone an index and update the alias to point to the new index
     """
+    date = datetime.today().strftime("%Y-%m-%d")
 
     exists = es.indices.exists(f"{index_name}-{date}")
     if not exists:
         es.indices.clone(index_to_clone, f"{index_name}-{date}")
-    # alias_exists = es.indices.exists_alias(name=f"{index_name}", index=f"{index_name}-{date}")
-    # if not alias_exists:
-    #     es.indices.update_aliases(
-    #         body={
-    #             "actions": [
-    #                 {"remove": {"alias": f"{index_name}", "index": "*"}},
-    #                 {"add": {"alias": f"{index_name}", "index": f"{index_name}-{date}"}},
-    #             ]
-    #         }
-    #     )
-    #     # es.indices.put_alias(index=f"{name}-{date}", name=f"{name}")
+    alias_exists = es.indices.exists_alias(
+        name=f"{index_name}", index=f"{index_name}-{date}"
+    )
+    if not alias_exists:
+        es.indices.update_aliases(
+            body={
+                "actions": [
+                    {"remove": {"alias": f"{index_name}", "index": "*"}},
+                    {
+                        "add": {
+                            "alias": f"{index_name}",
+                            "index": f"{index_name}-{date}",
+                        }
+                    },
+                ]
+            }
+        )
+        # es.indices.put_alias(index=f"{name}-{date}", name=f"{name}")
+
+    print(
+        f"Cloned index {index_to_clone} to index {index_name}-{date} with alias {index_name}"
+    )
 
 
 def populate_store(local_store, index, id_type):
@@ -119,16 +133,18 @@ def populate_store(local_store, index, id_type):
             for find_s, replace_s in mapper.items():
                 drs = drs.replace(find_s, replace_s)
 
-            print(drs)
             m = hashlib.md5()
             m.update(drs.encode("utf-8"))
             doc_id = m.hexdigest()
             doc = json.load(open(fpath))
-            # es.delete(index=index, id=id)
 
             es.index(index=index, id=doc_id, body=doc)
             if id_type is not None:
                 es.update(index=index, id=doc_id, body={"doc": {id_type: drs}})
+
+            print(
+                f"Added document for {drs} from loacal store {local_store} in index {index}"
+            )
 
 
 def add_document_to_index(fpath, drs, index, id_type):
@@ -140,28 +156,13 @@ def add_document_to_index(fpath, drs, index, id_type):
     for find_s, replace_s in mapper.items():
         drs = drs.replace(find_s, replace_s)
 
-        print(drs)
-        m = hashlib.md5()
-        m.update(drs.encode("utf-8"))
-        doc_id = m.hexdigest()
-        doc = json.load(open(fpath))
-        # es.delete(index=index, id=id)
-        print(doc)
+    m = hashlib.md5()
+    m.update(drs.encode("utf-8"))
+    doc_id = m.hexdigest()
+    doc = json.load(open(fpath))
 
-        es.index(index=index, id=doc_id, body=doc)
-        if id_type is not None:
-            es.update(index=index, id=doc_id, body={"doc": {id_type: drs}})
+    es.index(index=index, id=doc_id, body=doc)
+    if id_type is not None:
+        es.update(index=index, id=doc_id, body={"doc": {id_type: drs}})
 
-
-def main():
-    # for store in [char_name, a_name, fix_name, fix_prop_name]:
-
-    # create_index_and_alias(fix_name, "2020-10-12")
-    # clone_index_and_update_alias(fix_name, "2021-06-15", "roocs-fix-2020-10-12"))
-
-    # populate_store(get_fix_store(), "roocs-fix-2020-10-12", "dataset_id")
-    clone_index_and_update_alias("roocs-test", "2020-12-21", "roocs-test")
-
-
-if __name__ == "__main__":
-    main()
+    print(f"Added document for {drs} from path {fpath} in index {index}")

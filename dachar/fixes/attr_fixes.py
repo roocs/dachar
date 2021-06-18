@@ -78,7 +78,7 @@ For example:
 
 class RemoveFillValuesFix(_BaseDatasetFix):
     fix_id = "RemoveFillValuesFix"
-    title = "Remove the Fill Value from coordiante varaibles"
+    title = "Remove the Fill Value from coordinate variables"
     description = """
 "Remove the FillValue attributes from coordinate variables which are added during manipulation with xarray, as NaNs.
 """
