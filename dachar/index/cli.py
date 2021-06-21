@@ -50,6 +50,9 @@ def parse_args_create(args):
     elif index == "character":
         index_name = CONFIG["elasticsearch"]["character_store"]
 
+    elif index == "test":
+        index_name = "roocs-test"
+
     else:
         raise Exception(
             f"index {index} should be one of fix, fix-proposal, character or analysis"
@@ -119,6 +122,9 @@ def parse_args_clone(args):
 
     elif index == "character":
         index_name = CONFIG["elasticsearch"]["character_store"]
+
+    elif index == "test":
+        index_name = "roocs-test"
 
     else:
         raise Exception(
