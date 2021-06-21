@@ -136,8 +136,9 @@ Adding to elasticsearch
 =======================
 When a new version of the index is being created:
 
-1. A new index must be created with new date. This is best done by cloning the previous index.
-   This creates a new index with the date of creation, fills it with all documents from the old index and updates the alias to point to it.
+1. A new index must be created with new date. This can be done by creating an empty index or cloning the old one.
+   Creating an empty index will just make a new index with the date of creation and update the alias to point to it.
+   Cloning creates a new index with the date of creation, fills it with all documents from the old index and updates the alias to point to it.
 
 2. It can then be populated either with all documents in local store or one document at a time.
 
@@ -149,9 +150,9 @@ To create an index with today's date and populate it with all documents from ano
 
 .. code-block::
 
-      $ python dachar/utils/cli.py clone -i <index-to-create> -c <index-to-clone>
+      $ python dachar/index/cli.py clone -i <index-to-create> -c <index-to-clone>
 
-e.g. ``python dachar/utils/cli.py clone -i fix -c roocs-fix-2020-12-21``
+e.g. ``python dachar/index/cli.py clone -i fix -c roocs-fix-2020-12-21``
 
 
 Creating an empty index
@@ -160,9 +161,9 @@ To create an empty index with today's date.
 
 .. code-block::
 
-      $ python dachar/utils/cli.py clone -i <index-to-create>
+      $ python dachar/index/cli.py clone -i <index-to-create>
 
-e.g. ``python dachar/utils/cli.py clone -i fix``
+e.g. ``python dachar/index/cli.py clone -i fix``
 
 
 Deleting an index
@@ -171,9 +172,9 @@ To delete an index.
 
 .. code-block::
 
-      $ python dachar/utils/cli.py delete -i <index-to-delete>
+      $ python dachar/index/cli.py delete -i <index-to-delete>
 
-e.g. ``python dachar/utils/cli.py delete -i roocs-fix-2020-12-21``
+e.g. ``python dachar/index/cli.py delete -i roocs-fix-2020-12-21``
 
 
 Populating an index from a local json store
@@ -182,14 +183,25 @@ Popluate an elasticsearch index with the contents of a local store.
 
 .. code-block::
 
-      $ python dachar/utils/cli.py add-document -f <file-path> -d <drs-id> -i <index>
+      $ python dachar/index/cli.py populate -s <store> -i <index-to-populate>
 
-drs-id is what the id is called in the index i.e. either dataset_id (for fix, character and fix proposal store) or sample_id (for the analysis store)
+Store must be one of fix, fix-proposal, analysis or character.
 
-e.g. ``python dachar/utils/cli.py add-document -f /path/to/doc.json -d c3s-cmip6.ScenarioMIP.INM.INM-CM5-0.ssp245.r1i1p1f1.Amon.rlds.gr1.v20190619 -i roocs-fix-2020-12-21``
+e.g. ``python dachar/index/cli.py populate -s fix -i roocs-fix-2020-12-21``
+
 
 Adding one document to an existing index
 ----------------------------------------
+To add one document from any file path to a store
+
+.. code-block::
+
+      $ python dachar/index/cli.py add-document -f <file-path> -d <drs-id> -i <index>
+
+drs-id is what the id is called in the index i.e. either dataset_id (for fix, character and fix proposal store) or sample_id (for the analysis store)
+
+e.g. ``python dachar/index/cli.py add-document -f /path/to/doc.json -d c3s-cmip6.ScenarioMIP.INM.INM-CM5-0.ssp245.r1i1p1f1.Amon.rlds.gr1.v20190619 -i roocs-fix-2020-12-21``
+
 
 Credits
 =======
