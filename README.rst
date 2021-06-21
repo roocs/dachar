@@ -138,12 +138,12 @@ When a new version of the index is being created:
 
 1. A new index must be created with new date. This can be done by creating an empty index or cloning the old one.
    Creating an empty index will just make a new index with the date of creation and update the alias to point to it.
-   Cloning creates a new index with the date of creation, fills it with all documents from the old index and updates the alias to point to it.
+   Cloning creates a new index with the date of creation, fills it with all documents from the old index and updates the alias to point to it. 
+
 
 2. It can then be populated either with all documents in local store or one document at a time.
 
 
-**Note** This isn't working yet
 Cloning an index
 ----------------
 To create an index with today's date and populate it with all documents from another index.

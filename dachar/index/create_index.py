@@ -39,6 +39,7 @@ else:
     )
 
 
+
 def delete_index(index_name):
     """
     Delete an index
@@ -78,7 +79,6 @@ def create_index_and_alias(index_name):
     print(f"Created index {index_name}-{date} with alias {index_name}")
 
 
-# doesn't work yet
 def clone_index_and_update_alias(index_name, index_to_clone):
     """
     clone an index and update the alias to point to the new index
@@ -87,7 +87,15 @@ def clone_index_and_update_alias(index_name, index_to_clone):
 
     exists = es.indices.exists(f"{index_name}-{date}")
     if not exists:
-        es.indices.clone(index_to_clone, f"{index_name}-{date}")
+        es.indices.create(f"{index_name}-{date}")
+    es.reindex(body={
+                "source": {
+                        "index": f"{index_to_clone}"
+                    },
+                "dest": {
+                        "index": f"{index_name}-{date}"
+                    }
+                })
     alias_exists = es.indices.exists_alias(
         name=f"{index_name}", index=f"{index_name}-{date}"
     )
@@ -95,6 +103,7 @@ def clone_index_and_update_alias(index_name, index_to_clone):
         es.indices.update_aliases(
             body={
                 "actions": [
+                    # make it read only
                     {"remove": {"alias": f"{index_name}", "index": "*"}},
                     {
                         "add": {
