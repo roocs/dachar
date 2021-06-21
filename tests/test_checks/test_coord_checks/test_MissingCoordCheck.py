@@ -1,14 +1,17 @@
-from dachar.analyse.checks.coord_checks import *
 import os
 import shutil
+from unittest.mock import Mock
+
 import pytest
 
-from tests._stores_for_tests import _TestDatasetCharacterStore, _TestFixProposalStore
-from dachar.scan.scan import scan_dataset, get_dataset_paths
-from dachar.analyse.checks import _base_check
 from dachar import CONFIG
-from unittest.mock import Mock
+from dachar.analyse.checks import _base_check
+from dachar.analyse.checks.coord_checks import MissingCoordCheck
 from dachar.scan import scan
+from dachar.scan.scan import get_dataset_paths
+from dachar.scan.scan import scan_dataset
+from tests._stores_for_tests import _TestDatasetCharacterStore
+from tests._stores_for_tests import _TestFixProposalStore
 
 char_store = None
 prop_store = None
@@ -48,7 +51,7 @@ def populate_dc_store(ds_ids, project):
     scan.get_dc_store = Mock(return_value=char_store)
 
     ds_paths = get_dataset_paths(
-        project, ds_ids=ds_ids, paths=CONFIG[f'project:{project}']['base_dir']
+        project, ds_ids=ds_ids, paths=CONFIG[f"project:{project}"]["base_dir"]
     )
     for ds_id, ds_path in ds_paths.items():
         scan_dataset(project, ds_id, ds_path, "full", "ceda")
@@ -121,8 +124,8 @@ def test_MissingCoordCheck_cmip5():
     results, atypical_content, typical_content = x.run()
     assert atypical_content[0]["coordinates.*.id"] == ["latitude", "longitude", "time"]
     assert typical_content["coordinates.*.id"] == [
-        "height",
         "latitude",
+        "level",
         "longitude",
         "time",
     ]

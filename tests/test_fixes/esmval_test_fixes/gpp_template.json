@@ -1,0 +1,14 @@
+{
+    "dataset_id": "",
+    "fixes": [{
+        "fix_id": "MaskDataFix",
+        "operands": {
+            "value": "1.0e33"
+        },
+        "source": {
+            "name": "esmvaltool",
+            "version": "2.0.0",
+            "comments": "",
+            "url":"https://github.com/ESMValGroup/ESMValCore/issues/352"}
+    }]
+}

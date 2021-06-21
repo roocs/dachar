@@ -1,8 +1,9 @@
 import os
 import shutil
 
-# Create a new dummy store to run tests on
 from tests._stores_for_tests import _TestFixStore
+
+# Create a new dummy store to run tests on
 
 # recs = [
 #     {'fix_id': 'Fix1', 'operands': {'arg1': '1'}, 'ncml': '<NcML1>'},
@@ -72,4 +73,5 @@ def test_withdraw_fix_1():
 
 
 def teardown_module():
+    # pass
     _clear_store()

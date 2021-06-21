@@ -1,12 +1,14 @@
 import json
-import pytest
 import os
+
+import pytest
 import xarray as xr
 
+from .test_check_files import make_nc_modify_var_attr
+from dachar import CONFIG
+from dachar import logging
 from dachar.scan.scan import scan_datasets
 from dachar.utils import switch_ds
-from dachar import CONFIG, logging
-from .test_check_files import make_nc_modify_var_attr
 
 LOGGER = logging.getLogger(__file__)
 
@@ -20,23 +22,6 @@ F1, F2, F3 = test_files
 
 
 class TestCorruptJson:
-    @pytest.mark.skip("This ds id no longer creates a corrupt JSON file")
-    def test_corrupt_json_file(self):
-        """ Tests what happens when a JSON file exists but is incomplete due to an issue encoding."""
-        ds_id = [
-            "c3s-cordex.output.EUR-11.IPSL.MOHC-HadGEM2-ES.rcp85.r1i1p1.IPSL-WRF381P.v1.day.psl.v20190212"
-        ]
-        try:
-            scan_datasets(
-                project="c3s-cordex",
-                ds_ids=ds_id,
-                paths=CONFIG['project:c3s-cordex']['base_dir'],
-                mode="quick",
-                location="ceda",
-            )
-        except json.decoder.JSONDecodeError as exc:
-            pass
-
     def test_fake_corrupt_json_file(self, tmpdir):
         """ Creates a bad JSON file and tests the code responds properly"""
         try:
@@ -70,7 +55,7 @@ class TestFileChecker:
         ds_id = ["cmip5.output1.MOHC.HadGEM2-ES.rcp85.mon.atmos.Amon.r1i1p1.latest.tas"]
 
         grouped_ds_id = switch_ds.get_grouped_ds_id(ds_id[0])
-        CONFIG['project:cmip5']['base_dir'] = "tests/test_outputs/"
+        CONFIG["project:cmip5"]["base_dir"] = "tests/test_outputs/"
 
         failure_file = f"outputs/logs/failure/pre_extract_error/{grouped_ds_id}.log"
         json_file = f"outputs/logs/register/{grouped_ds_id}.json"
@@ -83,7 +68,7 @@ class TestFileChecker:
         scan_datasets(
             project="cmip5",
             ds_ids=ds_id,
-            paths=CONFIG['project:cmip5']['base_dir'],
+            paths=CONFIG["project:cmip5"]["base_dir"],
             mode="quick",
             location="ceda",
         )

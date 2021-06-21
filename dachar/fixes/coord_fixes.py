@@ -1,8 +1,7 @@
+from dachar.fixes._base_fix import _BaseDatasetFix
 from dachar.utils.common import UNDEFINED
 
-from dachar.fixes._base_fix import _BaseDatasetFix
-
-__all__ = ["SqueezeDimensionsFix", "AddScalarCoordFix"]
+__all__ = ["SqueezeDimensionsFix", "AddScalarCoordFix", "ReverseCoordFix"]
 
 
 class SqueezeDimensionsFix(_BaseDatasetFix):
@@ -62,4 +61,26 @@ Attributes will be set by attrs: e.g. ds.attrs['units'] = 'm'
     category = "coord_fixes"
     required_operands = ["dtype", "id", "value", "length", "attrs", "coord_type"]
     ref_implementation = "daops.data_utils.coord_utils.add_scalar_coord"
+    process_type = "post_processor"
+
+
+class ReverseCoordFix(_BaseDatasetFix):
+    fix_id = "ReverseCoordFix"
+    title = "Reverse data of Coordinates"
+    description = """
+"Reverses the order of the data of a given coordinate
+
+Takes as an input the name of the coordinate/s to be reversed:
+
+For example:
+  - inputs:
+    {"coords": [
+          "lat",
+          "lev"
+        ]
+    },
+"""
+    category = "coord_fixes"
+    required_operands = ["coords"]
+    ref_implementation = "daops.data_utils.coord_utils.reverse_coords"
     process_type = "post_processor"

@@ -92,5 +92,5 @@ def test_analyse(load_esgf_test_data):
 
 
 def teardown_module():
-    # clear_stores()
-    pass
+    # pass
+    clear_stores()
