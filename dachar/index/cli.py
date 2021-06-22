@@ -32,6 +32,13 @@ def _get_arg_parser_create(parser):
         help=f"index to create, can be one of fix, character, analysis, fix-proposal",
     )
 
+    parser.add_argument(
+        "-u",
+        "--update-alias",
+        action="store_true",
+        help=f"If provided the alias will be updated with the newly created index.",
+    )
+
     return parser
 
 
@@ -58,12 +65,14 @@ def parse_args_create(args):
             f"index {index} should be one of fix, fix-proposal, character or analysis"
         )
 
-    return index_name
+    update_alias = args.update_alias
+
+    return index_name, update_alias
 
 
 def create_main(args):
-    index_name = parse_args_create(args)
-    create_index_and_alias(index_name)
+    index_name, update_alias = parse_args_create(args)
+    create_index_and_alias(index_name, update_alias=update_alias)
 
 
 def _get_arg_parser_delete(parser):
@@ -105,11 +114,20 @@ def _get_arg_parser_clone(parser):
         "-c", "--clone", type=str, required=True, help=f"Name of the index to clone",
     )
 
+    parser.add_argument(
+        "-u",
+        "--update-alias",
+        action="store_true",
+        help=f"If provided the alias will be updated with the newly created index.",
+    )
+
     return parser
 
 
 def parse_args_clone(args):
     index = args.index
+
+    update_alias = args.update_alias
 
     if index == "fix":
         index_name = CONFIG["elasticsearch"]["fix_store"]
@@ -133,12 +151,12 @@ def parse_args_clone(args):
 
     clone = args.clone
 
-    return index_name, clone
+    return index_name, clone, update_alias
 
 
 def clone_main(args):
-    index_name, clone = parse_args_clone(args)
-    clone_index_and_update_alias(index_name, clone)
+    index_name, clone, update_alias = parse_args_clone(args)
+    clone_index_and_update_alias(index_name, clone, update_alias=update_alias)
 
 
 def _get_arg_parser_populate(parser):

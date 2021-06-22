@@ -3,7 +3,7 @@ This script can produce an index with today's date and update the alias to point
 There is also a function to populate the elasticsearch store with the contents of the local store.
 
 When updating the index:
-- new index must be created with new date - clone_index_and_update_alias function creates this, fills with all documents from old index and updates the alias to point to it
+- new index must be created with new date - clone_index_and_update_alias function creates this, fills with all documents from old index and updates the alias to point to it if update_alias is True
 - it can then be populated either with all documents in local store (populate_store) or one document at a time (add_document_to_index)
 """
 import hashlib
@@ -39,7 +39,6 @@ else:
     )
 
 
-
 def delete_index(index_name):
     """
     Delete an index
@@ -48,73 +47,53 @@ def delete_index(index_name):
     print(f"Deleted index {index_name}")
 
 
-def create_index_and_alias(index_name):
+def create_index_and_alias(index_name, update_alias=False):
     """
-    create an empty index and update the alias to point to it
+    create an empty index and if update_alias is True then update the alias to point to it (default is False)
     """
     date = datetime.today().strftime("%Y-%m-%d")
 
     exists = es.indices.exists(f"{index_name}-{date}")
     if not exists:
         es.indices.create(f"{index_name}-{date}")
-    alias_exists = es.indices.exists_alias(
-        name=f"{index_name}", index=f"{index_name}-{date}"
-    )
-    if not alias_exists:
-        es.indices.update_aliases(
-            body={
-                "actions": [
-                    {"remove": {"alias": f"{index_name}", "index": "*"}},
-                    {
-                        "add": {
-                            "alias": f"{index_name}",
-                            "index": f"{index_name}-{date}",
-                        }
-                    },
-                ]
-            }
-        )
-        # es.indices.put_alias(index=f"{name}-{date}", name=f"{name}")
+
+    if update_alias:
+        update_alias(f"{index_name}-{date}")
 
     print(f"Created index {index_name}-{date} with alias {index_name}")
 
 
-def clone_index_and_update_alias(index_name, index_to_clone):
+def update_alias(index_name):
+    index_alias = ("-").join(index_name.split("-")[:-3])
+    alias_exists = es.indices.exists_alias(name=f"{index_alias}", index=f"{index_name}")
+    if not alias_exists:
+        es.indices.update_aliases(
+            body={
+                "actions": [
+                    {"remove": {"alias": f"{index_alias}", "index": "*"}},
+                    {"add": {"alias": f"{index_alias}", "index": f"{index_name}",}},
+                ]
+            }
+        )
+
+
+def clone_index_and_update_alias(index_name, index_to_clone, update_alias=False):
     """
-    clone an index and update the alias to point to the new index
+    clone an index and if update_alias is True then update the alias to point to it (default is False)
     """
     date = datetime.today().strftime("%Y-%m-%d")
 
     exists = es.indices.exists(f"{index_name}-{date}")
     if not exists:
         es.indices.create(f"{index_name}-{date}")
-    es.reindex(body={
-                "source": {
-                        "index": f"{index_to_clone}"
-                    },
-                "dest": {
-                        "index": f"{index_name}-{date}"
-                    }
-                })
-    alias_exists = es.indices.exists_alias(
-        name=f"{index_name}", index=f"{index_name}-{date}"
+    es.reindex(
+        body={
+            "source": {"index": f"{index_to_clone}"},
+            "dest": {"index": f"{index_name}-{date}"},
+        }
     )
-    if not alias_exists:
-        es.indices.update_aliases(
-            body={
-                "actions": [
-                    # make it read only
-                    {"remove": {"alias": f"{index_name}", "index": "*"}},
-                    {
-                        "add": {
-                            "alias": f"{index_name}",
-                            "index": f"{index_name}-{date}",
-                        }
-                    },
-                ]
-            }
-        )
-        # es.indices.put_alias(index=f"{name}-{date}", name=f"{name}")
+    if update_alias:
+        update_alias(f"{index_name}-{date}")
 
     print(
         f"Cloned index {index_to_clone} to index {index_name}-{date} with alias {index_name}"

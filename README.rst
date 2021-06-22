@@ -137,8 +137,8 @@ Adding to elasticsearch
 When a new version of the index is being created:
 
 1. A new index must be created with new date. This can be done by creating an empty index or cloning the old one.
-   Creating an empty index will just make a new index with the date of creation and update the alias to point to it.
-   Cloning creates a new index with the date of creation, fills it with all documents from the old index and updates the alias to point to it. 
+   Creating an empty index will just make a new index with the date of creation and update the alias to point to it if desired.
+   Cloning creates a new index with the date of creation, fills it with all documents from the old index and updates the alias to point to it if desired.
 
 
 2. It can then be populated either with all documents in local store or one document at a time.
@@ -154,6 +154,12 @@ To create an index with today's date and populate it with all documents from ano
 
 e.g. ``python dachar/index/cli.py clone -i fix -c roocs-fix-2020-12-21``
 
+To update the alias to point to this new index, provide the `-u` flag.
+
+.. code-block::
+
+      $ python dachar/index/cli.py clone -i <index-to-create> -c <index-to-clone> -u
+
 
 Creating an empty index
 -----------------------
@@ -161,9 +167,15 @@ To create an empty index with today's date.
 
 .. code-block::
 
-      $ python dachar/index/cli.py clone -i <index-to-create>
+      $ python dachar/index/cli.py create -i <index-to-create>
 
-e.g. ``python dachar/index/cli.py clone -i fix``
+e.g. ``python dachar/index/cli.py create -i fix``
+
+To update the alias to point to this new index, provide the `-u` flag.
+
+.. code-block::
+
+      $ python dachar/index/cli.py create -i <index-to-create> -u
 
 
 Deleting an index
