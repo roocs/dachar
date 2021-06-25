@@ -6,10 +6,15 @@ from dachar.fixes._base_fix import _BaseDatasetFix
 
 
 def test_get_fix_categories():
-    expected_fix_categories = ["coord_fixes"]
+    expected_fix_categories = ['array_fixes', 'attr_fixes', 'coord_fixes']
     assert get_fix_categories() == expected_fix_categories
 
-    expected_fix_dict = {"coord_fixes": ["SqueezeDimensionsFix", "AddScalarCoordFix"]}
+    expected_fix_dict = {
+        "coord_fixes": ["SqueezeDimensionsFix", "AddScalarCoordFix"],
+        "array_fixes": ["ReplaceLatLonFillValuesFix"],
+        "attr_fixes": [
+            "RemoveVarAttrFix"],
+    }
     assert get_fix_dict() == expected_fix_dict
 
 
