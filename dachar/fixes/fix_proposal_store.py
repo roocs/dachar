@@ -144,8 +144,10 @@ class BaseFixProposalStore(object):
 class LocalFixProposalStore(BaseFixProposalStore, _LocalBaseJsonStore):
     config = {
         "store_type": "local",
-        "local.base_dir": "/tmp/fix-proposal-store",
-        "local.dir_grouping_level": 4,
+        "local.base_dir": CONFIG["dachar:store"].get("fix_proposal_store", 
+                          "/tmp/fix-proposal-store"),
+        "local.dir_grouping_level": CONFIG["dachar:settings"].get(
+                                           "dir_grouping_level", 4)
     }
 
 
@@ -157,3 +159,4 @@ class ElasticFixProposalStore(BaseFixProposalStore, _ElasticSearchBaseJsonStore)
         "api_token": CONFIG["dachar:settings"]["elastic_api_token"],
         "id_type": "dataset_id",
     }
+

@@ -29,6 +29,10 @@ def write_roocs_cfg():
 
     [project:c3s-cordex]
     base_dir = {{ base_dir }}/test_data/gws/nopw/j04/cp4cds1_vol1/data/c3s-cordex
+
+
+    [dachar:settings]
+    elastic_api_token =
     """
     cfg = Template(cfg_templ).render(base_dir=MINI_ESGF_MASTER_DIR)
     with open(ROOCS_CFG, "w") as fp:

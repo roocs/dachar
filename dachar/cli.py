@@ -199,8 +199,11 @@ def _get_arg_parser_process_fixes(parser):
         type=str,
         default=None,
         required=True,
-        help="Action to carry out on fixes: process for proposed fixes, withdraw to withdraw "
-        "existing fixes",
+        help=("Action to carry out on fixes: "
+              "- 'process' to process proposed fixes interactively, "
+              "- 'withdraw' to withdraw previously published fixes, "
+              "- 'reject-all' to reject all proposed fixes, "
+              "- 'publish-all' to publish all proposed fixes."),
     )
 
     return parser

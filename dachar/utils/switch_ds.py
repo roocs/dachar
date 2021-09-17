@@ -9,7 +9,7 @@ def get_grouped_ds_id(ds_id):
 
     # Define a "grouped" ds_id that splits facets across directories and then groups
     # the final set into a file path, based on dir_grouping_level value in CONFIG
-    gl = CONFIG["dachar:settings"]["dir_grouping_level"]
+    gl = CONFIG["dachar:settings"].get("dir_grouping_level", 4)
     parts = ds_id.split(".")
     grouped_ds_id = "/".join(parts[:-gl]) + "/" + ".".join(parts[-gl:])
 

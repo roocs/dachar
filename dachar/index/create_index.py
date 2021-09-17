@@ -154,3 +154,4 @@ def add_document_to_index(fpath, drs, index, id_type):
         es.update(index=index, id=doc_id, body={"doc": {id_type: drs}})
 
     print(f"Added document for {drs} from path {fpath} in index {index}")
+

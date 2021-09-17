@@ -7,8 +7,10 @@ class LocalDatasetCharacterStore(_LocalBaseJsonStore):
     store_name = "Dataset Character Store"
     config = {
         "store_type": "local",
-        "local.base_dir": "/tmp/ds-char-store",
-        "local.dir_grouping_level": 4,
+        "local.base_dir": CONFIG["dachar:store"].get("character_store",
+                          "/tmp/ds-char-store"),
+        "local.dir_grouping_level": CONFIG["dachar:settings"].get(
+                          "dir_grouping_level", 4)
     }
     id_mappers = {"*": "__ALL__"}
     required_fields = [

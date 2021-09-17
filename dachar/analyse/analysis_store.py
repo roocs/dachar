@@ -11,8 +11,10 @@ class LocalAnalysisRecordsStore(_LocalBaseJsonStore):
     store_name = "Analysis Results Store"
     config = {
         "store_type": "local",
-        "local.base_dir": "/tmp/an-res-store",
-        "local.dir_grouping_level": 4,
+        "local.base_dir": CONFIG["dachar:store"].get("analysis_store", 
+                          "/tmp/an-res-store"),
+        "local.dir_grouping_level": CONFIG["dachar:settings"].get(
+                                           "dir_grouping_level", 4)
     }
     id_mappers = {"*": "__ALL__"}
     required_fields = [
