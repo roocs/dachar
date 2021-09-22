@@ -6,6 +6,7 @@ __all__ = [
     "CheckAddGlobalAttrFix",
     "VarAttrFix",
     "RemoveFillValuesFix",
+    "RemoveCoordAttrFix",
 ]
 
 
@@ -85,4 +86,21 @@ class RemoveFillValuesFix(_BaseDatasetFix):
     category = "attr_fixes"
     required_operands = []
     ref_implementation = "daops.data_utils.attr_utils.remove_fill_values"
+    process_type = "post_processor"
+
+
+class RemoveCoordAttrFix(_BaseDatasetFix):
+    fix_id = "RemoveCoordAttrFix"
+    title = "Remove the coordinate attribute added by xarray from specified variables"
+    description = """
+"Remove the coordinate attribute from variables which is added during manipulation with xarray.
+Takes the variable ids to remove the attribute from as a list.
+
+For example:
+    {"var_ids": ["realization", "time_bnds"]
+    }
+"""
+    category = "attr_fixes"
+    required_operands = ["var_ids"]
+    ref_implementation = "daops.data_utils.attr_utils.remove_coord_attr"
     process_type = "post_processor"

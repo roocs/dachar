@@ -15,6 +15,7 @@ import json
 import re
 from datetime import datetime
 
+import cf_xarray
 import numpy as np
 import xarray as xr
 from roocs_utils.project_utils import dsid_to_datapath
@@ -145,6 +146,16 @@ decadal_template = {
                 "url": "https://github.com/cp4cds/c3s34g_master/tree/master/Decadal",
             },
         },
+        {
+            "fix_id": "RemoveCoordAttrFix",
+            "operands": {"var_ids": ""},
+            "source": {
+                "name": "ceda",
+                "version": "",
+                "comments": "",
+                "url": "https://github.com/cp4cds/c3s34g_master/tree/master/Decadal",
+            },
+        },
     ],
 }
 
@@ -209,6 +220,12 @@ def get_lead_times(ds, start_date):
     return lts.rstrip(",")
 
 
+def get_bnds_variables(ds):
+    bnd_vars = ["latitude", "longitude", "time"]
+    bounds_list = [ds.cf.get_bounds(bv).name for bv in bnd_vars]
+    return bounds_list
+
+
 def main():
     args = arg_parse()
 
@@ -224,7 +241,7 @@ def main():
     data_path = dsid_to_datapath(ds_id)
 
     # open dataset
-    ds = fixed_by_xarray = xr.open_mfdataset(
+    ds = xr.open_mfdataset(
         f"{data_path}/*.nc",
         use_cftime=True,
         combine="by_coords",
@@ -250,6 +267,11 @@ def main():
     # put the leadtimes in
     decadal_template["fixes"][3]["operands"]["value"] = lead_times
 
+    # put variable names in to remove coordinates attribute from
+    bounds_list = get_bnds_variables(ds)
+    bounds_list.append("realization")
+    decadal_template["fixes"][6]["operands"]["var_ids"] = bounds_list
+
     # save the template as a json file
     with open(fpath, "w") as fp:
         json.dump(decadal_template, fp, indent=4)
@@ -257,4 +279,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
