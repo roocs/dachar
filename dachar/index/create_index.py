@@ -57,25 +57,7 @@ def create_index_and_alias(index_name, update_alias=False):
     if not exists:
 
         #  create correct mapping for 'value' for fix and fix proposal stores.
-        if "fix" in index_name:
-            es.indices.create(
-                f"{index_name}-{date}",
-                body={
-                    "mappings": {
-                        "properties": {
-                            "fixes": {
-                                "properties": {
-                                    "operands": {
-                                        "properties": {"value": {"type": "text"}}
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-            )
-
-        elif "fix-prop" in index_name:
+        if "fix-prop" in index_name:
             es.indices.create(
                 f"{index_name}-{date}",
                 body={
@@ -91,6 +73,24 @@ def create_index_and_alias(index_name, update_alias=False):
                                                 }
                                             }
                                         }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+            )
+
+        elif "fix" in index_name:
+            es.indices.create(
+                f"{index_name}-{date}",
+                body={
+                    "mappings": {
+                        "properties": {
+                            "fixes": {
+                                "properties": {
+                                    "operands": {
+                                        "properties": {"value": {"type": "text"}}
                                     }
                                 }
                             }
