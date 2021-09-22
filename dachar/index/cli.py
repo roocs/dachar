@@ -183,7 +183,7 @@ def parse_args_populate(args):
 
 
 def populate_main(args):
-    store, index = parse_args_process_fixes(args)
+    store, index = parse_args_populate(args)
     store_object = get_store_by_name(store)
 
     if store == "analysis":

@@ -55,15 +55,62 @@ def create_index_and_alias(index_name, update_alias=False):
 
     exists = es.indices.exists(f"{index_name}-{date}")
     if not exists:
-        es.indices.create(f"{index_name}-{date}")
+
+        #  create correct mapping for 'value' for fix and fix proposal stores.
+        if "fix" in index_name:
+            es.indices.create(
+                f"{index_name}-{date}",
+                body={
+                    "mappings": {
+                        "properties": {
+                            "fixes": {
+                                "properties": {
+                                    "operands": {
+                                        "properties": {"value": {"type": "text"}}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+            )
+
+        elif "fix-prop" in index_name:
+            es.indices.create(
+                f"{index_name}-{date}",
+                body={
+                    "mappings": {
+                        "properties": {
+                            "fixes": {
+                                "properties": {
+                                    "fix": {
+                                        "properties": {
+                                            "operands": {
+                                                "properties": {
+                                                    "value": {"type": "text"}
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+            )
+
+        else:
+            es.indices.create(f"{index_name}-{date}")
+
+        print(f"Created index {index_name}-{date}")
 
     if update_alias:
-        update_alias(f"{index_name}-{date}")
+        update_index_alias(f"{index_name}-{date}")
 
-    print(f"Created index {index_name}-{date} with alias {index_name}")
+        print(f"Created index {index_name}-{date} with alias {index_name}")
 
 
-def update_alias(index_name):
+def update_index_alias(index_name):
     index_alias = ("-").join(index_name.split("-")[:-3])
     alias_exists = es.indices.exists_alias(name=f"{index_alias}", index=f"{index_name}")
     if not alias_exists:
@@ -92,12 +139,13 @@ def clone_index_and_update_alias(index_name, index_to_clone, update_alias=False)
             "dest": {"index": f"{index_name}-{date}"},
         }
     )
-    if update_alias:
-        update_alias(f"{index_name}-{date}")
 
-    print(
-        f"Cloned index {index_to_clone} to index {index_name}-{date} with alias {index_name}"
-    )
+    print(f"Cloned index {index_to_clone} to index {index_name}-{date}")
+
+    if update_alias:
+        update_index_alias(f"{index_name}-{date}")
+
+        print(f"Updated alias {index_name} to point to {index_name}-{date}")
 
 
 def populate_store(local_store, index, id_type):
@@ -131,7 +179,7 @@ def populate_store(local_store, index, id_type):
                 es.update(index=index, id=doc_id, body={"doc": {id_type: drs}})
 
             print(
-                f"Added document for {drs} from loacal store {local_store} in index {index}"
+                f"Added document for {drs} from local store {local_store} in index {index}"
             )
 
 
@@ -154,4 +202,3 @@ def add_document_to_index(fpath, drs, index, id_type):
         es.update(index=index, id=doc_id, body={"doc": {id_type: drs}})
 
     print(f"Added document for {drs} from path {fpath} in index {index}")
-
