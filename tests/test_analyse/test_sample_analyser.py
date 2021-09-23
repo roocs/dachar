@@ -71,9 +71,7 @@ class _TestOneSampleAnalyser(OneSampleAnalyser):
 def populate_dc_store():
     scan.get_dc_store = Mock(return_value=char_store)
 
-    ds_paths = get_dataset_paths(
-        "cmip5", ds_ids=ds_ids, paths=get_project_base_dir("cmip5")
-    )
+    ds_paths = get_dataset_paths("cmip5", ds_ids=ds_ids)
     for ds_id, ds_path in ds_paths.items():
         scan_dataset("cmip5", ds_id, ds_path, "full", "ceda")
 
