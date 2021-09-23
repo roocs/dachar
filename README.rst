@@ -131,6 +131,19 @@ To withdraw existing fixes, use:
 
       $ dachar process-fixes -a withdraw -d <dataset-id>,<dataset-id>
 
+To publish all fixes use:
+
+.. code-block::
+
+      $ dachar process-fixes -a publish-all
+
+To reject all fixes use:
+
+.. code-block::
+
+      $ dachar process-fixes -a reject-all
+
+In this case you will be prompted to give a reason for rejection. This will be applied to all fixes.
 
 Adding to elasticsearch
 =======================
