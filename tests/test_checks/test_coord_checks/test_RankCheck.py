@@ -58,7 +58,6 @@ class _TestRankCheck(RankCheck):
 
 
 def test_RankCheck(load_esgf_test_data):
-    print("CONFIG=", CONFIG)
     populate_dc_store()
 
     _base_check.get_dc_store = Mock(return_value=char_store)
