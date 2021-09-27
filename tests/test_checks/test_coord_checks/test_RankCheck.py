@@ -51,15 +51,16 @@ def setup_module():
     char_store = _TestDatasetCharacterStore()
     prop_store = _TestFixProposalStore()
 
-    populate_dc_store()
-
 
 class _TestRankCheck(RankCheck):
     typical_threshold = 0.4
     atypical_threshold = 0.15
 
 
-def test_RankCheck():
+def test_RankCheck(load_esgf_test_data):
+    populate_dc_store()
+    print("CONFIG=", CONFIG)
+
     _base_check.get_dc_store = Mock(return_value=char_store)
     x = _TestRankCheck(ds_ids)
     results, atypical_content, typical_content = x.run()
@@ -70,7 +71,9 @@ def test_RankCheck():
     assert typical_content["data.shape"] == [3540]
 
 
-def test_RankCheck_deduce_fix():
+def test_RankCheck_deduce_fix(load_esgf_test_data):
+    populate_dc_store()
+
     _base_check.get_dc_store = Mock(return_value=char_store)
     x = _TestRankCheck(ds_ids)
     results, atypical_content, typical_content = x.run()
@@ -90,7 +93,9 @@ class _TestRankCheck1(RankCheck):
     atypical_threshold = 0.3
 
 
-def test_with_different_thresholds():
+def test_with_different_thresholds(load_esgf_test_data):
+    populate_dc_store()
+
     _base_check.get_dc_store = Mock(return_value=char_store)
     x = _TestRankCheck1(ds_ids)
     res = x.run()
