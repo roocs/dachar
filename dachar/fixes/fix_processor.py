@@ -10,7 +10,8 @@ PROC_ACTIONS = namedtuple(
     ["PUBLISH", "PUBLISH_ALL", "REJECT", "REJECT_ALL"],
     defaults=["publish", "publish-all", "reject", "reject-all"],
 )()
-ALLOWED_PROC_ACTIONS = sorted(PROC_ACTIONS._fields_defaults.values())
+# in python 3.9 _fields_defaults is renamed _field_defaults
+# ALLOWED_PROC_ACTIONS = sorted(PROC_ACTIONS._fields_defaults.values())
 
 
 def get_proposed_fixes(ds_ids=None):
