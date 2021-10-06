@@ -313,7 +313,7 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
             self.es, index=self.config.get("index"), query={"query": {"match_all": {}}},
         )
         for item in results:
-            yield (item["_source"])
+            yield item["_source"].get(self.config.get("id_type")), item["_source"]
 
     def _search_fields(self, fields, term, query_type):
 
@@ -392,3 +392,4 @@ class _ElasticSearchBaseJsonStore(_BaseJsonStore):
             term = f'*{term.replace(" ","*")}*'
             query_type = "wildcard"
             return self._field_requirements(fields, term, query_type)
+

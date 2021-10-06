@@ -45,6 +45,7 @@ def generate_fix_proposals(files):
 
         validate_proposal(proposal)
         ds_id = proposal.get('dataset_id')
+
         for prop in proposal.get('fixes'):
             fix_id = prop.get('fix_id')
             fix_cls = locate(f"dachar.fixes.{fix_id}")

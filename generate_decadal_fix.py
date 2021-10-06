@@ -11,6 +11,7 @@ if -t is not provided, the year will be taken from the ds id if possible, and th
 
 """
 import argparse
+import copy
 import json
 import re
 from datetime import datetime
@@ -26,11 +27,11 @@ def arg_parse():
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "-f", "--fpath", type=str, required=True, help="Path to output fix json file to"
+        "-f", "--fpath", type=str, required=True, help="Path to write the JSON fix file to."
     )
 
     parser.add_argument(
-        "-d", "--dsid", type=str, required=True, help="ds id to create fix tempalte for"
+        "-d", "--dsid", type=str, required=True, help="Dataset ID to create the fix template for."
     )
 
     parser.add_argument(
@@ -160,6 +161,12 @@ decadal_template = {
 }
 
 
+def get_decadal_template():
+    "Takes a copy of the global template, and returns it."
+    tmpl = copy.deepcopy(decadal_template)
+    return tmpl 
+
+
 def get_reftime(ds, default=None):
     if not default:
         raise Exception(
@@ -257,25 +264,28 @@ def main():
     lead_times = get_lead_times(ds, sd)
 
     # put into template
-    decadal_template["dataset_id"] = ds_id
-    decadal_template["fixes"][1]["operands"]["attrs"]["startdate"] = start_date
-    decadal_template["fixes"][1]["operands"]["attrs"]["sub_experiment_id"] = start_date
+    dt = get_decadal_template()
+
+    dt["dataset_id"] = ds_id
+    dt["fixes"][1]["operands"]["attrs"]["startdate"] = start_date
+    dt["fixes"][1]["operands"]["attrs"]["sub_experiment_id"] = start_date
 
     # put the reftime in
-    decadal_template["fixes"][2]["operands"]["value"] = reftime
+    dt["fixes"][2]["operands"]["value"] = reftime
 
     # put the leadtimes in
-    decadal_template["fixes"][3]["operands"]["value"] = lead_times
+    dt["fixes"][3]["operands"]["value"] = lead_times
 
     # put variable names in to remove coordinates attribute from
     bounds_list = get_bnds_variables(ds)
     bounds_list.append("realization")
-    decadal_template["fixes"][6]["operands"]["var_ids"] = bounds_list
+    dt["fixes"][6]["operands"]["var_ids"] = bounds_list
 
     # save the template as a json file
     with open(fpath, "w") as fp:
-        json.dump(decadal_template, fp, indent=4)
+        json.dump(dt, fp, indent=4)
 
 
 if __name__ == "__main__":
     main()
+
