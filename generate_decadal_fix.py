@@ -45,6 +45,30 @@ def arg_parse():
     return parser.parse_args()
 
 
+model_specific_global_attrs = {
+    "CMCC-CM2-SR5": {
+        "forcing_description": "f1, CMIP6 historical forcings",
+        "physics_description": "physics from the standard model configuration, with no additional tuning or different parametrization",
+        "initialization_description": "hindcast initialized based on observations and using historical forcing"
+    },
+    "EC-Earth3": {
+        "forcing_description": "f1, CMIP6 historical forcings",
+        "physics_description": "physics from the standard model configuration, with no additional tuning or different parametrization",
+        "initialization_description": "Atmosphere initialization based on full-fields from ERA-Interim (s1979-s2018) or ERA-40 (s1960-s1978); ocean/sea-ice initialization based on full-fields from NEMO/LIM assimilation run nudged towards ORA-S4 (s1960-s2018)"
+    },
+    "HadGEM3-GC31-MM": {
+        "forcing_description": "f2, CMIP6 v6.2.0 forcings; no ozone remapping",
+        "physics_description": "physics from the standard model configuration, with no additional tuning or different parametrization",
+        "initialization_description": "hindcast initialized based on observations and using historical forcing"
+    },
+    "MPI-ESM1-2-HR": {
+        "forcing_description": "f1, CMIP6 historical forcings",
+        "physics_description": "physics from the standard model configuration, with no additional tuning or different parametrization",
+        "initialization_description": "hindcast initialized based on observations and using historical forcing"
+    }
+}
+
+
 decadal_template = {
     "dataset_id": "",
     "fixes": [
@@ -62,9 +86,9 @@ decadal_template = {
             "fix_id": "GlobalAttrFix",
             "operands": {
                 "attrs": {
-                    "forcing_description": "Free text describing the forcings",
-                    "physics_description": "Free text describing the physics method",
-                    "initialization_description": "Free text describing the initialization method",
+                    "forcing_description": "",
+                    "physics_description": "",
+                    "initialization_description": "",
                     "startdate": "",
                     "sub_experiment_id": "",
                 }
@@ -105,10 +129,11 @@ decadal_template = {
                 "var_id": "leadtime",
                 "value": "",
                 "dim": ["time"],
-                "dtype": "timedelta64[D]",
+                "dtype": "float64",
                 "attrs": {
                     "long_name": "Time elapsed since the start of the forecast",
                     "standard_name": "forecast_period",
+                    "units": "days"
                 },
                 "encoding": {"dtype": "double"},
             },
@@ -267,13 +292,22 @@ def main():
     dt = get_decadal_template()
 
     dt["dataset_id"] = ds_id
-    dt["fixes"][1]["operands"]["attrs"]["startdate"] = start_date
-    dt["fixes"][1]["operands"]["attrs"]["sub_experiment_id"] = start_date
+
+    # Add globals into the global attr fixes
+    fix_1_attrs = dt["fixes"][1]["operands"]["attrs"]
+    fix_1_attrs["startdate"] = start_date
+    fix_1_attrs["sub_experiment_id"] = start_date
+
+    # Add the model-specific global attr
+    model = ds_id.split(".")[3]
+
+    for attr in ["forcing_description", "physics_description", "initialization_description"]:
+        fix_1_attrs[attr] = model_specific_global_attrs[model][attr]
 
     # put the reftime in
     dt["fixes"][2]["operands"]["value"] = reftime
 
-    # put the leadtimes in
+    # update the leadtimes
     dt["fixes"][3]["operands"]["value"] = lead_times
 
     # put variable names in to remove coordinates attribute from
