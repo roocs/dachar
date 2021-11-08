@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 To use this script:
 
@@ -65,8 +66,8 @@ decadal_template = {
                     "forcing_description": "Free text describing the forcings",
                     "physics_description": "Free text describing the physics method",
                     "initialization_description": "Free text describing the initialization method",
-                    "startdate": "",
-                    "sub_experiment_id": "",
+                    "startdate": "derive: daops.data_utils.fix_utils.get_sub_experiment_id",
+                    "sub_experiment_id": "derive: daops.data_utils.fix_utils.get_sub_experiment_id",
                 }
             },
             "source": {
@@ -80,7 +81,7 @@ decadal_template = {
             "fix_id": "AddScalarCoordFix",
             "operands": {
                 "var_id": "reftime",
-                "value": "",
+                "value": "derive: daops.data_utils.fix_utils.get_reftime",
                 "dtype": "datetime64[ns]",
                 "attrs": {
                     "long_name": "Start date of the forecast",
@@ -103,7 +104,7 @@ decadal_template = {
             "fix_id": "AddCoordFix",
             "operands": {
                 "var_id": "leadtime",
-                "value": "",
+                "value": "derive: daops.data_utils.fix_utils.get_lead_times",
                 "dim": ["time"],
                 "dtype": "timedelta64[D]",
                 "attrs": {
@@ -149,7 +150,7 @@ decadal_template = {
         },
         {
             "fix_id": "RemoveCoordAttrFix",
-            "operands": {"var_ids": ""},
+            "operands": {"var_ids": "derive: daops.data_utils.fix_utils.get_bnds_variables"},
             "source": {
                 "name": "ceda",
                 "version": "",
