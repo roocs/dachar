@@ -87,19 +87,11 @@ decadal_template = {
             "fix_id": "GlobalAttrFix",
             "operands": {
                 "attrs": {
-<<<<<<< HEAD
-                    "forcing_description": "Free text describing the forcings",
-                    "physics_description": "Free text describing the physics method",
-                    "initialization_description": "Free text describing the initialization method",
-                    "startdate": "derive: daops.data_utils.fix_utils.get_sub_experiment_id",
-                    "sub_experiment_id": "derive: daops.data_utils.fix_utils.get_sub_experiment_id",
-=======
                     "forcing_description": "",
                     "physics_description": "",
                     "initialization_description": "",
-                    "startdate": "",
-                    "sub_experiment_id": "",
->>>>>>> decadal_fixes
+                    "startdate": "derive: daops.data_utils.fix_utils.get_sub_experiment_id",
+                    "sub_experiment_id": "derive: daops.data_utils.fix_utils.get_sub_experiment_id",
                 }
             },
             "source": {
