@@ -1,10 +1,5 @@
 #!/usr/bin/env python
 
-print("""LATEST ISSUE: daops wants to know if the data is characterised!!!
-- BUT MAYBE only if "pre_checked=True" in `rook` - so can probably ignore.
-- BUT MIGHT WANT TO MAKE daops able to work with local fix store if easy.
-""")
-
 import time
 import os
 
@@ -22,11 +17,15 @@ dsids = """
  /badc/cmip6/data/CMIP6/DCPP/CMCC/CMCC-CM2-SR5/dcppA-hindcast/s1960-r2i1p1f1/Amon/pr/gn/v20210312
  /badc/cmip6/data/CMIP6/DCPP/CMCC/CMCC-CM2-SR5/dcppA-hindcast/s1960-r2i1p1f1/Amon/psl/gn/v20210312
  /badc/cmip6/data/CMIP6/DCPP/CMCC/CMCC-CM2-SR5/dcppA-hindcast/s1960-r2i1p1f1/Amon/tas/gn/v20210312
-""".strip().replace(basedir + "/", "").replace("/", ".").replace("CMIP6", "c3s-cmip6").split()
+""".strip().replace(basedir + "/", "").replace("/", ".").split()
 
 
 DS_LIST_FILE = "DSET_IDS.txt"
 FIX_DIR = "./decadal_fixes"
+
+
+def sleep():
+    time.sleep(1)
 
 
 def prep_dir(fpath):
@@ -45,7 +44,6 @@ def write_fix_file(dsid):
 
 
 def propose_fix(dsid):
-
     ds_file = "./dsid.txt"
     with open(ds_file, "w") as w: 
         w.write(dsid)
@@ -56,24 +54,36 @@ def propose_fix(dsid):
     cmd = f"ROOCS_CONFIG=MY_roocs.ini dachar propose-fixes --template {fix_file_path} --dataset-list {ds_file}"
     print(f"[INFO] Running: {cmd}")
     os.system(cmd)
-
-    print("Sleeping...")
-    time.sleep(1)
+    sleep()
 
 
 def main():
 
     prep_dir(FIX_DIR)
-    print(f"[WARNING] QUESTION 1: Should I create indexes with: dachar/index/create_index.py ? Or just let them happen automatically?")
+
+    print("Deleting and regenerating index (so that it deals with mapping issues and creates alias)")
+    indexes = ("c3s-roocs-fix-prop", "c3s-roocs-fix")
+
+    for indx in indexes: 
+        os.system(f"ROOCS_CONFIG=MY_roocs.ini python dachar/index/cli.py delete -i {indx}")
+        sleep()
+
+    for indx in ("fix", "fix-proposal"):
+        os.system(f"ROOCS_CONFIG=MY_roocs.ini python dachar/index/cli.py create -u -i {indx}")
+        sleep()
     
     for dsid in dsids:
-        p = os.path.join(basedir, dsid.replace(".", "/")).replace("c3s-cmip6", "CMIP6")
-        print(f"[INFO] Checking: {dsid}")
+        p = os.path.join(basedir, dsid.replace(".", "/"))
 
+        print(f"[INFO] Checking: {dsid}")
         if not os.path.isdir(p):
             raise Exception(f"[ERROR] {p} does not exist!")
 
-        propose_fix(dsid)
+        c3s_cmip6_dsid = dsid.replace("CMIP6", "c3s-cmip6")
+        propose_fix(c3s_cmip6_dsid)
+
+    print("FINALLY: run this to publish the fixes:\n"
+          "ROOCS_CONFIG=MY_roocs.ini dachar process-fixes -a publish-all")
 
 
 if __name__ == "__main__":
