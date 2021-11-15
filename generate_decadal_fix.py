@@ -58,6 +58,7 @@ decadal_template = {
                     "initialization_description": "derive: daops.fix_utils.decadal_utils.get_decadal_model_attr_from_dict: initialization_description",
                     "startdate": "derive: daops.fix_utils.decadal_utils.get_sub_experiment_id",
                     "sub_experiment_id": "derive: daops.fix_utils.decadal_utils.get_sub_experiment_id",
+                    "further_info_url": "derive: daops.fix_utils.decadal_utils.fix_further_info_url"
                 }
             },
             "source": {
