@@ -58,7 +58,6 @@ decadal_template = {
                     "initialization_description": "derive: daops.fix_utils.decadal_utils.get_decadal_model_attr_from_dict: initialization_description",
                     "startdate": "derive: daops.fix_utils.decadal_utils.get_sub_experiment_id",
                     "sub_experiment_id": "derive: daops.fix_utils.decadal_utils.get_sub_experiment_id",
-                    "further_info_url": "derive: daops.fix_utils.decadal_utils.fix_further_info_url"
                 }
             },
             "source": {
@@ -160,6 +159,15 @@ def get_decadal_template():
     return tmpl 
 
 
+def get_ds_ids(fpath):
+    ds_ids = []
+    with open(fpath, "r") as f:
+        for line in f:
+            ds_id = line.rstrip()
+            ds_ids.append(ds_id)
+    return ds_ids
+
+
 def main():
     args = arg_parse()
 
@@ -172,6 +180,11 @@ def main():
     dt = get_decadal_template()
 
     dt["dataset_id"] = ds_id
+
+    if ds_id in get_ds_ids('/Users/qsp95418/roocs/further_info_url-dsets.txt'):
+        global_attrs = dt['fixes'][1].get("operands").get("attrs") 
+        global_attrs.update(further_info_url='derive: daops.fix_utils.decadal_utils.fix_further_info_url')
+        dt['fixes'][1]["operands"]["attrs"] = global_attrs
 
     # save the template as a json file
     with open(fpath, "w") as fp:
