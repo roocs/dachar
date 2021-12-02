@@ -1,8 +1,7 @@
+from dachar.fixes._base_fix import _BaseDatasetFix
 from dachar.utils.common import UNDEFINED
 
-from dachar.fixes._base_fix import _BaseDatasetFix
-
-__all__ = ["SqueezeDimensionsFix", "AddScalarCoordFix"]
+__all__ = ["SqueezeDimensionsFix", "AddScalarCoordFix", "AddCoordFix"]
 
 
 class SqueezeDimensionsFix(_BaseDatasetFix):
@@ -43,23 +42,49 @@ For example:
 
 class AddScalarCoordFix(_BaseDatasetFix):
     fix_id = "AddScalarCoordFix"
-    title = "Add a coordinate"
+    title = "Add a scalar coordinate"
     description = """
-Takes the coordinate to add along with its attributes
+Takes the scalar coordinate to add along with its attributes
 
 For example:
   - inputs:
-    - {'id': 'height',
+    - {'var_id': 'height',
        'value': '2.0',
        'dtype': 'float64',
-       'attrs': {'units': 'm'
-                'standard_name': 'height'}}
+       'attrs': {'units': 'm',
+                'standard_name': 'height'},
+       'encoding': {}
+       }
 
 Fix example: ds = ds.assign_coords(height=2.0) will add a scalar height coordinate with a value of 2.0
 Attributes will be set by attrs: e.g. ds.attrs['units'] = 'm'
     """
 
     category = "coord_fixes"
-    required_operands = ["dtype", "id", "value", "length", "attrs", "coord_type"]
+    required_operands = ["dtype", "var_id", "value", "attrs", "encoding"]
     ref_implementation = "daops.data_utils.coord_utils.add_scalar_coord"
+    process_type = "post_processor"
+
+
+class AddCoordFix(_BaseDatasetFix):
+    fix_id = "AddCoordFix"
+    title = "Add a coordinate"
+    description = """
+Takes the coordinate to add, along with its attributes.
+
+For example:
+  - inputs:
+    - {'var_id': 'leadtime',
+       'value': "16, 46, 76, 106",
+       'dim': ['time'],
+       'dtype': 'timedelta64[D]',
+       'attrs': {'long_name': 'Time elapsed since the start of the forecast', 'standard_name': 'forecast_period'},
+       'encoding': {'dtype': 'double'}}
+
+This would add a leadtime coordinate, attached to the existing time dimension.
+    """
+
+    category = "coord_fixes"
+    required_operands = ["dtype", "var_id", "value", "dim", "attrs", "encoding"]
+    ref_implementation = "daops.data_utils.coord_utils.add_coord"
     process_type = "post_processor"

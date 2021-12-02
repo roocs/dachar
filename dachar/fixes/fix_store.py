@@ -41,8 +41,11 @@ class BaseFixStore(object):
 class LocalFixStore(_LocalBaseJsonStore, BaseFixStore):
     config = {
         "store_type": "local",
-        "local.base_dir": "/tmp/fix-store",
-        "local.dir_grouping_level": 4,
+        "local.base_dir": CONFIG["dachar:store"].get("fix_store",
+                          "/tmp/fix-store"),
+        "local.dir_grouping_level": CONFIG["dachar:settings"].get(
+                                           "dir_grouping_level", 4)
+
     }
 
 

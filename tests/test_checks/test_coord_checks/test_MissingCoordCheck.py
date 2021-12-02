@@ -20,11 +20,6 @@ ds_ids_cmip6 = [
     "CMIP6.CMIP.CCCma.CanESM5.historical.r1i1p1f1.SImon.siconc.gn.latest",
     "CMIP6.CMIP.MPI-M.MPI-ESM1-2-HR.historical.r1i1p1f1.SImon.siconc.gn.latest",
 ]
-# ds_ids_cmip6 = ['CMIP6.CMIP.NCAR.CESM2.historical.r1i1p1f1.SImon.siconc.gn.latest',
-#                 'CMIP6.CMIP.BCC.BCC-ESM1.historical.r1i1p1f1.SImon.siconc.gn.latest',
-#                 'CMIP6.CMIP.MIROC.MIROC6.historical.r1i1p1f1.SImon.siconc.gn.latest',
-#                 'CMIP6.CMIP.IPSL.IPSL-CM6A-LR.historical.r1i1p1f1.SImon.siconc.gn.latest',
-#                 'CMIP6.CMIP.NOAA-GFDL.GFDL-ESM4.historical.r1i1p1f1.SImon.siconc.gn.latest']
 
 ds_ids_cmip5 = [
     "cmip5.output1.ICHEC.EC-EARTH.historical.mon.atmos.Amon.r1i1p1.latest.tas",
@@ -121,8 +116,8 @@ def test_MissingCoordCheck_cmip5():
     results, atypical_content, typical_content = x.run()
     assert atypical_content[0]["coordinates.*.id"] == ["latitude", "longitude", "time"]
     assert typical_content["coordinates.*.id"] == [
-        "height",
         "latitude",
+        "level",
         "longitude",
         "time",
     ]

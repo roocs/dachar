@@ -1,5 +1,17 @@
-from dachar.utils.get_stores import get_fix_prop_store, get_fix_store
 import pprint
+from collections import namedtuple
+
+from dachar.utils.get_stores import get_fix_prop_store
+from dachar.utils.get_stores import get_fix_store
+
+
+PROC_ACTIONS = namedtuple(
+    "ACTIONS",
+    ["PUBLISH", "PUBLISH_ALL", "REJECT", "REJECT_ALL"],
+    defaults=["publish", "publish-all", "reject", "reject-all"],
+)()
+# in python 3.9 _fields_defaults is renamed _field_defaults
+# ALLOWED_PROC_ACTIONS = sorted(PROC_ACTIONS._fields_defaults.values())
 
 
 def get_proposed_fixes(ds_ids=None):
@@ -9,9 +21,10 @@ def get_proposed_fixes(ds_ids=None):
         proposed_fixes = []
 
         for ds_id in ds_ids:
-            proposed_fix = get_fix_prop_store().get_proposed_fix_by_id(ds_id)
-            if proposed_fix is not None:
-                proposed_fixes.append(proposed_fix)
+            proposed_fix_list = get_fix_prop_store().get_proposed_fix_by_id(ds_id)
+            if proposed_fix_list is not None:
+                for fix in proposed_fix_list:
+                    proposed_fixes.append(fix)
 
     return proposed_fixes
 
@@ -19,29 +32,30 @@ def get_proposed_fixes(ds_ids=None):
 def process_proposed_fixes(proposed_fixes):
     if len(proposed_fixes) > 0:
         for proposed_fix in proposed_fixes:
-            fix = proposed_fix["fixes"][0]["fix"]
+
             ds_id = proposed_fix["dataset_id"]
+            fix = proposed_fix["this_fix"]["fix"]
 
             # print fix so user can see what they are processing
-            pprint.pprint(proposed_fix)
+            pprint.pprint(ds_id)
+            pprint.pprint(fix)
 
-            action = input("Enter action for proposed fix: ")
+            action = input(f"Enter action for proposed fix (publish or reject): ")
 
-            if action == "publish":
+            if action not in ("publish", "reject"):
+                action = input(f"Enter action for proposed fix (publish or reject): ")
+
+            if action == PROC_ACTIONS.PUBLISH:
                 get_fix_prop_store().publish(ds_id, fix)
                 get_fix_store().publish_fix(ds_id, fix)
 
                 print("[INFO] Fix has been published.")
 
-            if action == "reject":
+            elif action == PROC_ACTIONS.REJECT:
                 reason = input("Enter a reason for rejection: ")
                 get_fix_prop_store().reject(ds_id, fix, reason)
 
                 print("[INFO] Fix has been rejected.")
-
-            else:
-                # print('[INFO] You have not selected an action for this fix.')
-                pass
 
     else:
         raise Exception("No proposed fixes found.")
@@ -61,7 +75,7 @@ def get_fixes_to_withdraw(ds_ids):
 def process_withdraw_fixes(existing_fixes):
     if len(existing_fixes) > 0:
         for existing_fix in existing_fixes:
-            fix = existing_fix["fixes"][0]
+            # fix = existing_fix["fixes"][0]
             ds_id = existing_fix["dataset_id"]
 
             # print fix so user can see what they are processing
@@ -77,18 +91,18 @@ def process_withdraw_fixes(existing_fixes):
                 fix_ids = fix_ids.split(",")
 
                 withdrawn = []
-                for id in fix_ids:
-                    print(id)
+                for fix_id in fix_ids:
+                    print(fix_id)
 
                     for fix in existing_fix["fixes"]:
-                        if fix["fix_id"] == id:
+                        if fix["fix_id"] == fix_id:
                             reason = input("Enter a reason for withdrawal: ")
 
                             get_fix_prop_store().withdraw(ds_id, fix, reason)
-                            get_fix_store().withdraw_fix(ds_id, id)
+                            get_fix_store().withdraw_fix(ds_id, fix_id)
 
-                            withdrawn.append(id)
-                            print(f"[INFO] Fix {id} has been withdrawn.")
+                            withdrawn.append(fix_id)
+                            print(f"[INFO] Fix {fix_id} has been withdrawn.")
 
                 if set(withdrawn) != set(fix_ids):
                     missing_ids = list(set(fix_ids).difference(withdrawn))
@@ -104,13 +118,44 @@ def process_withdraw_fixes(existing_fixes):
         )  # include ds_id in this statement so user knows which one if many entered
 
 
-def process_all_fixes(action, ds_ids=None):
-    if action == "process":
+def bulk_process_fixes(action):
+    proposed_fixes = get_proposed_fixes(ds_ids=None)
 
+    if action == PROC_ACTIONS.REJECT_ALL:
+        reason = input("Enter a reason for rejection: ")
+
+    if len(proposed_fixes) > 0:
+        for proposed_fix in proposed_fixes:
+
+            ds_id = proposed_fix["dataset_id"]
+            fix = proposed_fix["this_fix"]["fix"]
+
+            if action == PROC_ACTIONS.PUBLISH_ALL:
+                get_fix_prop_store().publish(ds_id, fix)
+                get_fix_store().publish_fix(ds_id, fix)
+
+            elif action == PROC_ACTIONS.REJECT_ALL:
+                get_fix_prop_store().reject(ds_id, fix, reason)
+
+        print(f"[INFO] All fixes processed with action {action}")
+
+    else:
+        raise Exception("No proposed fixes found.")
+
+
+def process_all_fixes(action, ds_ids=None):
+    if action in ("publish-all", "reject-all"):
+        bulk_process_fixes(action)
+
+    elif action == "process":
         proposed_fixes = get_proposed_fixes(ds_ids)
         process_proposed_fixes(proposed_fixes)
 
-    if action == "withdraw":
-
+    elif action == "withdraw":
         existing_fixes = get_fixes_to_withdraw(ds_ids)
         process_withdraw_fixes(existing_fixes)
+
+    else:
+        raise Exception(
+            f"Expected action to be 'process', 'withdraw', 'publish-all', 'reject-all', recieved {action}"
+        )

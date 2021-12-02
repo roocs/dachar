@@ -1,0 +1,77 @@
+{
+    "dataset_id": "CMIP6.DCPP.MOHC.HadGEM3-GC31-MM.dcppA-hindcast.s2004-r3i1p1f2.Amon.pr.gn.v20200417",
+    "fixes": [
+      {
+        "fix_id": "VarAttrFix",
+        "operands": {"var_id": "time",
+            "attrs": {"long_name": "valid_time"}
+        },
+        "source": {
+            "name": "ceda",
+            "version": "",
+            "comments": "",
+            "url":"https://github.com/cp4cds/c3s34g_master/tree/master/Decadal"}
+      },
+      {
+        "fix_id": "GlobalAttrFix",
+        "operands": {"attrs":
+            {"forcing_description": "Free text describing the forcings",
+            "physics_description": "Free text describing the physics method",
+            "initialization_description":"Free text describing the initialization method",
+            "startdate": "s200411",
+            "sub_experiment_id":"s200411"}},
+        "source": {
+            "name": "ceda",
+            "version": "",
+            "comments": "",
+            "url":"https://github.com/cp4cds/c3s34g_master/tree/master/Decadal"}
+      },
+      {
+        "fix_id": "AddScalarCoordFix",
+        "operands": {"var_id": "reftime",
+            "value": "2004-11-01T00:00:00",
+            "dtype": "datetime64[ns]",
+            "attrs": {"long_name": "Start date of the forecast", "standard_name": "forecast_reference_time"},
+            "encoding": {"dtype": "int32", "units":"days since 1850-01-01", "calendar":"gregorian"}},
+        "source": {
+            "name": "ceda",
+            "version": "",
+            "comments": "",
+            "url":"https://github.com/cp4cds/c3s34g_master/tree/master/Decadal"}
+      },
+      {
+        "fix_id": "AddCoordFix",
+        "operands": {"var_id": "leadtime",
+            "value": "15,45,76,107,135,166,196,227,257,288,319,349,380,410,441,472,500,531,561,592,622,653,684,714,745,775,806,837,865,896,926,957,987,1018,1049,1079,1110,1140,1171,1202,1231,1262,1292,1323,1353,1384,1415,1445,1476,1506,1537,1568,1596,1627,1657,1688,1718,1749,1780,1810,1841,1871,1902,1933,1961,1992,2022,2053,2083,2114,2145,2175,2206,2236,2267,2298,2326,2357,2387,2418,2448,2479,2510,2540,2571,2601,2632,2663,2692,2723,2753,2784,2814,2845,2876,2906,2937,2967,2998,3029,3057,3088,3118,3149,3179,3210,3241,3271,3302,3332,3363,3394,3422,3453,3483,3514,3544,3575,3606,3636,3667,3697,3728,3759,3787",
+            "dim": ["time"],
+            "dtype": "timedelta64[D]",
+            "attrs": {"long_name": "Time elapsed since the start of the forecast", "standard_name": "forecast_period"},
+            "encoding": {"dtype": "double"}},
+        "source": {
+            "name": "ceda",
+            "version": "",
+            "comments": "",
+            "url":"https://github.com/cp4cds/c3s34g_master/tree/master/Decadal"}
+      },
+      {
+        "fix_id": "AddDataVarFix",
+        "operands": {"var_id": "realization",
+            "value": "1",
+            "dtype": "int32",
+            "attrs": {"long_name": "realization", "comment": "For more information on the ripf, refer to the variant_label, initialization_description, physics_description and forcing_description global attributes"}},
+        "source": {
+            "name": "ceda",
+            "version": "",
+            "comments": "",
+            "url":"https://github.com/cp4cds/c3s34g_master/tree/master/Decadal"}
+      },
+      {
+        "fix_id": "RemoveFillValuesFix",
+        "operands": {},
+        "source": {
+            "name": "ceda",
+            "version": "",
+            "comments": "",
+            "url":"https://github.com/cp4cds/c3s34g_master/tree/master/Decadal"}
+      }]
+}

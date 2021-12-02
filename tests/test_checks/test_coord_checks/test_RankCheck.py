@@ -1,13 +1,15 @@
-from dachar.analyse.checks.coord_checks import *
 import os
 import shutil
-
-from tests._stores_for_tests import _TestDatasetCharacterStore, _TestFixProposalStore
-from dachar.scan.scan import scan_dataset, get_dataset_paths
-from dachar.analyse.checks import _base_check
-from dachar import CONFIG
 from unittest.mock import Mock
+
+from dachar import CONFIG
+from dachar.analyse.checks import _base_check
+from dachar.analyse.checks.coord_checks import *
 from dachar.scan import scan
+from dachar.scan.scan import get_dataset_paths
+from dachar.scan.scan import scan_dataset
+from tests._stores_for_tests import _TestDatasetCharacterStore
+from tests._stores_for_tests import _TestFixProposalStore
 
 char_store = None
 prop_store = None
@@ -36,9 +38,7 @@ def clear_stores():
 def populate_dc_store():
     scan.get_dc_store = Mock(return_value=char_store)
 
-    ds_paths = get_dataset_paths(
-        "cmip5", ds_ids=ds_ids, paths=CONFIG['project:cmip5']['base_dir']
-    )
+    ds_paths = get_dataset_paths("cmip5", ds_ids=ds_ids)
     for ds_id, ds_path in ds_paths.items():
         scan_dataset("cmip5", ds_id, ds_path, "full", "ceda")
 
@@ -51,15 +51,15 @@ def setup_module():
     char_store = _TestDatasetCharacterStore()
     prop_store = _TestFixProposalStore()
 
-    populate_dc_store()
-
 
 class _TestRankCheck(RankCheck):
     typical_threshold = 0.4
     atypical_threshold = 0.15
 
 
-def test_RankCheck():
+def test_RankCheck(load_esgf_test_data):
+    populate_dc_store()
+
     _base_check.get_dc_store = Mock(return_value=char_store)
     x = _TestRankCheck(ds_ids)
     results, atypical_content, typical_content = x.run()
@@ -70,7 +70,9 @@ def test_RankCheck():
     assert typical_content["data.shape"] == [3540]
 
 
-def test_RankCheck_deduce_fix():
+def test_RankCheck_deduce_fix(load_esgf_test_data):
+    populate_dc_store()
+
     _base_check.get_dc_store = Mock(return_value=char_store)
     x = _TestRankCheck(ds_ids)
     results, atypical_content, typical_content = x.run()
@@ -90,7 +92,9 @@ class _TestRankCheck1(RankCheck):
     atypical_threshold = 0.3
 
 
-def test_with_different_thresholds():
+def test_with_different_thresholds(load_esgf_test_data):
+    populate_dc_store()
+
     _base_check.get_dc_store = Mock(return_value=char_store)
     x = _TestRankCheck1(ds_ids)
     res = x.run()

@@ -13,22 +13,26 @@ MINI_ESGF_MASTER_DIR = os.path.join(MINI_ESGF_CACHE_DIR, "master")
 def write_roocs_cfg():
     cfg_templ = """
     [project:cmip5]
-    base_dir = {{ base_dir }}/test_data/badc/cmip5/data
+    base_dir = {{ base_dir }}/test_data/badc/cmip5/data/cmip5
 
     [project:cmip6]
-    base_dir = {{ base_dir }}/test_data/badc/cmip6/data
+    base_dir = {{ base_dir }}/test_data/badc/cmip6/data/CMIP6
 
     [project:cordex]
-    base_dir = {{ base_dir }}/test_data/badc/cordex/data
+    base_dir = {{ base_dir }}/test_data/badc/cordex/data/cordex
 
     [project:c3s-cmip5]
-    base_dir = {{ base_dir }}/test_data/gws/nopw/j04/cp4cds1_vol1/data/
+    base_dir = {{ base_dir }}/test_data/gws/nopw/j04/cp4cds1_vol1/data/c3s-cmip5
 
     [project:c3s-cmip6]
-    base_dir = {{ base_dir }}/test_data/badc/cmip6/data
+    base_dir = {{ base_dir }}/test_data/badc/cmip6/data/CMIP6
 
     [project:c3s-cordex]
-    base_dir = {{ base_dir }}/test_data/gws/nopw/j04/cp4cds1_vol1/data/
+    base_dir = {{ base_dir }}/test_data/gws/nopw/j04/cp4cds1_vol1/data/c3s-cordex
+
+
+    [dachar:settings]
+    elastic_api_token =
     """
     cfg = Template(cfg_templ).render(base_dir=MINI_ESGF_MASTER_DIR)
     with open(ROOCS_CFG, "w") as fp:
