@@ -80,7 +80,7 @@ decadal_template = {
                 "encoding": {
                     "dtype": "int32",
                     "units": "days since 1850-01-01",
-                    "calendar": "gregorian",
+                    "calendar": "derive: daops.fix_utils.decadal_utils.get_sub_experiment_id",
                 },
             },
             "source": {
