@@ -14,7 +14,9 @@ The year will be taken from the ds id if possible for the start date of the expe
 import argparse
 import copy
 import json
+import os
 import re
+import sys
 from datetime import datetime
 
 import numpy as np
@@ -182,7 +184,8 @@ def main():
 
     dt["dataset_id"] = ds_id
 
-    if ds_id in get_ds_ids("./further_info_url-dsets.txt"):
+    pathname = os.path.dirname(sys.argv[0])
+    if ds_id in get_ds_ids(os.path.join(pathname, "further_info_url-dsets.txt")):
         global_attrs = dt["fixes"][1].get("operands").get("attrs")
         global_attrs.update(
             further_info_url="derive: daops.fix_utils.decadal_utils.fix_further_info_url"
