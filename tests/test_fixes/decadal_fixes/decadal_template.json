@@ -64,14 +64,5 @@
             "version": "",
             "comments": "",
             "url":"https://github.com/cp4cds/c3s34g_master/tree/master/Decadal"}
-      },
-      {
-        "fix_id": "RemoveFillValuesFix",
-        "operands": {},
-        "source": {
-            "name": "ceda",
-            "version": "",
-            "comments": "",
-            "url":"https://github.com/cp4cds/c3s34g_master/tree/master/Decadal"}
       }]
 }
