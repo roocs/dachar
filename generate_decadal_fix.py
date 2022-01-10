@@ -27,14 +27,23 @@ def arg_parse():
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "-f", "--fpath", type=str, required=True, help="Path to write the JSON fix file to."
+        "-f",
+        "--fpath",
+        type=str,
+        required=True,
+        help="Path to write the JSON fix file to.",
     )
 
     parser.add_argument(
-        "-d", "--dsid", type=str, required=True, help="Dataset ID to create the fix template for."
+        "-d",
+        "--dsid",
+        type=str,
+        required=True,
+        help="Dataset ID to create the fix template for.",
     )
 
     return parser.parse_args()
+
 
 decadal_template = {
     "dataset_id": "",
@@ -80,7 +89,7 @@ decadal_template = {
                 "encoding": {
                     "dtype": "int32",
                     "units": "days since 1850-01-01",
-                    "calendar": "derive: daops.fix_utils.decadal_utils.get_sub_experiment_id",
+                    "calendar": "derive: daops.fix_utils.decadal_utils.get_time_calendar",
                 },
             },
             "source": {
@@ -100,7 +109,7 @@ decadal_template = {
                 "attrs": {
                     "long_name": "Time elapsed since the start of the forecast",
                     "standard_name": "forecast_period",
-                    "units": "days"
+                    "units": "days",
                 },
                 "encoding": {"dtype": "double"},
             },
@@ -130,18 +139,10 @@ decadal_template = {
             },
         },
         {
-            "fix_id": "RemoveFillValuesFix",
-            "operands": {},
-            "source": {
-                "name": "ceda",
-                "version": "",
-                "comments": "",
-                "url": "https://github.com/cp4cds/c3s34g_master/tree/master/Decadal",
-            },
-        },
-        {
             "fix_id": "RemoveCoordAttrFix",
-            "operands": {"var_ids": "derive: daops.fix_utils.decadal_utils.get_decadal_bnds_list"},
+            "operands": {
+                "var_ids": "derive: daops.fix_utils.decadal_utils.get_decadal_bnds_list"
+            },
             "source": {
                 "name": "ceda",
                 "version": "",
@@ -156,7 +157,7 @@ decadal_template = {
 def get_decadal_template():
     "Takes a copy of the global template, and returns it."
     tmpl = copy.deepcopy(decadal_template)
-    return tmpl 
+    return tmpl
 
 
 def get_ds_ids(fpath):
@@ -181,10 +182,12 @@ def main():
 
     dt["dataset_id"] = ds_id
 
-    if ds_id in get_ds_ids('./further_info_url-dsets.txt'):
-        global_attrs = dt['fixes'][1].get("operands").get("attrs") 
-        global_attrs.update(further_info_url='derive: daops.fix_utils.decadal_utils.fix_further_info_url')
-        dt['fixes'][1]["operands"]["attrs"] = global_attrs
+    if ds_id in get_ds_ids("./further_info_url-dsets.txt"):
+        global_attrs = dt["fixes"][1].get("operands").get("attrs")
+        global_attrs.update(
+            further_info_url="derive: daops.fix_utils.decadal_utils.fix_further_info_url"
+        )
+        dt["fixes"][1]["operands"]["attrs"] = global_attrs
 
     # save the template as a json file
     with open(fpath, "w") as fp:
@@ -193,4 +196,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
