@@ -18,7 +18,6 @@ def test_get_fix_categories():
             "GlobalAttrFix",
             "CheckAddGlobalAttrFix",
             "VarAttrFix",
-            "RemoveFillValuesFix",
             "RemoveCoordAttrFix",
         ],
         "var_fixes": ["AddDataVarFix"],
