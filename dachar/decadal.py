@@ -23,6 +23,8 @@ import numpy as np
 import xarray as xr
 from roocs_utils.project_utils import dsid_to_datapath
 
+ETC_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'etc'))
+
 
 def arg_parse():
 
@@ -171,12 +173,7 @@ def get_ds_ids(fpath):
     return ds_ids
 
 
-def main():
-    args = arg_parse()
-
-    fpath = args.fpath
-    ds_id = args.dsid
-
+def generate_decadal_fix(fpath, ds_id):
     data_path = dsid_to_datapath(ds_id)
 
     # put into template
@@ -184,8 +181,7 @@ def main():
 
     dt["dataset_id"] = ds_id
 
-    pathname = os.path.dirname(sys.argv[0])
-    if ds_id in get_ds_ids(os.path.join(pathname, "further_info_url-dsets.txt")):
+    if ds_id in get_ds_ids(os.path.join(ETC_DIR, "further_info_url-dsets.txt")):
         global_attrs = dt["fixes"][1].get("operands").get("attrs")
         global_attrs.update(
             further_info_url="derive: daops.fix_utils.decadal_utils.fix_further_info_url"
@@ -195,6 +191,14 @@ def main():
     # save the template as a json file
     with open(fpath, "w") as fp:
         json.dump(dt, fp, indent=4)
+
+def main():
+    args = arg_parse()
+
+    fpath = args.fpath
+    ds_id = args.dsid
+
+    generate_decadal_fix(fpath, ds_id)
 
 
 if __name__ == "__main__":

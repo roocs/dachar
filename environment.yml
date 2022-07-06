@@ -1,7 +1,6 @@
 name: dachar
 channels:
  - conda-forge
- - defaults
 dependencies:
  - numpy>=1.16
  - xarray>=0.15
